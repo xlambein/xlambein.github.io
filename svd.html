@@ -1,0 +1,128 @@
+<!doctype html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<title>SVD Decomposition Visualizer</title>
+		<meta name="description" content="SVD Decomposition Visualizer">
+		<meta name="author" content="Xavier Lambein">
+
+		<!-- <link rel="stylesheet" href="css/styles.css?v=1.0"> -->
+
+		<style>
+.chart {
+}
+
+.chart .axis text {
+	display: none;
+}
+
+.matrix {
+	display: inline-block;
+	vertical-align: middle;
+	position: relative;
+	margin: 0 8px;
+}
+
+.matrix:hover {
+	background-color: #eef;
+}
+
+.matrix:before, .matrix:after {
+	content: "";
+	width: 10px;
+	height: 86px;
+	border: 2px solid black;
+	position: absolute;
+	top: -2px;
+}
+
+.matrix:before {
+	left: -8px;
+	border-right: none;
+}
+
+.matrix:after {
+	right: -8px;
+	border-left: none;
+}
+
+.matrix input {
+	border: 1px solid #ccc;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	margin: 1px 1px 1px 1px;
+	text-align: center;
+	color: #00a;
+	font-weight: bold;
+	font-family: serif;
+}
+
+.matrix td {
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	margin: 2px;
+	text-align: center;
+	font-weight: bold;
+	overflow: hidden;
+}
+
+.operator {
+	padding: 0 10px;
+	display: inline-block;
+}
+
+.bottom-note {
+	width: 100%;
+	position: absolute;
+	margin-top: 28px;
+	top: 64px;
+	color: #666;
+}
+
+		</style>
+
+		<!--[if lt IE 9]>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+		<div style="width: 322px; margin: auto">
+			<div class="chart"></div>
+		</div>
+		<div style="text-align: center" id="target">
+			<div id="M"><div class="bottom-note">\(M\)<br>Arbitrary Matrix</div></div>
+			<div class="matrix matrix-vector">
+				<table>
+					<tr><td>\(x\)</td></tr>
+					<tr><td>\(y\)</td></tr>
+				</table>
+			</div>
+			<span class="operator">=</span>
+			<div id="U"><div class="bottom-note">\(U\)<br>Isometry</div></div>
+			<div id="S"><div class="bottom-note">\(\Sigma\)<br>Scaling</div></div>
+			<div id="V"><div class="bottom-note">\(V^T\)<br>Isometry</div></div>
+			<div class="matrix matrix-vector">
+				<table>
+					<tr><td>\(x\)</td></tr>
+					<tr><td>\(y\)</td></tr>
+				</table>
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.20.19/system.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.16.5/math.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.12.0/d3.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+		<script>
+            System.config({ "baseURL": "." });
+            System.import("script.js");
+         </script>
+	</body>
+</html>
+

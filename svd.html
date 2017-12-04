@@ -83,6 +83,11 @@
 	color: #666;
 }
 
+.explanation {
+	max-width: 600px;
+	margin: auto;
+}
+
 		</style>
 
 		<!--[if lt IE 9]>
@@ -91,6 +96,15 @@
 	</head>
 
 	<body>
+		<div class="explanation">
+			<h2>SVD Decomposition Visualizer</h2>
+			<p>The chart below depicts a set of vectors arranged in a square.</p>
+			<p>Those vectors are transformed by the matrix \(M\), shown on the lower left part of the equation at the bottom of the page.  Currently, this matrix is the identity, and hence, the chart displays the vectors at their original coordinates.  Try changing the coefficients of the matrix, and look at the result on the chart.  To return the vectors to their original position, simply hover over the column vector \((x, y)^T\) on the right of \(M\).</p>
+			<p>You will see, as you change the coefficients of \(M\), that other matrices on the right change too.  Those matrices, \(U\), \(\Sigma\) and \(V^T\), constitute the Singular Value Decomposition (SVD) of \(M\).  The left and right matrices are isometries (i.e., rotations or symmetries), while the middle matrix is a scaling on the \(x\) and \(y\) axes.  Any matrix can be represented as a product of three such matrices.</p>
+			<p>Again, hovering over the column vector \((x, y)^T\) on the far right will return the vectors to their original location.  If you then move your cursor to the \(V^T\) matrix, you will see the result of multiplying that single matrix with the vectors on the chart, i.e., applying the first isometry.</p>
+			<p>Moving your cursor over to the \(\Sigma\) matrix will then apply the scaling (after rotation).  Finally, moving your cursor to \(U\) (or elsewhere) will go back to showing you the full \(U \Sigma V^T = M\) transform applied to the vectors.</p>
+			<p>That's it.  This little tool allows you to play with and (hopefully) better understand the effect of an SVD on a matrix.</p>
+		</div>
 		<div style="width: 322px; margin: auto">
 			<div class="chart"></div>
 		</div>
@@ -113,6 +127,7 @@
 				</table>
 			</div>
 		</div>
+		<div style="height: 400px"></div>
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.20.19/system.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.16.5/math.min.js"></script>

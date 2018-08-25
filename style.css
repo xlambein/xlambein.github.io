@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css?family=Ovo|Muli');
+
+body {
+	background-color: #fbf9ff;
+	max-width: 660px;
+	margin: auto;
+	padding: 10px;
+
+	font-size: 14pt;
+	font-family: 'Muli', sans-serif;
+	color: #000807;
+}
+
+h1, h2, h3, h4, h5, h6, header {
+	font-family: 'Ovo', serif;
+}
+
+a {
+	color: #a20021;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+p {
+	font-size: 1em;
+}
+
+#menu-top {
+	margin-top: 2px;
+	border-width: 1px 0 1px 0;
+	border-style: solid;
+	border-color: black;
+}
+
+header {
+	margin: 20px 0 64px 0;
+}
+
+header a {
+	color: #1b2a41;
+}
+
+header a:hover {
+	text-decoration: none;
+	color: #a20021;
+}
+
+header > h1, header > nav {
+	display: inline;
+}
+
+header > h1, nav > a {
+	margin-right: 32px;
+}
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+	header {
+		margin: 0 0 32px 0;
+	}
+
+	header > nav {
+		display: block;
+		margin-top: 20px;
+    }
+}
+
+nav > a {
+	font-size: 1.2em;
+	font-weight: bold;
+}

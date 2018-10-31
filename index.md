@@ -12,5 +12,5 @@ dept.](https://www.uclouvain.be/icteam) at
 [UCLouvain](https://www.uclouvain.be).  The subject of my research was direct
 imaging of exoplanets.
 
-Get in touch with me by e-mail: xlambein at gmail.
+Get in touch with me by e-mail: {{ site.email }}.
 

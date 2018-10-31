@@ -1,0 +1,7 @@
+<h1><a href="/">Xavier Lambein</a></h1>
+<nav>
+{% for item in site.data.navigation %}
+{% capture title_lowercase %}{{ item.title | downcase }}{% endcapture %}
+<a href="{{ item.url }}" {% if page.title == item.title or page.categories contains title_lowercase %}class="active"{% endif %}>{{ item.title }}</a>
+{% endfor %}
+</nav>

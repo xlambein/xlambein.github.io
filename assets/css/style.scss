@@ -1,0 +1,131 @@
+---
+---
+@import url('https://fonts.googleapis.com/css?family=Ovo|Muli|Lora');
+
+$nav-fonts: 'Muli', sans-serif;
+$header-fonts: 'Muli', sans-serif;
+$body-fonts: 'Lora', serif;
+
+$text-color: #000807;
+$primary-color: #1b2a41;
+$secondary-color: #a20021;
+$vanishing-color: #afafaf;
+
+body {
+	/*background-color: #fbf9ff;*/
+	max-width: 760px;
+	margin: auto;
+	padding: 10px;
+	padding-bottom: 300px;
+
+	font-size: 14pt;
+	font-family: $body-fonts;
+	color: $text-color;
+
+	line-height: 1.4;
+}
+
+a {
+	color: $secondary-color;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+p {
+	font-size: 1em;
+}
+
+#menu-top {
+	margin-top: 2px;
+	border-width: 1px 0 1px 0;
+	border-style: solid;
+	border-color: black;
+}
+
+header {
+	margin: 20px 0 64px 0;
+}
+
+h1, h2, h3, h4, h5, h6, header {
+	font-family: $nav-fonts;
+	color: $primary-color;
+
+	a {
+		color: $primary-color;
+
+		&:hover {
+			text-decoration: none;
+			color: $secondary-color;
+		}
+
+		&.active {
+			text-decoration: underline;
+		}
+	}
+}
+
+header > h1, header > nav {
+	display: inline;
+}
+
+header > h1 {
+	font-size: 1.8em;
+}
+
+header > h1, nav > a {
+	margin-right: 32px;
+}
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+	header {
+		margin: 0 0 32px 0;
+	}
+
+	header > nav {
+		display: block;
+		margin-top: 20px;
+    }
+}
+
+nav > a {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+article {
+
+	h1, h2, h3, h4, h5, h6, header {
+		font-family: $header-fonts;
+	}
+
+	img {
+		max-width: 100%;
+		display: block;
+		margin: auto;
+	}
+
+	img + em {
+		display: block;
+		text-align: center;
+		font-size: .9em;
+	}
+
+	h1 {
+		margin-bottom: .1em;
+	}
+
+	.pub-date {
+		color: $vanishing-color;
+		margin-top: 0;
+	}
+
+}
+
+hr {
+	border: .5px solid #d0d0d0;
+	margin: 2em 1em;
+}

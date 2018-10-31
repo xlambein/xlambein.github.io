@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<meta name="description" content="Xavier Lambein's personal website">
+		<meta name="author" content="Xavier Lambein">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<link rel="shortcut icon" href="/assets/img/favicon.png">
+		<link rel="stylesheet" href="https://cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
+		<link rel="stylesheet" href="/assets/css/style.css">
+
+		{% feed_meta %}
+		{% seo %}
+
+		<!--[if lt IE 9]>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+		<header>
+			{% include navigation.html %}
+		</header>
+		<section>
+			{{ content }}
+		</section>
+	</body>
+</html>

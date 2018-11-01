@@ -23,6 +23,12 @@ Our project---called "The Machine"---is a kind of slot machine generating random
 ![](/assets/img/the-machine-001.jpg)
 *The front of the Machine.  You can see the coin slot in the top-left corner, the three buttons below corresponding to the three kinds of sentences, and the front display with the reels.  Through the holes punched in its body shines an airy, changing light.  Off to the right is a glass full of the fake "SoMA coins" (more on that below).  Additional cute detail: The LED eyes, which flash after the final reel stops.*
 
+To better demonstrate how it works, here's a short video of me using the Machine.  After I insert a coin and I press the "poetry" button, the reels immediately start turning.  Eventually, they stop on three random phrases of the "poetry" type (written in black), and the LED eyes blink.
+
+<div class="resp-container"><iframe class="resp-iframe" src="https://www.youtube.com/embed/32Yoz-d0ac8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+
+## Making Of
+
 Because we had complementary skills, we tended to gravitate towards what we each did best.  Being the computer scientist of the group, I took care of most of the programming.  I also built the motorized reels and designed the electronics that control them.
 
 Maryam, as a skilled designer, created the entire body of the Machine, from the wooden frame to the finishing paint---and of course, the lighting.  She did an amazing job, giving the finished product a distinctive aesthetic.

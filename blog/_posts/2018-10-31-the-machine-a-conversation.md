@@ -73,15 +73,23 @@ Finally, a slit (9) on the axis provides an easy way of attaching and removing t
 
 ### The Motor Driver Arduino
 
-Because we needed more pins than can fit on a single Arduino Uno, we split the tasks between two Arduinos that communicate through I2C.  The "slave" Arduino (3) was designed to be a simple motor driver for controlling the three reels.  It constantly listens for a command to be sent through the I2C pins.  When that happens, if the reel specified in the command is not busy, it executes the task; otherwise, the command is ignored.  Additionally, it can be asked by the I2C master to give the state of each motor: Idle or busy.
+Because we needed more pins than can fit on a single Arduino Uno, we split the tasks between two Arduinos that communicate over two pins through I2C.  [I2C](https://en.wikipedia.org/wiki/I%C2%B2C) is a common protocol for communication between integrated circuits, and it's available by default in the [Arduino "Wire" library](https://www.arduino.cc/en/Reference/Wire).  In I2C, one Arduino is said to be the "master", while the other is the "slave".  The master can either send a message to the slave, or it can ask the slave for a message.  The slave, in return, can receive messages, and respond to a request from the master.  In this context, a message is simply a string of characters or bytes.
+
+The slave Arduino (3) was designed to be a simple motor driver for controlling the three reels.  It constantly listens for a command to be sent as an I2C message.  When that happens, if the reel specified in the command is not busy, it executes the task; otherwise, the command is ignored.  Additionally, it can be asked by the I2C master to give the state of each motor: Idle or busy.
 
 Among the possible commands, the main ones are "Calibrate", which tells a reel to seek the magnet with the Reed switch, and "RotateSeek", which tells a reel to rotate a specific number of turns, and then seek a specified position corresponding to some phrase.  Directly seeking a phrase without rotating a few turns would work as well, but it's _way_ less exciting to watch.  If you look at the code, you'll find other commands (e.g. "Rotate", "Seek", "Next", "Previous") that were introduced for debugging purposes.
 
-Commands sent through the I2C pins are expressed as messages in a very simple 4-bytes protocol:
+Formally, commands are expressed as simple 4-bytes I2C messages:
 
 	[command code][motor ID][parameter 1][parameter 2]
 
-The command code and motor ID identify a command and a reel, respectively.  Depending on the command, the parameters can specify the number of turns and/or the specific phrase to seek.
+The first two bytes, "command code" and "motor ID", respectively identify a command and a reel.  Depending on the command, the next couple of bytes can specify the number of turns and/or the specific phrase to seek.
+
+As an example, here is the command to tell motor 1 to rotate 3 turns and stop on position 43:
+
+	6 1 3 43
+
+where `6` is the command code that identifies the "RotateSeek" command.
 
 Two transistor arrays were necessary to provide power to the stepper motors, so we decided to put them on a custom Arduino shield for the motor driver.  The process took a great part of the day, but I was quite proud of the result.  It contains a DC power input (11), the two transistor arrays (12), and many additional pins in which to plug the motors (13) and I2C wires (14):
 
@@ -91,7 +99,7 @@ Two transistor arrays were necessary to provide power to the stepper motors, so 
 
 ### The Controller Arduino
 
-The entire logic of the Machine is contained within the master Arduino (4), which we called the "controller".  It manages the coin slot, the buttons, the "eyes", and the commands sent to the motor driver.  Its behaviour is fairly simple: At first, it waits for a coin to be inserted into the the coin slot.  When that happens, it waits for a button to be pressed.  Depending on the button, it then selects one phrase at random for each reel, and sends three "RotateSeek" commands (one for each motor) to the driver Arduino.  Then, it waits, asking regularly whether the reels have stopped turning.  When the motor driver replies that they have, the controller flashes the LED eyes, and becomes ready again for another coin and button press.
+The entire logic of the Machine is contained within the master Arduino (4), which we called the "controller".  It manages the coin slot, the buttons, the "eyes", and the commands sent to the motor driver.  Its behaviour is fairly simple: At first, it waits for a coin to be inserted into the the coin slot.  When that happens, it waits for a button to be pressed.  Depending on the button, it then selects one phrase at random for each reel, and sends three "RotateSeek" commands (one for each motor) to the driver Arduino.  Then, it waits, asking the slave regularly whether the reels have stopped turning.  When the motor driver replies that they have, the controller flashes the LED eyes, and becomes ready again for another coin and button press.
 
 ### The Coin Slot
 

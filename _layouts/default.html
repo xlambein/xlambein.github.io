@@ -11,6 +11,12 @@
 		<link rel="stylesheet" href="https://cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
 		<link rel="stylesheet" href="/assets/css/style.css">
 
+		{% if page.style %}
+		<style type="text/css">
+{{ page.style }}
+		</style>
+		{% endif %}
+
 		{% feed_meta %}
 		{% seo %}
 
@@ -26,5 +32,15 @@
 		<section>
 			{{ content }}
 		</section>
+
+		{% for script in page.scripts %}
+		<script src="{{ script }}"></script>
+		{% endfor %}
+
+		{% if page.js %}
+		<script>
+{{ page.js }}
+		</script>
+		{% endif %}
 	</body>
 </html>

@@ -1,0 +1,271 @@
+---
+layout: post
+author: Xavier
+title: >-
+  SVD Visualization Tool for 2-by-2 Matrices
+tags:
+  - svd
+  - linear algebra
+  - singular values
+  - javascript
+  - d3
+scripts:
+  - https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.20.19/system.js
+  - https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.16.5/math.min.js
+  - https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.min.js
+  - https://cdnjs.cloudflare.com/ajax/libs/d3/4.12.0/d3.min.js
+  - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+js: |
+  System.import("/assets/js/svd-visualization/script.js");
+style: |
+  .chart {
+  }
+  
+  .chart .axis text {
+  	display: none;
+  }
+  
+  .matrix {
+  	display: inline-block;
+  	vertical-align: middle;
+  	position: relative;
+  	margin: 0 8px;
+  }
+  
+  .matrix:hover {
+  	background-color: #eef;
+  }
+  
+  .matrix:before, .matrix:after {
+  	content: "";
+  	width: 10px;
+  	height: 86px;
+  	border: 2px solid black;
+  	position: absolute;
+  	top: -2px;
+  }
+  
+  .matrix:before {
+  	left: -8px;
+  	border-right: none;
+  }
+  
+  .matrix:after {
+  	right: -8px;
+  	border-left: none;
+  }
+  
+  .matrix input {
+  	border: 1px solid #ccc;
+  	width: 72px;
+  	height: 36px;
+  	padding: 0;
+  	margin: 1px 1px 1px 1px;
+  	text-align: center;
+  	color: #00a;
+  	font-weight: bold;
+  	font-family: serif;
+  }
+  
+  .matrix td {
+  	width: 40px;
+  	height: 40px;
+  	padding: 0;
+  	margin: 2px;
+  	text-align: center;
+  	font-weight: bold;
+  	overflow: hidden;
+  }
+  
+  .operator {
+  	padding: 0 10px;
+  	display: inline-block;
+  }
+  
+  .bottom-note {
+  	width: 100%;
+  	position: absolute;
+  	margin-top: 28px;
+  	top: 64px;
+  	color: #666;
+  }
+
+  #target {
+    margin-bottom: 80px;
+  }
+  
+  a[data-matrix] {
+    cursor: pointer;
+  }
+  
+  a[data-matrix]:hover {
+    text-decoration: underline;
+  }
+
+  .flex-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 80%;
+    margin: auto;
+  }
+
+  .flex-list > div {
+    padding: 0 5px;
+    margin: 5px 5px;
+    border: 1px dashed #afafaf;
+    font-weight: bold;
+  }
+---
+
+<p>Roughly a year ago, I took a class on matrix theory.  Back then I was
+struggling to understand and visualize the effect of the SVD on a matrix.
+Inspired by <a href="https://ncase.me/matrix/">Nicky Case's “Magnificent 2D
+Matrix” explorable</a>, I decided to make a small JavaScript tool to visualize
+what an SVD does in terms of 2D vector transformation.  Now that I have this
+website, I decided to clean it up a bit and expose it here.</p>
+
+<p>You can find the visualizer directly below.  In case you don't know what an
+SVD is, I wrote a (very brief) explanation of the fundamentals at the end of
+this blogpost.  Note that a basic understanding of linear algebra is
+required.</p>
+
+<h2>Two-dimensional SVD Visualizer</h2>
+
+<div style="width: 602px; margin: auto"><div class="chart"></div></div>
+
+<div style="text-align: center" id="target">
+	<div id="M"><div class="bottom-note">\(M\)<br>Arbitrary Matrix</div></div>
+	<div class="matrix matrix-vector">
+		<table>
+			<tr><td>\(x\)</td></tr>
+			<tr><td>\(y\)</td></tr>
+		</table>
+	</div>
+	<span class="operator">=</span>
+	<div id="U"><div class="bottom-note">\(U\)<br>Isometry</div></div>
+	<div id="S"><div class="bottom-note">\(\Sigma\)<br>Scaling</div></div>
+	<div id="V"><div class="bottom-note">\(V^T\)<br>Isometry</div></div>
+	<div class="matrix matrix-vector">
+		<table>
+			<tr><td>\(x\)</td></tr>
+			<tr><td>\(y\)</td></tr>
+		</table>
+	</div>
+</div>
+
+<p>Each dot on the chart above represents a single vector \((x, y)^T\), after
+it has been transformed by the matrix \(M\).  If you haven't changed anything,
+\(M\) is set to the identity, so each vector is displayed in its inital
+position without transformation.</p>
+
+<p>Below the chart is a mathematical expression.  On the left-hand side is the
+matrix \(M\), shown multiplying an arbitrary vector \((x, y)^T\), representing
+the vectors on the chart in their initial position.  You can adjust here the
+coefficients of \(M\) by clicking and dragging over the input.  This, in turn,
+will change the location of the vectors on the chart.  You can also click the
+following links to set \(M\) to some pre-defined matrix:</p>
+
+<div class="flex-list"> <div><a data-matrix="[[1, 0], [0,
+			1]]">Identity</a></div> <div><a data-matrix="[[0.71, -0.71], [0.71,
+			0.71]]">45&deg; Rotation</a></div> <div><a data-matrix="[[0, -1],
+			[1, 0]]">90&deg; Rotation</a></div> <div><a data-matrix="[[-1, 0],
+			[0, -1]]">180&deg; Rotation</a></div>
+	<div><a data-matrix="[[-1, 0], [0, 1]]">Vertical Symmetry</a></div>
+	<div><a data-matrix="[[1, 0], [0, -1]]">Horizontal Symmetry</a></div>
+	<div><a data-matrix="[[0, 0], [0, 1]]">Collapse to Vertical Line</a></div>
+	<div><a data-matrix="[[1, 0], [0, 0]]">Collapse to Horizontal Line</a></div>
+</div>
+
+<p>On the right-hand side of the expression is the SVD of \(M\), again shown
+multiplying \((x, y)^T\).  The SVD splits \(M\) into an isometry \(V\) (i.e., a
+rotation and/or symmetry), followed by a scaling \(\Sigma\), followed by
+another isometry \(U\).</p>
+
+<p>Hovering your mouse over various elements in this expression allows you to
+witness the effect of each part of the SVD:</p>
+
+<ul>
+	<li>Hovering over any of the two \((x, y)^T\) temporarily brings the
+		vectors back to their initial position.</li>
+
+	<li>Hovering over \(V^T\) shows the effect of applying only the first
+		isometry \(V\) to the vectors.</li>
+
+	<li>Hovering over \(\Sigma\) shows the effect of applying first \(V^T\),
+		then \(\Sigma\) (or equivalently, applying \(\Sigma V^T\)) to the
+		vectors.</li>
+
+	<li>Anywhere else just shows the effect of \(M\) (which is equivalent to
+		applying \(V^T\) then \(\Sigma\) then \(U\)).</li>
+</ul>
+
+<h2>What's an SVD Anyway?</h2>
+
+<p>One way to see a matrix is as a (linear) function that maps a vector onto
+another vector&mdash;a so-called <em>linear transform</em>&mdash;where the
+function is applied by means of matrix-vector multiplication.  While simple,
+matrices can represent relatively complex operations.  In particular, as the
+size of a matrix grows, it becomes increasingly difficult to understand what
+that matrix does.</p>
+
+<p>Enter the SVD, short for <em>singular value decomposition</em>.  The SVD
+breaks down <em>any</em> matrix \(M\) into three simpler matrices \(U\),
+\(\Sigma\) and \(V\), such that \(M = U \Sigma V^T\).</p>
+
+<p>In terms of linear transform, \(U\) and \(V\) are called
+<em>isometries</em>.  These are operations that preserve distances.  In two- or
+three-dimensional space, an isometry is just a rotation and/or a symmetry.</p>
+
+<p>The matrix in the middle, \(\Sigma\) (“sigma”), represents a scaling along
+the basis axes (e.g., the x-y axes of a 2D plot).  It is a positive, diagonal
+matrix (meaning all entries outside the diagonal are zero).  Starting from the
+top-left corner, the first entry is the scaling factor along the first axis
+(typically, \(x\)).  The second entry is the scaling factor along the second
+axis (typically, \(y\)).  And so on.  These are called <em>singular
+values</em>.</p>
+
+<p>Hence, any matrix can be represented as an isometry, followed by a scaling
+along the basis axes, followed by another isometry.  This result allows us to
+derive some important facts about a matrix: namely, how much it scales vectors,
+and along which axes.  This turns out to be a pretty big deal in data science,
+where the SVD is the basis for a tool called <em>principal component
+analysis</em>.</p>
+
+<!--
+<p>The beauty of SVD is that it breaks down <em>any</em> matrix into simpler
+parts that are easy to understand.  In terms of transform, the SVD shows that
+applying a matrix \(M\) to a vector is equivalent to applying
+successively the matrices \(V^T\), \(\Sigma\) and \(U\) to that vector.</p>
+
+<p>In the SVD, \(U\) and \(V\) are called <em>isometries</em>, which means they
+are operations that preserve lengths.  </p>
+
+<p>Those vectors are transformed by the matrix \(M\), shown on the lower left
+part of the equation at the bottom of the page.  Currently, this matrix is the
+identity, and hence, the chart displays the vectors at their original
+coordinates.  Try changing the coefficients of the matrix, and look at the
+result on the chart.  To return the vectors to their original position, simply
+hover over the column vector \((x, y)^T\) on the right of \(M\).</p>
+
+<p>You will see, as you change the coefficients of \(M\), that other matrices
+on the right change too.  Those matrices, \(U\), \(\Sigma\) and \(V^T\),
+constitute the Singular Value Decomposition (SVD) of \(M\).  The left and right
+matrices are isometries (i.e., rotations or symmetries), while the middle
+matrix is a scaling on the \(x\) and \(y\) axes.  Any matrix can be represented
+as a product of three such matrices.</p>
+
+<p>Again, hovering over the column vector \((x, y)^T\) on the far right will
+return the vectors to their original location.  If you then move your cursor to
+the \(V^T\) matrix, you will see the result of multiplying that single matrix
+with the vectors on the chart, i.e., applying the first isometry.</p>
+
+<p>Moving your cursor over to the \(\Sigma\) matrix will then apply the scaling
+(after rotation).  Finally, moving your cursor to \(U\) (or elsewhere) will go
+back to showing you the full \(U \Sigma V^T = M\) transform applied to the
+vectors.</p>
+
+<p>That's it.  This little tool allows you to play with and (hopefully) better
+understand the effect of an SVD on a matrix.</p>
+-->
+

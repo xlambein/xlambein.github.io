@@ -15,6 +15,9 @@ dept.](https://www.uclouvain.be/icteam) at
 [UCLouvain](https://www.uclouvain.be).  The subject of my research was direct
 imaging of exoplanets.
 
-Get in touch with me by e-mail: {{ site.email }}.  Find me on Twitter:
-[@xlambein](https://twitter.com/xlambein).
+Get in touch with me by e-mail: {{ site.email }}.  Find me:
+
+- on Twitter: [@xlambein](https://twitter.com/xlambein),
+- on GitHub: [xlambein](https://github.com/xlambein/),
+- in general, "xlambein" pretty much everywhere.
 

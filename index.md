@@ -17,7 +17,7 @@ imaging of exoplanets.
 
 Get in touch with me by e-mail: {{ site.email }}.  Find me:
 
-- on Twitter: [@xlambein](https://twitter.com/xlambein),
-- on GitHub: [xlambein](https://github.com/xlambein/),
+- on Twitter: <a href="https://twitter.com/xlambein" rel="me">@xlambein</a>
+- on Github: <a href="https://github.com/xlambein/" rel="me">xlambein</a>
 - in general, "xlambein" pretty much everywhere.
 

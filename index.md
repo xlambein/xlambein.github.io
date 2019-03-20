@@ -2,13 +2,15 @@
 layout: default
 title: Xavier Lambein
 ---
-Hi!  I am a developer, researcher and artist from Belgium.
+Hi!  I am an artist & data scientist from Belgium.
 
-Feel free to check out [my blog](/blog) where I show off my personal projects.
+Feel free to check out [my blog](/blog) where I share my personal projects.
 
-I am currently looking for a job!  Hit me up if you wanna work together.  I am
-mostly looking for something in data science, research and/or STEM
-communication.
+I am currently working as a data scientist at
+[FibriCheck](https://fibricheck.com/).  We're making an app that allows
+patients to check themselves for [atrial
+fibrillation](https://en.wikipedia.org/wiki/Atrial_fibrillation) with their
+smartphone.
 
 Previously, I was working as a research assistant in the [ICTEAM
 dept.](https://www.uclouvain.be/icteam) at

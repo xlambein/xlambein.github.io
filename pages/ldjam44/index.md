@@ -1,0 +1,113 @@
+---
+template: page
+pubdate: 2019-06-08
+tags:
+  - ludum dare
+  - game
+  - javascript
+---
+
+# Ludum Dare 44: Biomass
+
+At the end of April was the 44th edition of the [Ludum Dare game jam](https://ldjam.com/), where participants have to make a game based on a given theme in just 48 hours.  The theme was "Your life is currency", and I made a game about asteroids.  I meant to write this post-mortem earlier, but my month of May has been quite busy.
+
+First, I'll introduce my game, how it works and where to play it.  Then, I'll give a short account of the making-of.  I'll conclude with some feedback from players.  Let's go!
+
+
+## The Game
+
+_Biomass_ is a game about growing life on a young planet bombarded by asteroids.  These asteroids contain basic elements that are necessary for life to grow (e.g., water, carbon, phosphorus, iron, copper, etc.).  However, life is fragile, and in order to develop, you need to provide it with exactly the right elements at the right time.  You do this by choosing to deflect incoming asteroids away or towards the planet.
+
+{{#figure "ludum-dare-44-001.png"}}
+The game screen.  In the center is the planet with the asteroids to deflect.  The left shows a basic UI with score, current and next objectives.
+{{/figure}}
+
+This time, I made the game in JavaScript, which means you can play directly in the browser!  [Click here to play it on itch.io](https://xlambein.itch.io/biomass).  The game is best played on a phone or tablet.  I _highly_ recommend you read the rules and controls on the itch.io page, because it's not very obvious when playing.
+
+The source code and assets are also [available on GitHub](https://github.com/xlambein/ldjam44).
+
+
+## Making of Biomass
+
+### Ideating
+
+I have to say, I was completely uninspired by the theme "Your life is currency".  As a friend pointed out, the word "currency" mostly invites management or trading games, and makes it difficult to come up with anything else.  By the way, that friend participated as well and he made [an awesome game that I invite you to check out](https://ldjam.com/events/ludum-dare/44/immortals-game).
+
+Here are three ideas that I painfully came up with, in an attempt to either depart from the "management/trading" kind, or to take a strange approach to the theme:
+
+1. You play as a planet, and you use the life on your surface as currency to trade goods and services with other planets.
+2. A dress up game in which you need to murder other people and take their clothes.
+3. A dating sim. You play as a 5€ bill, and you are IN LOVE with the 100€ bill at your high school. But they're _so_ out of your league. :(
+
+After attending [Tyu's talk on dress-up games](http://tyu-orphinae.com/dress-up/) at A MAZE, I really wanted to make one myself.  However, I didn't have my drawing tablet, and the rules of the compo don't allow you to use external assets.  That was enough to cut my motivation for idea 2.
+
+The problem with idea 3 is that I had only played a single dating sim in my life ("Katawa Shoujo"), and I felt unqualified to make one myself.  I did try to design one of the characters, which was fun to do:
+
+{{#figure "ludum-dare-44-002.png"}}
+The 100€ bill for my money dating sim concept.
+{{/figure}}
+
+So I was left with idea 1, but I didn't know what to do with it.  I was pretty anxious about the situation.  Several times during the day, I just felt like giving up and not participating.
+
+
+### (Kind-of) Creating
+
+My creative process for this game was to just start, not knowing where I was going.  I had a vague idea that, in my "planet life management game", you could collect resources from asteroids.  Hence, I began by drawing a few assets of planets and asteroids:
+
+{{#figure "ludum-dare-44-003.png"}}
+The planet and a few asteroids from "Biomass".
+{{/figure}}
+
+Then I spent some time trying to get PixiJS to work.  My last game had been made with the amazing [Pyxel retro game engine](https://github.com/kitao/pyxel), which I love dearly, but that choice made the game very difficult to share.  Here, I wanted something that you could play in the browser, so I picked JavaScript with the [PixiJS library](http://www.pixijs.com/).
+
+While slowly getting the hang of PixiJS, I created a basic game that shows the planet and a few asteroids around it.  I wanted to be able to throw them at the planet, so I began working on the "slingshot" mechanism, but a tricky JS bug got the best of me, and eventually I had to call it a day.
+
+
+<figure>
+<a href="https://twitter.com/xlambein/status/1122419438555471872">
+<img src="ludum-dare-44-005.png">
+</a>
+<figcaption>Me venting my frustration on Twitter the next morning.</figcaption>
+</figure>
+
+The next day, I reluctantly continued working on the game.  At this point, I had lost most of my motivation, until I fixed the slingshot bug, which felt like a small victory:
+
+{{#figure "ludum-dare-44-004.gif"}}
+Throwing asteroids at the planet with the slingshot.  Gravity was added shortly after that.
+{{/figure}}
+
+Since I didn't know what else to do, I tried to make the game "feel nice", by shaking the screen, drawing explosions, and making it fun to throw asteroids.  I was inspired by the famous article ["How to Prototype a Game in Under 7 Days"](https://www.gamasutra.com/view/feature/130848/how_to_prototype_a_game_in_under_7_.php), which is a must-read for anyone making games.
+
+That actually worked pretty well.  I realized at some point, after mindlessly throwing asteroids for ten minutes, that this was pretty fun to do.  That's when I started to know what my game would be about.  I ditched the Ludum Dare theme and decided to focus on this asteroid mechanic.
+
+
+### Finishing
+
+Once I had found what I wanted to do, and had a rough idea in mind of the next steps, the motivation came back.  The rest of that day was spent coming up with a goal for the game, then furiously coding until 1 AM to finish on time and submit the final product.  It was both awesome and awful, as these experiences tend to be.
+
+My main idea was to have some asteroids be "good" and other "bad", and have the player need to deflect them accordingly.  I went through several iterations over this idea, eventually settling on the "recipe" + biomass concept.  The biomass score is actually just me trying to tie my game back to the theme, by having "life as a currency"---but in the end, you never buy anything with it.
+
+
+## Feedback
+
+Overall, the response to my game was very positive.  Most people liked the concept and enjoyed playing it, but got frustrated at how hard it was.  I was very happy to learn that many ended up playing much longer than they'd anticipated.  Also, a few people were really excited about the asteroids being affected by gravity, which I thought was interesting.
+
+Some general critics were:
+
+- The difficulty level isn't great.  The game is too hard at first, then becomes too easy.
+- The asteroids spawn too randomly: you often have to wait a very long time to get the one you need.
+- Some asteroids are hard to differentiate.
+
+I thought pretty much every comment was relevant.  In particular, a reviewer ([@rplnt](https://ldjam.com/users/rplnt)) said:
+
+> the bad [asteroid] impact had both big effect (resetting your progress and possibly knocking you down a level) and too little of an effect (basically just set you a bit back) at the same time; I think the impact should be bigger but it would be easier to get back on so it doesn’t drag jumping up and down levels
+
+I love this critic, because it put into words the way I felt about the rules of the game, and it also gives some directions for exploring alternatives.
+
+## Conclusions
+
+Once again, participating in Ludum Dare was an interesting experience.  I feel proud that I managed to make this game, after such a frustrating start.  I'm also quite happy with my final ranking (164th overall, 49th in innovation).
+
+I'm starting to realize that making an art project under a short deadline is a great way for me to actually do things.  That's how I made my last two games, the Machine at School of MA, and my novel draft at NaNoWriMo in November.  Working alongside or with other people has also been extremely helpful for all these projects.  Perhaps in the future, I should aim to do more things in the "hackathon" format.
+
+If you haven't yet, I invite you to check out my game from [last December](/ldjam43/).  However, know that it's a pain to install :-D

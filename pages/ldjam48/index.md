@@ -1,0 +1,24 @@
+---
+template: page
+pubdate: 2021-09-08
+tags:
+  - ludum dare
+  - game
+  - godot
+---
+
+# Ludum Dare 48: Truck or Pupper
+
+In April 2021, I participated in the 48th [Ludum Dare game jam](https://ldjam.com/).  The theme for this edition was "Deeper and deeper", so natually, I made a game about machine learning.  You can [play it from the convenience of your browser, on itch.io](https://xlambein.itch.io/truck-or-pupper).
+
+{{figure "top01.png"}}
+
+The idea is that you play as the sole, overworked data scientist in a start-up, and you need to balance the tasks of annotating new data and training the (deep, hence the theme) neural network that powers your company's product.
+
+The gameplay itself is an unapologetic Tetris rip-off, somehow combined with those Google captcha thingies we all hate to fill.  It's pure _fun_.
+
+This was my first time using Godot, so I wanted to do something relatively straightforward.  Even then, I struggled to finish the game on time, and it could certainly use some more balancing.
+
+I did not score particularly great at the competition, although I did finish 41st in humor, and honestly that's a totaly win for me.
+
+Source code is available on [GitHub](https://github.com/xlambein/ldjam48).

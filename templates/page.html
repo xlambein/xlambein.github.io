@@ -1,0 +1,20 @@
+<article>
+    <header>
+        <h1>{{title}}</h1>
+
+        <div class="article-info">
+            {{#if pubdate}}<time>{{pubdate}}</time>{{/if}}
+            {{#if tags}}
+            &bullet;
+            <span class="tags">
+                {{#each tags}}
+                {{this}}
+                {{#unless @last}} / {{/unless}}
+                {{/each}}
+            </span>
+            {{/if}}
+        </div>
+    </header>
+
+    {{{content}}}
+</article>

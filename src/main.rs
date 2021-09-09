@@ -136,8 +136,14 @@ fn main() -> std::io::Result<()> {
             ProjectDescription::new(
                 "/ldjam48/",
                 "Ludum Dare 48: Truck or Pupper",
-                "2021-09-08",
+                "2021-04-31",
                 vec!["ludum dare", "game", "godot"],
+            ),
+            ProjectDescription::new(
+                "/rust-against-humanity/",
+                "Rust Against Humanity",
+                "2021-01-04",
+                vec!["game", "web", "rust"],
             ),
         ],
     };

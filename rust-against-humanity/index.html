@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Rust Against Humanity &mdash; Xavier Lambein's website</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+        <link rel="stylesheet" href="/assets/css/style.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous">
+    </head>
+    <body>
+        <nav>
+            <a href="/"><img src="/assets/img/logo.svg" alt="website logo" id="logo" aria-hidden="true" tabindex="-1"></a>
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/music/">Music</a>
+        </nav>
+<article>
+    <header>
+        <h1>Rust Against Humanity</h1>
+
+        <div class="article-info">
+            <time>2021-01-04</time>
+        </div>
+    </header>
+
+    <p>A small web replica of the party game <a href="https://www.cardsagainsthumanity.com">Cards Against Humanity</a>.  It’s mainly a learning project, to try and build a full-stack web app in Rust.  The backend is based on <a href="https://github.com/seanmonstar/warp">warp</a>, and the front-end is made with <a href="https://yew.rs">Yew</a>.  The two communicate via web sockets.</p>
+<figure>
+<img src="rah-end-round.png">
+<figcaption>
+</figcaption>
+</figure>
+<p>It’s been a fun project to make, but my general conclusion is that Yew is not a good framework for making games—it’s really designed for web apps.  Baking web socket support back into it was a hassle, and I haven’t figured out nice ways to handle game scenes or to render animations.</p>
+<p>I haven’t tested it online, but it works well on my local network.  The game is extremely rough on the edges, but all the essential features are here: you can join a game, select cards, play them, vote for an answer, and the score is tracked.  What’s missing is stuff like end-game, keeping sessions between reload, instant messaging, and a good deal of design polish.</p>
+<p>One of my favourite aspects of making a card game in Rust is that you can leverage the borrow checker to ensure that a card is never duplicated.  The deck owns all its cards, and when a player draws one, ownership is transferred to the player’s hand.  After being played, a card is transferred to the discard pile.  With true linear types, we could further ensure that cards are never deleted, but afaik there’s no way to support this at compile-time.</p>
+<p>Another fun part of this project was writing the cards.  Many of them were taken directly from the original board game, but <a href="https://mandooks.com">Mandooks</a> and I spent part of an evening coming up with original ones, mostly based on our friend group’s inside jokes and references.  This made testing the game extremely funny.</p>
+<p>As always, <a href="https://github.com/xlambein/rust-against-humanity">source code is available on GitHub</a>.</p>
+<figure>
+<img src="rah-player.png">
+<figcaption>
+Card selection screen, for the players.
+</figcaption>
+</figure>
+<figure>
+<img src="rah-czar.png">
+<figcaption>
+Judgement screen, for the Card Czar.
+</figcaption>
+</figure>
+
+</article>
+    </body>
+</html>

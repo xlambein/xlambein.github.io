@@ -164,6 +164,10 @@ pre code {
     padding: 0;
 }
 
+a:hover code {
+	background-color: transparent;
+}
+
 img {
     max-width: 100%;
 }
@@ -202,6 +206,16 @@ article a:hover {
 article :where(a, a:hover) .fa {
     color: #b00000;
     background-color: white;
+}
+
+/* external links */
+article a[href^='http']:not([href*='lambein.xyz']):after {
+	content: '';
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
+	background-repeat: no-repeat;
+	background-position: right center;
+	padding: 6px;
+	padding-bottom: 9px;
 }
 
 /* Thanks to https://blog.theodo.fr/2018/01/responsive-iframes-css-trick/ */

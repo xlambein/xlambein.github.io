@@ -14,7 +14,7 @@ I might also be available for freelance/part time jobs, so if you'd like to work
 
 {{#each projects}}
 <div class="page-ref">
-    <a href="{{this.url}}" class="page-url">{{this.title}}</a>
+    <a href="{{this.url}}" class="page-url">{{{this.title}}}</a>
     <!-- <br> -->
     <div class="page-info">
         <span class="page-pubdate">{{this.pubdate}}</span>

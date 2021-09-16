@@ -145,6 +145,12 @@ fn main() -> std::io::Result<()> {
                 "2021-01-04",
                 vec!["game", "web", "rust"],
             ),
+            ProjectDescription::new(
+                "https://github.com/xlambein/temps",
+                "<code>temps</code>, a Minimalist CLI Time Tracker",
+                "2021-09-16",
+                vec!["program", "rust"],
+            ),
         ],
     };
     context

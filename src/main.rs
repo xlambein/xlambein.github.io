@@ -151,6 +151,12 @@ fn main() -> std::io::Result<()> {
                 "2021-09-16",
                 vec!["program", "rust"],
             ),
+            ProjectDescription::new(
+                "/ldjam49/",
+                "Ludum Dare 49: Chevalchemy: A Hoof of Concept",
+                "2021-10-05",
+                vec!["ludum dare", "game", "rust"],
+            ),
         ],
     };
     context

@@ -1,0 +1,60 @@
+---
+template: page
+pubdate: 2021-10-05
+tags:
+  - ludum dare
+  - game
+  - rust
+---
+
+# Ludum Dare 49: Chevalchemy: A Hoof of Concept
+
+Once again, I spent my weekend making a game for the bi-annual [Ludum Dare game jam][ldjam].  The theme for this jam was "Unstable", so of course I went for horse puns.  In the game, you play as a horse alchemist (a "Chevalchemist") working for the great Neighcolas Flamel.  Your task is to mix together ingredients into increasingly complex recipes.
+
+{{figure "chevalchemy01.png"}}
+
+It's essentially a physics sandbox, in which the fun stems from how awful the controls are.  It's silly and stupid, and I'm extremely happy with how it turned out 😊
+
+The game can be played over on [itch.io][chevalchemy].  Being a jam game, it cruelly lacks polish, but it's totally playable.  I recommend reading the (short) instructions below the game before starting.  Or don't, I won't tell you how to live your life.
+
+Source code can be found on [GitHub][source].
+
+## Making Of
+
+As always with these "-athon" sorts of projects, it was an intense and stressful, but ultimately rewarding experience.  Thanks to my new [time tracker][temps], I know that I spent just under 23 hours working on the game over the weekend, which is, uhh, a lot.  Also, shout out to [Mandooks][mandooks] who helped me brainstorm this idea, and who came up with great stuff that I didn't have time to implement.
+
+Continuing what seems to be a tradition now, I used different tools from [last time][ldjam48], choosing the [Bevy][bevy] Rust game engine with [Rapier][rapier] for the physics.  The experience was overall pleasant, although you can definitely feel the rough edges in these two projects.  In particular, I kept running into bugs and obscure things with Rapier, which greatly slowed me down.  Faced with broken collisions on Sunday morning, I almost gave up, until I managed to figure out a hack.
+
+In the past I've almost always made games with "code-oriented" frameworks, and my experience with [Godot][godot] in April was a big realization of how great visual tools can be for game-making (yeah no shit).  While it's in the plans, Bevy currently lacks any tooling of the sort, so I ended up baking very primitive tools to help me place entities in a level and trace the collision contour of items.  It works, but they're far from the direct feedback and convenience of proper game editors.
+
+## Porting to the Web
+
+I developed the game without thinking about WASM support at all, but when I was done, I found myself regretting that the game could not be played in the browser.  Bevy has a great [cheet book][cheetbook] with a section on how to compile to WASM, using a drop-in replacement for the rendering pipeline.  Everything worked mostly as expected, but for some reason I could not control the size of the `canvas` element.
+
+After some internet digging, I found a game that managed to fix this issue, ["Some Tank Game" by Søren Alsbjerg Hørup][some-tank-game].  Essentially, they have a custom ECS system that checks the window size and adapts it if it's wrong.  Their system is a bit more complex than what I ended up going for, as it also handles adapting the canvas size when the user resizes the window.  Big thanks to them, without this I wouldn't have been able to port the game to WASM ❤️
+
+## Future Plans
+
+This turned out to be one of my favourite Ludum Dare projects, and I'm considering expanding it a little, to make it into a proper game.  Some ideas I have for improvements are:
+
+- The obvious stuff: a main menu, instructions, transitions between the levels, an end screen, polished graphics, etc.
+- More items, especially with interesting properties like the rack with the test tubes.
+- More and better levels.
+- Music and sound effects.
+- More static/dynamic objects in the background.  For example, I was thinking of adding a lamp hanging from the ceiling, which items can hit and bounce off.  Just to annoy the player even more.
+- Maybe different environments, with different layouts and specific items.
+
+Feedback and ideas are welcome!  Don't hesitate to [get in touch][about].
+
+[ldjam]: https://ldjam.com
+[ldjam48]: /ldjam48
+[bevy]: https://bevyengine.org
+[rapier]: https://rapier.rs
+[godot]: https://godotengine.org
+[temps]: https://github.com/xlambein/temps
+[chevalchemy]: https://xlambein.itch.io/chevalchemy-a-hoof-of-concept
+[cheetbook]: https://bevy-cheatbook.github.io
+[some-tank-game]: https://github.com/horup/some-tank-game-rs
+[source]: https://github.com/xlambein/ldjam49
+[about]: /about
+[mandooks]: https://mandooks.com

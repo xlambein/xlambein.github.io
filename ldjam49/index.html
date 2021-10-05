@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Ludum Dare 49: Chevalchemy: A Hoof of Concept &mdash; Xavier Lambein's website</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+        <link rel="stylesheet" href="/assets/css/style.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous">
+    </head>
+    <body>
+        <nav>
+            <a href="/"><img src="/assets/img/logo.svg" alt="website logo" id="logo" aria-hidden="true" tabindex="-1"></a>
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/music/">Music</a>
+        </nav>
+<article>
+    <header>
+        <h1>Ludum Dare 49: Chevalchemy: A Hoof of Concept</h1>
+
+        <div class="article-info">
+            <time>2021-10-05</time>
+        </div>
+    </header>
+
+    <p>Once again, I spent my weekend making a game for the bi-annual <a href="https://ldjam.com">Ludum Dare game jam</a>.  The theme for this jam was “Unstable”, so of course I went for horse puns.  In the game, you play as a horse alchemist (a “Chevalchemist”) working for the great Neighcolas Flamel.  Your task is to mix together ingredients into increasingly complex recipes.</p>
+<figure>
+<img src="chevalchemy01.png">
+<figcaption>
+</figcaption>
+</figure>
+<p>It’s essentially a physics sandbox, in which the fun stems from how awful the controls are.  It’s silly and stupid, and I’m extremely happy with how it turned out 😊</p>
+<p>The game can be played over on <a href="https://xlambein.itch.io/chevalchemy-a-hoof-of-concept">itch.io</a>.  Being a jam game, it cruelly lacks polish, but it’s totally playable.  I recommend reading the (short) instructions below the game before starting.  Or don’t, I won’t tell you how to live your life.</p>
+<p>Source code can be found on <a href="https://github.com/xlambein/ldjam49">GitHub</a>.</p>
+<h2><a href="#making-of" aria-hidden="true" class="anchor" id="making-of"></a>Making Of</h2>
+<p>As always with these “-athon” sorts of projects, it was an intense and stressful, but ultimately rewarding experience.  Thanks to my new <a href="https://github.com/xlambein/temps">time tracker</a>, I know that I spent just under 23 hours working on the game over the weekend, which is, uhh, a lot.  Also, shout out to <a href="https://mandooks.com">Mandooks</a> who helped me brainstorm this idea, and who came up with great stuff that I didn’t have time to implement.</p>
+<p>Continuing what seems to be a tradition now, I used different tools from <a href="/ldjam48">last time</a>, choosing the <a href="https://bevyengine.org">Bevy</a> Rust game engine with <a href="https://rapier.rs">Rapier</a> for the physics.  The experience was overall pleasant, although you can definitely feel the rough edges in these two projects.  In particular, I kept running into bugs and obscure things with Rapier, which greatly slowed me down.  Faced with broken collisions on Sunday morning, I almost gave up, until I managed to figure out a hack.</p>
+<p>In the past I’ve almost always made games with “code-oriented” frameworks, and my experience with <a href="https://godotengine.org">Godot</a> in April was a big realization of how great visual tools can be for game-making (yeah no shit).  While it’s in the plans, Bevy currently lacks any tooling of the sort, so I ended up baking very primitive tools to help me place entities in a level and trace the collision contour of items.  It works, but they’re far from the direct feedback and convenience of proper game editors.</p>
+<h2><a href="#porting-to-the-web" aria-hidden="true" class="anchor" id="porting-to-the-web"></a>Porting to the Web</h2>
+<p>I developed the game without thinking about WASM support at all, but when I was done, I found myself regretting that the game could not be played in the browser.  Bevy has a great <a href="https://bevy-cheatbook.github.io">cheet book</a> with a section on how to compile to WASM, using a drop-in replacement for the rendering pipeline.  Everything worked mostly as expected, but for some reason I could not control the size of the <code>canvas</code> element.</p>
+<p>After some internet digging, I found a game that managed to fix this issue, <a href="https://github.com/horup/some-tank-game-rs">“Some Tank Game” by Søren Alsbjerg Hørup</a>.  Essentially, they have a custom ECS system that checks the window size and adapts it if it’s wrong.  Their system is a bit more complex than what I ended up going for, as it also handles adapting the canvas size when the user resizes the window.  Big thanks to them, without this I wouldn’t have been able to port the game to WASM ❤️</p>
+<h2><a href="#future-plans" aria-hidden="true" class="anchor" id="future-plans"></a>Future Plans</h2>
+<p>This turned out to be one of my favourite Ludum Dare projects, and I’m considering expanding it a little, to make it into a proper game.  Some ideas I have for improvements are:</p>
+<ul>
+<li>The obvious stuff: a main menu, instructions, transitions between the levels, an end screen, polished graphics, etc.</li>
+<li>More items, especially with interesting properties like the rack with the test tubes.</li>
+<li>More and better levels.</li>
+<li>Music and sound effects.</li>
+<li>More static/dynamic objects in the background.  For example, I was thinking of adding a lamp hanging from the ceiling, which items can hit and bounce off.  Just to annoy the player even more.</li>
+<li>Maybe different environments, with different layouts and specific items.</li>
+</ul>
+<p>Feedback and ideas are welcome!  Don’t hesitate to <a href="/about">get in touch</a>.</p>
+
+</article>
+    </body>
+</html>

@@ -4,11 +4,13 @@ mod copy;
 mod first;
 mod markdown;
 mod recursive;
+mod shell;
 
 pub use copy::*;
 pub use first::*;
 pub use markdown::*;
 pub use recursive::*;
+pub use shell::*;
 
 macro_rules! warning {
     ($($arg:tt)*) => ({

@@ -10,7 +10,7 @@ use std::{
 
 use serde::Serialize;
 
-use processors::{first_of, warning, Copy, First, Markdown, Processor, ProcessorExt};
+use processors::{first_of, warning, Copy, First, Markdown, Processor, ProcessorExt, Shell};
 
 struct SubPaths(std::fs::ReadDir);
 
@@ -64,7 +64,6 @@ struct Page {
 fn main() -> std::io::Result<()> {
     let src = Path::new(".");
     let dest = Path::new("../gh-pages");
-    let home = PathBuf::from(env::var_os("HOME").unwrap());
 
     let keep = vec![".git", "CNAME"];
     subpaths(&dest)?
@@ -85,6 +84,7 @@ fn main() -> std::io::Result<()> {
 
     // Pages
     let proc = first_of!(
+        Shell,
         Markdown::new(),
         Copy::with_extensions(vec!["png", "gif", "jpg", "jpeg", "svg", "pdf", "css"]),
     )
@@ -95,12 +95,6 @@ fn main() -> std::io::Result<()> {
             warning!("ignoring '{}'", p.display())
         }
     }
-
-    // Elm phrase generator
-    process_makefile(
-        home.join("ongoing/phrase-generator"),
-        dest.canonicalize().unwrap().join("phrase-generator"),
-    );
 
     let mut context = Page {
         projects: vec![
@@ -186,42 +180,4 @@ fn main() -> std::io::Result<()> {
     Markdown::new().process_with_context(dest, &src.join("pages/index.md"), &context);
 
     Ok(())
-}
-
-/// Process a folder containing a makefile.
-///
-/// The folder is expected to contain a makefile with target `dist`, and which
-/// accepts an argument `DEST` specifying the target folder.
-///
-/// Be careful that `dest` is specified **relative to** `src`.
-///
-/// # Example
-///
-/// `process_makefile("~/foo/bar", "../bar")` will result in the following
-/// `make` command:
-///
-///     cd ~/foo/bar && make dist DEST=../bar
-fn process_makefile(src: impl AsRef<Path>, dest: impl AsRef<Path>) {
-    let src = src.as_ref();
-    let dest = dest.as_ref();
-    let output = Command::new("make")
-        .current_dir(src)
-        .arg("dist")
-        .arg({
-            let mut arg = OsString::from("DEST=");
-            arg.push(dest);
-            arg
-        })
-        .output()
-        .expect("`make` failed to start");
-    if !output.status.success() {
-        io::stderr().write_all(&output.stdout).unwrap();
-        io::stderr().write_all(&output.stderr).unwrap();
-        panic!("`make` failed");
-    }
-    eprintln!(
-        "{} -[make]-> {}",
-        src.to_string_lossy(),
-        dest.to_string_lossy()
-    );
 }

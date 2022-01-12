@@ -1,6 +1,13 @@
 mod processors;
 
-use std::path::{Path, PathBuf};
+use std::{
+    env,
+    ffi::{OsStr, OsString},
+    fs,
+    io::{self, Write},
+    path::{Path, PathBuf},
+    process::Command,
+};
 
 use serde::{Deserialize, Serialize};
 
@@ -89,6 +96,43 @@ fn main() -> std::io::Result<()> {
         }
     }
 
+    let home = PathBuf::from(env::var_os("HOME").unwrap());
+
+    // Elm phrase generator
+    let elm_src = home.join("ongoing/phrase-generator");
+    let elm_dest = dest.canonicalize().unwrap().join("phrase-generator");
+    let output = Command::new(home.join("bin/elm"))
+        .current_dir(&elm_src)
+        .args(["make", "src/Main.elm"])
+        .arg({
+            let mut arg = OsString::from("--output=");
+            arg.push(elm_dest.join("main.js"));
+            arg
+        })
+        .output()
+        .expect("`elm` failed to start");
+    if !output.status.success() {
+        io::stderr().write_all(&output.stderr).unwrap();
+        panic!("`elm` failed");
+    }
+    eprintln!(
+        "{} -[Elm]-> {}",
+        elm_src.to_string_lossy(),
+        dest.join("phrase-generator/main.js").to_string_lossy()
+    );
+    fs::copy(elm_src.join("index.html"), elm_dest.join("index.html"));
+    eprintln!(
+        "{} -> {}",
+        elm_src.join("index.html").to_string_lossy(),
+        dest.join("phrase-generator/index.html").to_string_lossy()
+    );
+    fs::copy(elm_src.join("style.css"), elm_dest.join("style.css"));
+    eprintln!(
+        "{} -> {}",
+        elm_src.join("style.css").to_string_lossy(),
+        dest.join("phrase-generator/style.css").to_string_lossy()
+    );
+
     let mut context = Page {
         projects: vec![
             ProjectDescription::new(
@@ -156,6 +200,12 @@ fn main() -> std::io::Result<()> {
                 "Ludum Dare 49: Chevalchemy: A Hoof of Concept",
                 "2021-10-05",
                 vec!["ludum dare", "game", "rust"],
+            ),
+            ProjectDescription::new(
+                "/phrase-generator/",
+                "Phrase Generator",
+                "2022-01-12",
+                vec!["elm"],
             ),
         ],
     };

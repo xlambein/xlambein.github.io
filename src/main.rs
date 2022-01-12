@@ -2,14 +2,13 @@ mod processors;
 
 use std::{
     env,
-    ffi::{OsStr, OsString},
-    fs,
+    ffi::OsString,
     io::{self, Write},
     path::{Path, PathBuf},
     process::Command,
 };
 
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 use processors::{first_of, warning, Copy, First, Markdown, Processor, ProcessorExt};
 
@@ -65,6 +64,7 @@ struct Page {
 fn main() -> std::io::Result<()> {
     let src = Path::new(".");
     let dest = Path::new("../gh-pages");
+    let home = PathBuf::from(env::var_os("HOME").unwrap());
 
     let keep = vec![".git", "CNAME"];
     subpaths(&dest)?
@@ -96,41 +96,10 @@ fn main() -> std::io::Result<()> {
         }
     }
 
-    let home = PathBuf::from(env::var_os("HOME").unwrap());
-
     // Elm phrase generator
-    let elm_src = home.join("ongoing/phrase-generator");
-    let elm_dest = dest.canonicalize().unwrap().join("phrase-generator");
-    let output = Command::new(home.join("bin/elm"))
-        .current_dir(&elm_src)
-        .args(["make", "src/Main.elm"])
-        .arg({
-            let mut arg = OsString::from("--output=");
-            arg.push(elm_dest.join("main.js"));
-            arg
-        })
-        .output()
-        .expect("`elm` failed to start");
-    if !output.status.success() {
-        io::stderr().write_all(&output.stderr).unwrap();
-        panic!("`elm` failed");
-    }
-    eprintln!(
-        "{} -[Elm]-> {}",
-        elm_src.to_string_lossy(),
-        dest.join("phrase-generator/main.js").to_string_lossy()
-    );
-    fs::copy(elm_src.join("index.html"), elm_dest.join("index.html"));
-    eprintln!(
-        "{} -> {}",
-        elm_src.join("index.html").to_string_lossy(),
-        dest.join("phrase-generator/index.html").to_string_lossy()
-    );
-    fs::copy(elm_src.join("style.css"), elm_dest.join("style.css"));
-    eprintln!(
-        "{} -> {}",
-        elm_src.join("style.css").to_string_lossy(),
-        dest.join("phrase-generator/style.css").to_string_lossy()
+    process_makefile(
+        home.join("ongoing/phrase-generator"),
+        dest.canonicalize().unwrap().join("phrase-generator"),
     );
 
     let mut context = Page {
@@ -217,4 +186,42 @@ fn main() -> std::io::Result<()> {
     Markdown::new().process_with_context(dest, &src.join("pages/index.md"), &context);
 
     Ok(())
+}
+
+/// Process a folder containing a makefile.
+///
+/// The folder is expected to contain a makefile with target `dist`, and which
+/// accepts an argument `DEST` specifying the target folder.
+///
+/// Be careful that `dest` is specified **relative to** `src`.
+///
+/// # Example
+///
+/// `process_makefile("~/foo/bar", "../bar")` will result in the following
+/// `make` command:
+///
+///     cd ~/foo/bar && make dist DEST=../bar
+fn process_makefile(src: impl AsRef<Path>, dest: impl AsRef<Path>) {
+    let src = src.as_ref();
+    let dest = dest.as_ref();
+    let output = Command::new("make")
+        .current_dir(src)
+        .arg("dist")
+        .arg({
+            let mut arg = OsString::from("DEST=");
+            arg.push(dest);
+            arg
+        })
+        .output()
+        .expect("`make` failed to start");
+    if !output.status.success() {
+        io::stderr().write_all(&output.stdout).unwrap();
+        io::stderr().write_all(&output.stderr).unwrap();
+        panic!("`make` failed");
+    }
+    eprintln!(
+        "{} -[make]-> {}",
+        src.to_string_lossy(),
+        dest.to_string_lossy()
+    );
 }

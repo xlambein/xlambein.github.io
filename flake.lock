@@ -94,8 +94,8 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1673358734,
-        "narHash": "sha256-3fWA0aAzxlOw3kZU6YzPZXesexPfHUgyFxyOequmWfo=",
+        "lastModified": 1673376611,
+        "narHash": "sha256-+seqyUyLyk+gqlPN25tSFRgnxSZ4RYikifjF+K1EZgQ=",
         "path": "/home/xlambein/xavier/nix-ssg",
         "type": "path"
       },

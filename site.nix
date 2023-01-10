@@ -24,6 +24,13 @@
     wrap = "preserve";
   } (nixss.replaceExt "md" "html");
 
+  renderInTemplate = nixss.template.instantiate ./templates/base.html.nix {};
+
+  tidyHtml = nixss.html-tidy.process {
+    indent = "auto";
+    wrap = "80";
+  };
+
   processProjectFile =
     nixss.mapExt
     (path:
@@ -41,7 +48,10 @@
         md2html
         processProjectFile
       ];
-      "html" = nixss.template.instantiate ./templates/base.html.nix {};
+      "html" = nixss.chain [
+        renderInTemplate
+        tidyHtml
+      ];
     };
 
   processProjectDir = path:

@@ -11,7 +11,7 @@ tags:
 
 Once again, I spent my weekend making a game for the bi-annual [Ludum Dare game jam][ldjam].  The theme for this jam was "Unstable", so of course I went for horse puns.  In the game, you play as a horse alchemist (a "Chevalchemist") working for the great Neighcolas Flamel.  Your task is to mix together ingredients into increasingly complex recipes.
 
-{{figure "chevalchemy01.png"}}
+${figure "chevalchemy01.png" ""}
 
 It's essentially a physics sandbox, in which the fun stems from how awful the controls are.  It's silly and stupid, and I'm extremely happy with how it turned out 😊
 

@@ -11,7 +11,7 @@ tags:
 
 A small web replica of the party game [Cards Against Humanity](https://www.cardsagainsthumanity.com).  It's mainly a learning project, to try and build a full-stack web app in Rust.  The backend is based on [warp](https://github.com/seanmonstar/warp), and the front-end is made with [Yew](https://yew.rs).  The two communicate via web sockets.
 
-{{figure "rah-end-round.png"}}
+${figure "rah-end-round.png" ""}
 
 It's been a fun project to make, but my general conclusion is that Yew is not a good framework for making games---it's really designed for web apps.  Baking web socket support back into it was a hassle, and I haven't figured out nice ways to handle game scenes or to render animations.
 
@@ -23,11 +23,11 @@ Another fun part of this project was writing the cards.  Many of them were taken
 
 As always, [source code is available on GitHub](https://github.com/xlambein/rust-against-humanity).
 
-{{#figure "rah-player.png"}}
+${figure "rah-player.png" ''
 Card selection screen, for the players.
-{{/figure}}
+''}
 
-{{#figure "rah-czar.png"}}
+${figure "rah-czar.png" ''
 Judgement screen, for the Card Czar.
-{{/figure}}
+''}
 

@@ -10,293 +10,318 @@
 }
 
 html {
-    font-size: 17px;
-    font-family: "Noto Serif", serif;
-    line-height: 1.5;
+  font-size: 17px;
+  font-family: "Noto Serif", serif;
+  line-height: 1.5;
 }
 
 body {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 article {
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 0 1rem;
-    padding-bottom: 20rem;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  padding-bottom: 20rem;
 }
 
-body > nav {
-    max-width: calc(640px + 3em);
-    margin: 1.1rem auto;
-    padding: 0 0.9rem;
-    font-size: 1.2rem;
-    font-family: "Noto Serif", sans-serif;
-    font-weight: 600;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+body>nav {
+  max-width: calc(640px + 3em);
+  margin: 1.1rem auto;
+  padding: 0 0.9rem;
+  font-size: 1.2rem;
+  font-family: "Noto Serif", sans-serif;
+  font-weight: 600;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
-body > nav > * {
-    margin-left: 13px;
+body>nav>* {
+  margin-left: 13px;
 }
 
-body > nav > *:first-child {
-    margin-left: 0;
+body>nav>*:first-child {
+  margin-left: 0;
 }
 
 @media only screen and (min-width: 420px) {
-    body > nav > * {
-        margin-left: 20px;
-    }
+  body>nav>* {
+    margin-left: 20px;
+  }
 }
 
 @media only screen and (min-width: 500px) {
-    body > nav > * {
-        margin-left: 30px;
-    }
+  body>nav>* {
+    margin-left: 30px;
+  }
 }
 
 #logo {
-    height: 3em;
+  height: 3em;
 }
 
 #logo {
-    /* transition: transform .7s ease-in-out; */
-    transition: none;
+  /* transition: transform .7s ease-in-out; */
+  transition: none;
 }
 
 #logo:hover {
-    /* transform: rotate(-45deg); */
-    transition: transform 60s cubic-bezier(0.10,-0.05,0.85,1.0);
-    transform: rotate(-12600deg);
+  /* transform: rotate(-45deg); */
+  transition: transform 60s cubic-bezier(0.10, -0.05, 0.85, 1.0);
+  transform: rotate(-12600deg);
 }
 
 @media (prefers-reduced-motion: reduce) {
-    #logo:hover {
-        transition: none;
-        transform: none;
-    }
+  #logo:hover {
+    transition: none;
+    transform: none;
+  }
 }
 
-body > nav > a, body > nav > a:hover {
-    text-decoration: none;
-    color: black;
+body>nav>a,
+body>nav>a:hover {
+  text-decoration: none;
+  color: black;
 }
 
-body > nav a:hover :not(img){
-    color: white;
-    background-color: black;
+body>nav a:hover :not(img) {
+  color: white;
+  background-color: black;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: "Patua One", sans-serif;
-    font-weight: 700;
-    margin-top: 2em;
-    margin-bottom: 1em;
-    line-height: 1.1;
-    hanging-punctuation: first allow-end last;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Patua One", sans-serif;
+  font-weight: 700;
+  margin-top: 2em;
+  margin-bottom: 1em;
+  line-height: 1.1;
+  hanging-punctuation: first allow-end last;
 }
 
-article > header {
-    margin-top: 2em;
-    margin-bottom: 2em;
+article>header {
+  margin-top: 2em;
+  margin-bottom: 2em;
 }
 
-article > header > h1 {
-    font-size: 2em;
-    margin: 0;
+article>header>h1 {
+  font-size: 2em;
+  margin: 0;
 }
 
-article > header > .article-info {
-    margin: 0;
-    font: 1em "Fira Mono", sans-serif;
-    color: #777;
+article>header>.article-info {
+  margin: 0;
+  margin-top: 0.5em;
+  font: 1em "Fira Mono", sans-serif;
+  color: #777;
 }
 
 p {
-    text-align: justify;
-    hyphens: auto;
-    /* This doesn't work yet :( come on browsers! */
-    hanging-punctuation: first allow-end last;
+  text-align: justify;
+  hyphens: auto;
+  /* This doesn't work yet :( come on browsers! */
+  hanging-punctuation: first allow-end last;
 }
 
-ol, ul, li {
-    margin-left: 0;
-    padding-left: 0;
-    text-align: justify;
+ol,
+ul,
+li {
+  margin-left: 0;
+  padding-left: 0;
+  text-align: justify;
 }
 
-ol, ul {
-    margin-left: 1.5em;
+ol,
+ul {
+  margin-left: 1.5em;
 }
 
 ul.fa-ul {
-    margin-left: 1.25em;
+  margin-left: 1.25em;
 }
 
 blockquote {
-    margin: 0;
-    padding-left: 0.75em;
-    font-style: italic;
-    border-left: 0.5em solid #ffe0e0;
+  margin: 0;
+  padding-left: 0.75em;
+  font-style: italic;
+  border-left: 0.5em solid #ffe0e0;
 }
 
-pre, code {
-    background-color: #ffe0e0;
-    font-family: "Fira Mono";
-    font-weight: 500;
+pre,
+code {
+  background-color: #ffe0e0;
+  font-family: "Fira Mono";
+  font-weight: 500;
 }
 
 pre {
-    margin-left: -0.5em;
-    margin-right: -0.5em;
-    padding: 0.5em;
+  margin-left: -0.5em;
+  margin-right: -0.5em;
+  padding: 0.5em;
 }
 
 code {
-    padding: 0 0.1em;
+  padding: 0 0.1em;
 }
 
 pre code {
-    padding: 0;
+  padding: 0;
 }
 
 a:hover code {
-	background-color: transparent;
+  background-color: transparent;
 }
 
 img {
-    max-width: 100%;
+  max-width: 100%;
 }
 
 figure {
-    max-width: 100%;
-    margin: 1em 0;
-    padding: 0;
-    text-align: center;
+  max-width: 100%;
+  margin: 1em 0;
+  padding: 0;
+  text-align: center;
 }
 
 figure img {
-    max-width: 100%;
+  max-width: 100%;
 }
 
 figcaption {
-    padding: 0 1em;
-    font-style: italic;
+  padding: 0 1em;
+  font-style: italic;
 }
 
 pre {
-    overflow: auto;
+  overflow: auto;
 }
 
 article a {
-    color: #b00000;
-    text-decoration: none;
+  color: #b00000;
+  text-decoration: none;
 }
 
 article a:hover {
-    color: white;
-    background-color: #b00000;
-    text-decoration: none;
+  color: white;
+  background-color: #b00000;
+  text-decoration: none;
 }
 
 article :where(a, a:hover) .fa {
-    color: #b00000;
-    background-color: white;
+  color: #b00000;
+  background-color: white;
 }
 
 /* external links */
 article a[href^='http']:not([href*='lambein.xyz']):after {
-	content: '';
-	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
-	background-repeat: no-repeat;
-	background-position: right center;
-	padding: 6px;
-	padding-bottom: 9px;
+  content: '';
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
+  background-repeat: no-repeat;
+  background-position: right center;
+  padding: 6px;
+  padding-bottom: 9px;
 }
 
 /* Thanks to https://blog.theodo.fr/2018/01/responsive-iframes-css-trick/ */
 .resp-container {
-    position: relative;
-    overflow: hidden;
-    padding-top: 56.25%;
+  position: relative;
+  overflow: hidden;
+  padding-top: 56.25%;
 }
+
 .resp-iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
 .music-list {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
-    margin: -9px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  margin: -9px;
 }
 
 .music-item {
-    flex-grow: 1;
+  flex-grow: 1;
 
-    display: block;
-    aspect-ratio: 1;
-    /* width: 300px; */
-    /* height: 300px; */
-    margin: 9px;
-    width: 200px;
+  display: block;
+  aspect-ratio: 1;
+  /* width: 300px; */
+  /* height: 300px; */
+  margin: 9px;
+  width: 200px;
 
-    border: 0;
+  border: 0;
 }
 
 @media only screen and (min-width: 420px) {
-    .music-item {
-        max-width: calc(50% - 20px);
-    }
+  .music-item {
+    max-width: calc(50% - 20px);
+  }
 }
 
 .page-ref {
-    margin: 1em 0;
+  margin: 1em 0;
 }
 
-.page-ref > .page-url {
-    font-weight: bold;
+.page-ref>.page-url {
+  font-weight: bold;
 }
 
-.page-ref > .page-info {
-    font: 0.85em "Fira Mono", sans-serif;
+.page-ref>.page-info {
+  font: 0.85em "Fira Mono", sans-serif;
 }
 
-.page-info > .page-pubdate:before {
-    content: "╰╴";
+.page-info>.pubdate:before {
+  content: "╰╴";
 }
 
-.page-info > .page-tags:before {
-    content: "•";
+.tags:not(:empty):before {
+  content: " • ";
 }
 
-.mini-zine > p {
-    margin: 0;
-    padding: 0;
+.tags {
+  display: inline;
+  margin: 0;
+}
+
+.tags>li {
+  display: inline;
+}
+
+.tags>li:not(:last-of-type):after {
+  content: " / ";
+}
+
+.mini-zine>p {
+  margin: 0;
+  padding: 0;
 }
 
 .mini-zine img {
-    border: 1px solid black;
-    width: calc(100% - 2px);
+  border: 1px solid black;
+  width: calc(100% - 2px);
 }
 
-.mini-zine :first-child > img {
-    width: 50%;
+.mini-zine :first-child>img {
+  width: 50%;
 }
 
 .mini-zine :first-child {
-    text-align: right;
+  text-align: right;
 }
 
-.mini-zine :last-child > img {
-    width: 50%;
+.mini-zine :last-child>img {
+  width: 50%;
 }

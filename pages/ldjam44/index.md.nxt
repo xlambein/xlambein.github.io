@@ -18,9 +18,9 @@ First, I'll introduce my game, how it works and where to play it.  Then, I'll gi
 
 _Biomass_ is a game about growing life on a young planet bombarded by asteroids.  These asteroids contain basic elements that are necessary for life to grow (e.g., water, carbon, phosphorus, iron, copper, etc.).  However, life is fragile, and in order to develop, you need to provide it with exactly the right elements at the right time.  You do this by choosing to deflect incoming asteroids away or towards the planet.
 
-{{#figure "ludum-dare-44-001.png"}}
+${figure "ludum-dare-44-001.png" ''
 The game screen.  In the center is the planet with the asteroids to deflect.  The left shows a basic UI with score, current and next objectives.
-{{/figure}}
+''}
 
 This time, I made the game in JavaScript, which means you can play directly in the browser!  [Click here to play it on itch.io](https://xlambein.itch.io/biomass).  The game is best played on a phone or tablet.  I _highly_ recommend you read the rules and controls on the itch.io page, because it's not very obvious when playing.
 
@@ -43,9 +43,9 @@ After attending [Tyu's talk on dress-up games](http://tyu-orphinae.com/dress-up/
 
 The problem with idea 3 is that I had only played a single dating sim in my life ("Katawa Shoujo"), and I felt unqualified to make one myself.  I did try to design one of the characters, which was fun to do:
 
-{{#figure "ludum-dare-44-002.png"}}
+${figure "ludum-dare-44-002.png" ''
 The 100€ bill for my money dating sim concept.
-{{/figure}}
+''}
 
 So I was left with idea 1, but I didn't know what to do with it.  I was pretty anxious about the situation.  Several times during the day, I just felt like giving up and not participating.
 
@@ -54,9 +54,9 @@ So I was left with idea 1, but I didn't know what to do with it.  I was pretty a
 
 My creative process for this game was to just start, not knowing where I was going.  I had a vague idea that, in my "planet life management game", you could collect resources from asteroids.  Hence, I began by drawing a few assets of planets and asteroids:
 
-{{#figure "ludum-dare-44-003.png"}}
+${figure "ludum-dare-44-003.png" ''
 The planet and a few asteroids from "Biomass".
-{{/figure}}
+''}
 
 Then I spent some time trying to get PixiJS to work.  My last game had been made with the amazing [Pyxel retro game engine](https://github.com/kitao/pyxel), which I love dearly, but that choice made the game very difficult to share.  Here, I wanted something that you could play in the browser, so I picked JavaScript with the [PixiJS library](http://www.pixijs.com/).
 
@@ -72,9 +72,9 @@ While slowly getting the hang of PixiJS, I created a basic game that shows the p
 
 The next day, I reluctantly continued working on the game.  At this point, I had lost most of my motivation, until I fixed the slingshot bug, which felt like a small victory:
 
-{{#figure "ludum-dare-44-004.gif"}}
+${figure "ludum-dare-44-004.gif" ''
 Throwing asteroids at the planet with the slingshot.  Gravity was added shortly after that.
-{{/figure}}
+''}
 
 Since I didn't know what else to do, I tried to make the game "feel nice", by shaking the screen, drawing explosions, and making it fun to throw asteroids.  I was inspired by the famous article ["How to Prototype a Game in Under 7 Days"](https://www.gamasutra.com/view/feature/130848/how_to_prototype_a_game_in_under_7_.php), which is a must-read for anyone making games.
 
@@ -98,7 +98,7 @@ Some general critics were:
 - The asteroids spawn too randomly: you often have to wait a very long time to get the one you need.
 - Some asteroids are hard to differentiate.
 
-I thought pretty much every comment was relevant.  In particular, a reviewer ([@rplnt](https://ldjam.com/users/rplnt)) said:
+I thought pretty much every comment was relevant.  In particular, a reviewer ([@@rplnt](https://ldjam.com/users/rplnt)) said:
 
 > the bad [asteroid] impact had both big effect (resetting your progress and possibly knocking you down a level) and too little of an effect (basically just set you a bit back) at the same time; I think the impact should be bigger but it would be easier to get back on so it doesn’t drag jumping up and down levels
 

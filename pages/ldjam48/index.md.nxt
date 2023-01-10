@@ -11,7 +11,7 @@ tags:
 
 In April 2021, I participated in the 48th [Ludum Dare game jam](https://ldjam.com/).  The theme for this edition was "Deeper and deeper", so natually, I made a game about machine learning.  You can [play it from the convenience of your browser, on itch.io](https://xlambein.itch.io/truck-or-pupper).
 
-{{figure "top01.png"}}
+${figure "top01.png" ""}
 
 The idea is that you play as the sole, overworked data scientist in a start-up, and you need to balance the tasks of annotating new data and training the (deep, hence the theme) neural network that powers your company's product.
 

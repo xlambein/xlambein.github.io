@@ -24,13 +24,13 @@ I decided to go for the third one because the other two were too gruesome, and I
 
 The final result is a game which I called "Sacrifice This Game".  You can find it [on the ldjam website](https://ldjam.com/events/ludum-dare/43/sacrifice-this-game).  It looks like this:
 
-![](ludum-dare-43-001.png)
+${figure "ludum-dare-43-001.png" ""}
 
 The game is a basic platformer.  You play with the directional arrows.  `Enter` selects an item in the menus.  `Tab` shows the pause menu.  The goal is to reach one of the doors.  Keys open locked blocks.  That's it.
 
 Well, except that, when you enter a new level, you are faced with this screen:
 
-![](ludum-dare-43-002.png)
+${figure "ludum-dare-43-002.png" ""}
 
 Before continuing, you _have_ to sacrifice one feature of the game.  It can be anything, from animations, to moving left, to gravity.  Once a feature is sacrificed, it stays that way for the following levels.  If you are stuck, you need to go back and change the choices you made earlier.
 

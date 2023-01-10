@@ -8,23 +8,18 @@ My name is Xavier, I'm an artist and programmer from Brussels 🇧🇪.  I [make
 
 I have many interests, including games&nbsp;👾, music&nbsp;🎼, programming languages&nbsp;&#955;, and human-computer interaction&nbsp;🖱.  If you'd like to chat about any of these subjects, or about something else, don't hesitate to [reach out](/about).
 
-I might also be available for freelance/part time jobs, so if you'd like to work with me, do get in touch.
+${
+"" # I might also be available for freelance/part time jobs, so if you'd like to work with me, do get in touch.
+}
 
 ## Projects
 
-{{#each projects}}
+${foreach projects (project: with project; ''
 <div class="page-ref">
-    <a href="{{this.url}}" class="page-url">{{{this.title}}}</a>
-    <!-- <br> -->
-    <div class="page-info">
-        <span class="page-pubdate">{{this.pubdate}}</span>
-        <span class="page-tags">
-            {{#each this.tags}}
-            {{this}}
-            {{#unless @last}} / {{/unless}}
-            {{/each}}
-        </span>
-    </div>
+  <a href="${escape url}" class="page-url">${escape title}</a>
+  <div class="page-info">
+    <span class="pubdate">${pubdate}</span>
+    <ul class="tags">${foreach tags (tag: ''<li>${escape tag}</li>'')}</ul>
+  </div>
 </div>
-{{/each}}
-
+'')}

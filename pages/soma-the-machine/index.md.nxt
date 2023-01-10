@@ -17,9 +17,9 @@ The course I took part in was called ["Winners and Losers"](http://schoolofma.or
 
 Our project---called "The Machine"---is a kind of slot machine generating random sentences.  The "players" are invited to insert a (fake) coin, select the kind of interaction they desire---"poetry", "question" or "challenge"---and then watch the reels turn and stop on three phrases which, when combined, form a sentence.  The project is a collaboration between myself, [Anna Brynskov](https://vimeo.com/annabrynskov), and [Maryam Aghajani](https://www.elementlichtdesign.com/).  Anna is a student in digital design and a filmmaker from Aarhus, Denmark; Maryam is an architectural lighting designer from Canada, working in Berlin.
 
-{{#figure "the-machine-001.jpg"}}
+${figure "the-machine-001.jpg" ''
 The front of the Machine.  You can see the coin slot in the top-left corner, the three buttons below corresponding to the three kinds of sentences, and the front display with the reels.  Through the holes punched in its body shines an airy, changing light.  Off to the right is a glass full of the fake "SoMA coins" (more on that below).  Additional cute detail: The LED eyes, which flash after the final reel stops.
-{{/figure}}
+''}
 
 To better demonstrate how it works, here's a short video of me using the Machine.  After I insert a coin and I press the "poetry" button, the reels immediately start turning.  Eventually, they stop on three random phrases of the "poetry" type (written in black), and the LED eyes blink.
 
@@ -37,9 +37,9 @@ The obvious downside of this approach is that none of us actually worked on ever
 
 The week of development and crafting culminated in a small event organized at the [Liebig12](http://www.liebig12.net/) space in Berlin, where each team showcased their project.  Dozens of visitors came by throughout the evening of July 27 to play the various experimental games presented there.  The feedback was very positive, and it was a lot of fun to see so many people interact with the installation.
 
-{{#figure "the-machine-002.jpg"}}
+${figure "the-machine-002.jpg" ''
 Anna (middle) and Maryam (right) showing a visitor how to use the Machine during the event at Liebig12.
-{{/figure}}
+''}
 
 
 ## The Machine's Inner Workings
@@ -56,17 +56,17 @@ I will now delve into the more technical aspects of the project.  As an overview
 - An LED strip, attached to the inside near the reels, lighting up the current sentence
 - An additional set of Neo-Pixels around the coin slot, lit up by a third Arduino Uno
 
-{{#figure "the-machine-003.jpg"}}
+${figure "the-machine-003.jpg" ''
 The insides of the Machine.
-{{/figure}}
+''}
 
 Like I said, I was only involved in the reels, the electronics and the programming.  Hence, I will restrict my technical account of the project to these aspects.
 
 ### The Reels
 
-{{#figure "the-machine-004.jpg"}}
+${figure "the-machine-004.jpg" ''
 A single reel, removed from its support.
-{{/figure}}
+''}
 
 Let's start with the reels.  The structure of each reel is made of a long piece of bent cardboard attached to a disk.  Glued to its axis is a stepper motor (6), which is a DC motor that moves in discrete steps---in our case, 96 steps of 3.75°.  Thanks to this, we gain the ability to control exactly by how much a reel rotates.  Then, given a reference point, we can ask the motor to rotate such that any specific phrase is facing the user: If we know the motor is currently 20 steps from the reference point, and we want to show a phrase that is 55 steps from the reference, we just order the motor to rotate by 25 steps.
 
@@ -74,9 +74,9 @@ Therefore, the critical part is to reliably determine a reference point.  Indeed
 
 Finally, a slit (9) on the axis provides an easy way of attaching and removing the reel from a screwhead (10) on the support:
 
-{{#figure "the-machine-005.jpg"}}
+${figure "the-machine-005.jpg" ''
 A screwhead on the wooden frame, to which a reel could be attached.
-{{/figure}}
+''}
 
 
 ### The Motor Driver Arduino
@@ -101,9 +101,9 @@ where `6` is the command code that identifies the "RotateSeek" command.
 
 Two transistor arrays were necessary to provide power to the stepper motors, so we decided to put them on a custom Arduino shield for the motor driver.  The process took a great part of the day, but I was quite proud of the result.  It contains a DC power input (11), the two transistor arrays (12), and many additional pins in which to plug the motors (13) and I2C wires (14):
 
-{{#figure "the-machine-006.jpg"}}
+${figure "the-machine-006.jpg" ''
 The motor driver shield I painstakingly soldered for half a day.
-{{/figure}}
+''}
 
 
 ### The Controller Arduino
@@ -114,9 +114,9 @@ The entire logic of the Machine is contained within the master Arduino (4), whic
 
 I'll finish with a small comment on the coin slot (1), which Anna made.  It is a cardboard tube (15) attached to the front of the machine, containing a light sensor (16) facing an LED (17).  When a coin is dropped through the tube, it momentarily blocks the light from the LED as it falls, triggering the light sensor.
 
-{{#figure "the-machine-007.jpg"}}
+${figure "the-machine-007.jpg" ''
 The coin slot Anna made.
-{{/figure}}
+''}
 
 Rather than have people use real money, we provided our original "SoMA" coins, the unofficial School of MA cardboard currency (our <abbr title="Initial Cardboard Offering">ICO</abbr> will start soon).  Fun anecdote: During the evening, we discovered that the coin slot was sensitive enough to be triggered by a mini pretzel.  Thankfully this had no effect on the exchange rate of SoMA coins.
 

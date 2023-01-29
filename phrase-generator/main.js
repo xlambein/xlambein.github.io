@@ -77,7 +77,7 @@ function A9(fun, a, b, c, d, e, f, g, h, i) {
   return fun.a === 9 ? fun.f(a, b, c, d, e, f, g, h, i) : fun(a)(b)(c)(d)(e)(f)(g)(h)(i);
 }
 
-console.warn('Compiled in DEV mode. Follow the advice at https://elm-lang.org/0.19.1/optimize for better performance and smaller assets.');
+
 
 
 // EQUALITY
@@ -113,7 +113,7 @@ function _Utils_eqHelp(x, y, depth, stack)
 		return true;
 	}
 
-	/**/
+	/**_UNUSED/
 	if (x.$ === 'Set_elm_builtin')
 	{
 		x = $elm$core$Set$toList(x);
@@ -126,7 +126,7 @@ function _Utils_eqHelp(x, y, depth, stack)
 	}
 	//*/
 
-	/**_UNUSED/
+	/**/
 	if (x.$ < 0)
 	{
 		x = $elm$core$Dict$toList(x);
@@ -161,7 +161,7 @@ function _Utils_cmp(x, y, ord)
 		return x === y ? /*EQ*/ 0 : x < y ? /*LT*/ -1 : /*GT*/ 1;
 	}
 
-	/**/
+	/**_UNUSED/
 	if (x instanceof String)
 	{
 		var a = x.valueOf();
@@ -170,10 +170,10 @@ function _Utils_cmp(x, y, ord)
 	}
 	//*/
 
-	/**_UNUSED/
+	/**/
 	if (typeof x.$ === 'undefined')
 	//*/
-	/**/
+	/**_UNUSED/
 	if (x.$[0] === '#')
 	//*/
 	{
@@ -203,17 +203,17 @@ var _Utils_compare = F2(function(x, y)
 
 // COMMON VALUES
 
-var _Utils_Tuple0_UNUSED = 0;
-var _Utils_Tuple0 = { $: '#0' };
+var _Utils_Tuple0 = 0;
+var _Utils_Tuple0_UNUSED = { $: '#0' };
 
-function _Utils_Tuple2_UNUSED(a, b) { return { a: a, b: b }; }
-function _Utils_Tuple2(a, b) { return { $: '#2', a: a, b: b }; }
+function _Utils_Tuple2(a, b) { return { a: a, b: b }; }
+function _Utils_Tuple2_UNUSED(a, b) { return { $: '#2', a: a, b: b }; }
 
-function _Utils_Tuple3_UNUSED(a, b, c) { return { a: a, b: b, c: c }; }
-function _Utils_Tuple3(a, b, c) { return { $: '#3', a: a, b: b, c: c }; }
+function _Utils_Tuple3(a, b, c) { return { a: a, b: b, c: c }; }
+function _Utils_Tuple3_UNUSED(a, b, c) { return { $: '#3', a: a, b: b, c: c }; }
 
-function _Utils_chr_UNUSED(c) { return c; }
-function _Utils_chr(c) { return new String(c); }
+function _Utils_chr(c) { return c; }
+function _Utils_chr_UNUSED(c) { return new String(c); }
 
 
 // RECORDS
@@ -264,11 +264,11 @@ function _Utils_ap(xs, ys)
 
 
 
-var _List_Nil_UNUSED = { $: 0 };
-var _List_Nil = { $: '[]' };
+var _List_Nil = { $: 0 };
+var _List_Nil_UNUSED = { $: '[]' };
 
-function _List_Cons_UNUSED(hd, tl) { return { $: 1, a: hd, b: tl }; }
-function _List_Cons(hd, tl) { return { $: '::', a: hd, b: tl }; }
+function _List_Cons(hd, tl) { return { $: 1, a: hd, b: tl }; }
+function _List_Cons_UNUSED(hd, tl) { return { $: '::', a: hd, b: tl }; }
 
 
 var _List_cons = F2(_List_Cons);
@@ -499,12 +499,12 @@ var _JsArray_appendN = F3(function(n, dest, source)
 
 // LOG
 
-var _Debug_log_UNUSED = F2(function(tag, value)
+var _Debug_log = F2(function(tag, value)
 {
 	return value;
 });
 
-var _Debug_log = F2(function(tag, value)
+var _Debug_log_UNUSED = F2(function(tag, value)
 {
 	console.log(tag + ': ' + _Debug_toString(value));
 	return value;
@@ -530,12 +530,12 @@ function _Debug_todoCase(moduleName, region, value)
 
 // TO STRING
 
-function _Debug_toString_UNUSED(value)
+function _Debug_toString(value)
 {
 	return '<internals>';
 }
 
-function _Debug_toString(value)
+function _Debug_toString_UNUSED(value)
 {
 	return _Debug_toAnsiString(false, value);
 }
@@ -720,13 +720,13 @@ function _Debug_toHexDigit(n)
 // CRASH
 
 
-function _Debug_crash_UNUSED(identifier)
+function _Debug_crash(identifier)
 {
 	throw new Error('https://github.com/elm/core/blob/1.0.0/hints/' + identifier + '.md');
 }
 
 
-function _Debug_crash(identifier, fact1, fact2, fact3, fact4)
+function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
 {
 	switch(identifier)
 	{
@@ -784,11 +784,11 @@ function _Debug_crash(identifier, fact1, fact2, fact3, fact4)
 
 function _Debug_regionToString(region)
 {
-	if (region.start.line === region.end.line)
+	if (region.aI.ai === region.aW.ai)
 	{
-		return 'on line ' + region.start.line;
+		return 'on line ' + region.aI.ai;
 	}
-	return 'on lines ' + region.start.line + ' through ' + region.end.line;
+	return 'on lines ' + region.aI.ai + ' through ' + region.aW.ai;
 }
 
 
@@ -1212,7 +1212,7 @@ function _Char_toLocaleLower(char)
 
 
 
-/**/
+/**_UNUSED/
 function _Json_errorToString(error)
 {
 	return $elm$json$Json$Decode$errorToString(error);
@@ -1616,11 +1616,11 @@ var _Json_encode = F2(function(indentLevel, value)
 	return JSON.stringify(_Json_unwrap(value), null, indentLevel) + '';
 });
 
-function _Json_wrap(value) { return { $: 0, a: value }; }
-function _Json_unwrap(value) { return value.a; }
+function _Json_wrap_UNUSED(value) { return { $: 0, a: value }; }
+function _Json_unwrap_UNUSED(value) { return value.a; }
 
-function _Json_wrap_UNUSED(value) { return value; }
-function _Json_unwrap_UNUSED(value) { return value; }
+function _Json_wrap(value) { return value; }
+function _Json_unwrap(value) { return value; }
 
 function _Json_emptyArray() { return []; }
 function _Json_emptyObject() { return {}; }
@@ -1857,9 +1857,9 @@ var _Platform_worker = F4(function(impl, flagDecoder, debugMetadata, args)
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.init,
-		impl.update,
-		impl.subscriptions,
+		impl.bV,
+		impl.cm,
+		impl.ch,
 		function() { return function() {} }
 	);
 });
@@ -1872,7 +1872,7 @@ var _Platform_worker = F4(function(impl, flagDecoder, debugMetadata, args)
 function _Platform_initialize(flagDecoder, args, init, update, subscriptions, stepperBuilder)
 {
 	var result = A2(_Json_run, flagDecoder, _Json_wrap(args ? args['flags'] : undefined));
-	$elm$core$Result$isOk(result) || _Debug_crash(2 /**/, _Json_errorToString(result.a) /**/);
+	$elm$core$Result$isOk(result) || _Debug_crash(2 /**_UNUSED/, _Json_errorToString(result.a) /**/);
 	var managers = {};
 	var initPair = init(result.a);
 	var model = initPair.a;
@@ -2316,7 +2316,7 @@ function _Platform_setupIncomingPort(name, sendToApp)
 //
 
 
-function _Platform_export_UNUSED(exports)
+function _Platform_export(exports)
 {
 	scope['Elm']
 		? _Platform_mergeExportsProd(scope['Elm'], exports)
@@ -2337,7 +2337,7 @@ function _Platform_mergeExportsProd(obj, exports)
 }
 
 
-function _Platform_export(exports)
+function _Platform_export_UNUSED(exports)
 {
 	scope['Elm']
 		? _Platform_mergeExportsDebug('Elm', scope['Elm'], exports)
@@ -2377,10 +2377,10 @@ var _VirtualDom_init = F4(function(virtualNode, flagDecoder, debugMetadata, args
 {
 	// NOTE: this function needs _Platform_export available to work
 
-	/**_UNUSED/
+	/**/
 	var node = args['node'];
 	//*/
-	/**/
+	/**_UNUSED/
 	var node = args && args['node'] ? args['node'] : _Debug_crash(0);
 	//*/
 
@@ -2635,24 +2635,24 @@ function _VirtualDom_noInnerHtmlOrFormAction(key)
 	return key == 'innerHTML' || key == 'formAction' ? 'data-' + key : key;
 }
 
-function _VirtualDom_noJavaScriptUri_UNUSED(value)
+function _VirtualDom_noJavaScriptUri(value)
 {
 	return /^javascript:/i.test(value.replace(/\s/g,'')) ? '' : value;
 }
 
-function _VirtualDom_noJavaScriptUri(value)
+function _VirtualDom_noJavaScriptUri_UNUSED(value)
 {
 	return /^javascript:/i.test(value.replace(/\s/g,''))
 		? 'javascript:alert("This is an XSS vector. Please use ports or web components instead.")'
 		: value;
 }
 
-function _VirtualDom_noJavaScriptOrHtmlUri_UNUSED(value)
+function _VirtualDom_noJavaScriptOrHtmlUri(value)
 {
 	return /^\s*(javascript:|data:text\/html)/i.test(value) ? '' : value;
 }
 
-function _VirtualDom_noJavaScriptOrHtmlUri(value)
+function _VirtualDom_noJavaScriptOrHtmlUri_UNUSED(value)
 {
 	return /^\s*(javascript:|data:text\/html)/i.test(value)
 		? 'javascript:alert("This is an XSS vector. Please use ports or web components instead.")'
@@ -2704,9 +2704,9 @@ var _VirtualDom_mapEventTuple = F2(function(func, tuple)
 var _VirtualDom_mapEventRecord = F2(function(func, record)
 {
 	return {
-		message: func(record.message),
-		stopPropagation: record.stopPropagation,
-		preventDefault: record.preventDefault
+		H: func(record.H),
+		aJ: record.aJ,
+		aG: record.aG
 	}
 });
 
@@ -2974,11 +2974,11 @@ function _VirtualDom_makeCallback(eventNode, initialHandler)
 		// 3 = Custom
 
 		var value = result.a;
-		var message = !tag ? value : tag < 3 ? value.a : value.message;
-		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.stopPropagation;
+		var message = !tag ? value : tag < 3 ? value.a : value.H;
+		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.aJ;
 		var currentEventNode = (
 			stopPropagation && event.stopPropagation(),
-			(tag == 2 ? value.b : tag == 3 && value.preventDefault) && event.preventDefault(),
+			(tag == 2 ? value.b : tag == 3 && value.aG) && event.preventDefault(),
 			eventNode
 		);
 		var tagger;
@@ -3928,15 +3928,15 @@ var _Browser_element = _Debugger_element || F4(function(impl, flagDecoder, debug
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.init,
-		impl.update,
-		impl.subscriptions,
+		impl.bV,
+		impl.cm,
+		impl.ch,
 		function(sendToApp, initialModel) {
-			var view = impl.view;
-			/**_UNUSED/
+			var view = impl.cn;
+			/**/
 			var domNode = args['node'];
 			//*/
-			/**/
+			/**_UNUSED/
 			var domNode = args && args['node'] ? args['node'] : _Debug_crash(0);
 			//*/
 			var currNode = _VirtualDom_virtualize(domNode);
@@ -3964,12 +3964,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.init,
-		impl.update,
-		impl.subscriptions,
+		impl.bV,
+		impl.cm,
+		impl.ch,
 		function(sendToApp, initialModel) {
-			var divertHrefToApp = impl.setup && impl.setup(sendToApp)
-			var view = impl.view;
+			var divertHrefToApp = impl.aH && impl.aH(sendToApp)
+			var view = impl.cn;
 			var title = _VirtualDom_doc.title;
 			var bodyNode = _VirtualDom_doc.body;
 			var currNode = _VirtualDom_virtualize(bodyNode);
@@ -3977,12 +3977,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 			{
 				_VirtualDom_divertHrefToApp = divertHrefToApp;
 				var doc = view(model);
-				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.body);
+				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.bE);
 				var patches = _VirtualDom_diff(currNode, nextNode);
 				bodyNode = _VirtualDom_applyPatches(bodyNode, currNode, patches, sendToApp);
 				currNode = nextNode;
 				_VirtualDom_divertHrefToApp = 0;
-				(title !== doc.title) && (_VirtualDom_doc.title = title = doc.title);
+				(title !== doc.ck) && (_VirtualDom_doc.title = title = doc.ck);
 			});
 		}
 	);
@@ -4038,12 +4038,12 @@ function _Browser_makeAnimator(model, draw)
 
 function _Browser_application(impl)
 {
-	var onUrlChange = impl.onUrlChange;
-	var onUrlRequest = impl.onUrlRequest;
+	var onUrlChange = impl.b8;
+	var onUrlRequest = impl.b9;
 	var key = function() { key.a(onUrlChange(_Browser_getUrl())); };
 
 	return _Browser_document({
-		setup: function(sendToApp)
+		aH: function(sendToApp)
 		{
 			key.a = sendToApp;
 			_Browser_window.addEventListener('popstate', key);
@@ -4059,9 +4059,9 @@ function _Browser_application(impl)
 					var next = $elm$url$Url$fromString(href).a;
 					sendToApp(onUrlRequest(
 						(next
-							&& curr.protocol === next.protocol
-							&& curr.host === next.host
-							&& curr.port_.a === next.port_.a
+							&& curr.bh === next.bh
+							&& curr.a1 === next.a1
+							&& curr.be.a === next.be.a
 						)
 							? $elm$browser$Browser$Internal(next)
 							: $elm$browser$Browser$External(href)
@@ -4069,13 +4069,13 @@ function _Browser_application(impl)
 				}
 			});
 		},
-		init: function(flags)
+		bV: function(flags)
 		{
-			return A3(impl.init, flags, _Browser_getUrl(), key);
+			return A3(impl.bV, flags, _Browser_getUrl(), key);
 		},
-		view: impl.view,
-		update: impl.update,
-		subscriptions: impl.subscriptions
+		cn: impl.cn,
+		cm: impl.cm,
+		ch: impl.ch
 	});
 }
 
@@ -4141,17 +4141,17 @@ var _Browser_decodeEvent = F2(function(decoder, event)
 function _Browser_visibilityInfo()
 {
 	return (typeof _VirtualDom_doc.hidden !== 'undefined')
-		? { hidden: 'hidden', change: 'visibilitychange' }
+		? { bS: 'hidden', bH: 'visibilitychange' }
 		:
 	(typeof _VirtualDom_doc.mozHidden !== 'undefined')
-		? { hidden: 'mozHidden', change: 'mozvisibilitychange' }
+		? { bS: 'mozHidden', bH: 'mozvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.msHidden !== 'undefined')
-		? { hidden: 'msHidden', change: 'msvisibilitychange' }
+		? { bS: 'msHidden', bH: 'msvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.webkitHidden !== 'undefined')
-		? { hidden: 'webkitHidden', change: 'webkitvisibilitychange' }
-		: { hidden: 'hidden', change: 'visibilitychange' };
+		? { bS: 'webkitHidden', bH: 'webkitvisibilitychange' }
+		: { bS: 'hidden', bH: 'visibilitychange' };
 }
 
 
@@ -4232,12 +4232,12 @@ var _Browser_call = F2(function(functionName, id)
 function _Browser_getViewport()
 {
 	return {
-		scene: _Browser_getScene(),
-		viewport: {
-			x: _Browser_window.pageXOffset,
-			y: _Browser_window.pageYOffset,
-			width: _Browser_doc.documentElement.clientWidth,
-			height: _Browser_doc.documentElement.clientHeight
+		bm: _Browser_getScene(),
+		bu: {
+			bx: _Browser_window.pageXOffset,
+			by: _Browser_window.pageYOffset,
+			bw: _Browser_doc.documentElement.clientWidth,
+			a0: _Browser_doc.documentElement.clientHeight
 		}
 	};
 }
@@ -4247,8 +4247,8 @@ function _Browser_getScene()
 	var body = _Browser_doc.body;
 	var elem = _Browser_doc.documentElement;
 	return {
-		width: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
-		height: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
+		bw: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
+		a0: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
 	};
 }
 
@@ -4271,15 +4271,15 @@ function _Browser_getViewportOf(id)
 	return _Browser_withNode(id, function(node)
 	{
 		return {
-			scene: {
-				width: node.scrollWidth,
-				height: node.scrollHeight
+			bm: {
+				bw: node.scrollWidth,
+				a0: node.scrollHeight
 			},
-			viewport: {
-				x: node.scrollLeft,
-				y: node.scrollTop,
-				width: node.clientWidth,
-				height: node.clientHeight
+			bu: {
+				bx: node.scrollLeft,
+				by: node.scrollTop,
+				bw: node.clientWidth,
+				a0: node.clientHeight
 			}
 		};
 	});
@@ -4309,18 +4309,18 @@ function _Browser_getElement(id)
 		var x = _Browser_window.pageXOffset;
 		var y = _Browser_window.pageYOffset;
 		return {
-			scene: _Browser_getScene(),
-			viewport: {
-				x: x,
-				y: y,
-				width: _Browser_doc.documentElement.clientWidth,
-				height: _Browser_doc.documentElement.clientHeight
+			bm: _Browser_getScene(),
+			bu: {
+				bx: x,
+				by: y,
+				bw: _Browser_doc.documentElement.clientWidth,
+				a0: _Browser_doc.documentElement.clientHeight
 			},
-			element: {
-				x: x + rect.left,
-				y: y + rect.top,
-				width: rect.width,
-				height: rect.height
+			bM: {
+				bx: x + rect.left,
+				by: y + rect.top,
+				bw: rect.width,
+				a0: rect.height
 			}
 		};
 	});
@@ -4616,15 +4616,15 @@ function _Time_getZoneName()
 		callback(_Scheduler_succeed(name));
 	});
 }
-var $elm$core$Basics$EQ = {$: 'EQ'};
-var $elm$core$Basics$GT = {$: 'GT'};
-var $elm$core$Basics$LT = {$: 'LT'};
+var $elm$core$Basics$EQ = 1;
+var $elm$core$Basics$GT = 2;
+var $elm$core$Basics$LT = 0;
 var $elm$core$List$cons = _List_cons;
 var $elm$core$Dict$foldr = F3(
 	function (func, acc, t) {
 		foldr:
 		while (true) {
-			if (t.$ === 'RBEmpty_elm_builtin') {
+			if (t.$ === -2) {
 				return acc;
 			} else {
 				var key = t.b;
@@ -4669,7 +4669,7 @@ var $elm$core$Dict$keys = function (dict) {
 		dict);
 };
 var $elm$core$Set$toList = function (_v0) {
-	var dict = _v0.a;
+	var dict = _v0;
 	return $elm$core$Dict$keys(dict);
 };
 var $elm$core$Elm$JsArray$foldr = _JsArray_foldr;
@@ -4679,7 +4679,7 @@ var $elm$core$Array$foldr = F3(
 		var tail = _v0.d;
 		var helper = F2(
 			function (node, acc) {
-				if (node.$ === 'SubTree') {
+				if (!node.$) {
 					var subTree = node.a;
 					return A3($elm$core$Elm$JsArray$foldr, helper, acc, subTree);
 				} else {
@@ -4697,32 +4697,32 @@ var $elm$core$Array$toList = function (array) {
 	return A3($elm$core$Array$foldr, $elm$core$List$cons, _List_Nil, array);
 };
 var $elm$core$Result$Err = function (a) {
-	return {$: 'Err', a: a};
+	return {$: 1, a: a};
 };
 var $elm$json$Json$Decode$Failure = F2(
 	function (a, b) {
-		return {$: 'Failure', a: a, b: b};
+		return {$: 3, a: a, b: b};
 	});
 var $elm$json$Json$Decode$Field = F2(
 	function (a, b) {
-		return {$: 'Field', a: a, b: b};
+		return {$: 0, a: a, b: b};
 	});
 var $elm$json$Json$Decode$Index = F2(
 	function (a, b) {
-		return {$: 'Index', a: a, b: b};
+		return {$: 1, a: a, b: b};
 	});
 var $elm$core$Result$Ok = function (a) {
-	return {$: 'Ok', a: a};
+	return {$: 0, a: a};
 };
 var $elm$json$Json$Decode$OneOf = function (a) {
-	return {$: 'OneOf', a: a};
+	return {$: 2, a: a};
 };
-var $elm$core$Basics$False = {$: 'False'};
+var $elm$core$Basics$False = 1;
 var $elm$core$Basics$add = _Basics_add;
 var $elm$core$Maybe$Just = function (a) {
-	return {$: 'Just', a: a};
+	return {$: 0, a: a};
 };
-var $elm$core$Maybe$Nothing = {$: 'Nothing'};
+var $elm$core$Maybe$Nothing = {$: 1};
 var $elm$core$String$all = _String_all;
 var $elm$core$Basics$and = _Basics_and;
 var $elm$core$Basics$append = _Utils_append;
@@ -4847,12 +4847,12 @@ var $elm$json$Json$Decode$errorToStringHelp = F2(
 		errorToStringHelp:
 		while (true) {
 			switch (error.$) {
-				case 'Field':
+				case 0:
 					var f = error.a;
 					var err = error.b;
 					var isSimple = function () {
 						var _v1 = $elm$core$String$uncons(f);
-						if (_v1.$ === 'Nothing') {
+						if (_v1.$ === 1) {
 							return false;
 						} else {
 							var _v2 = _v1.a;
@@ -4867,7 +4867,7 @@ var $elm$json$Json$Decode$errorToStringHelp = F2(
 					error = $temp$error;
 					context = $temp$context;
 					continue errorToStringHelp;
-				case 'Index':
+				case 1:
 					var i = error.a;
 					var err = error.b;
 					var indexName = '[' + ($elm$core$String$fromInt(i) + ']');
@@ -4876,7 +4876,7 @@ var $elm$json$Json$Decode$errorToStringHelp = F2(
 					error = $temp$error;
 					context = $temp$context;
 					continue errorToStringHelp;
-				case 'OneOf':
+				case 2:
 					var errors = error.a;
 					if (!errors.b) {
 						return 'Ran into a Json.Decode.oneOf with no possibilities' + function () {
@@ -4940,7 +4940,7 @@ var $elm$json$Json$Decode$errorToStringHelp = F2(
 var $elm$core$Array$branchFactor = 32;
 var $elm$core$Array$Array_elm_builtin = F4(
 	function (a, b, c, d) {
-		return {$: 'Array_elm_builtin', a: a, b: b, c: c, d: d};
+		return {$: 0, a: a, b: b, c: c, d: d};
 	});
 var $elm$core$Elm$JsArray$empty = _JsArray_empty;
 var $elm$core$Basics$ceiling = _Basics_ceiling;
@@ -4955,7 +4955,7 @@ var $elm$core$Array$shiftStep = $elm$core$Basics$ceiling(
 var $elm$core$Array$empty = A4($elm$core$Array$Array_elm_builtin, 0, $elm$core$Array$shiftStep, $elm$core$Elm$JsArray$empty, $elm$core$Elm$JsArray$empty);
 var $elm$core$Elm$JsArray$initialize = _JsArray_initialize;
 var $elm$core$Array$Leaf = function (a) {
-	return {$: 'Leaf', a: a};
+	return {$: 1, a: a};
 };
 var $elm$core$Basics$apL = F2(
 	function (f, x) {
@@ -4975,7 +4975,7 @@ var $elm$core$Basics$max = F2(
 	});
 var $elm$core$Basics$mul = _Basics_mul;
 var $elm$core$Array$SubTree = function (a) {
-	return {$: 'SubTree', a: a};
+	return {$: 0, a: a};
 };
 var $elm$core$Elm$JsArray$initializeFromList = _JsArray_initializeFromList;
 var $elm$core$Array$compressNodes = F2(
@@ -5022,25 +5022,25 @@ var $elm$core$Array$treeFromBuilder = F2(
 	});
 var $elm$core$Array$builderToArray = F2(
 	function (reverseNodeList, builder) {
-		if (!builder.nodeListSize) {
+		if (!builder.h) {
 			return A4(
 				$elm$core$Array$Array_elm_builtin,
-				$elm$core$Elm$JsArray$length(builder.tail),
+				$elm$core$Elm$JsArray$length(builder.j),
 				$elm$core$Array$shiftStep,
 				$elm$core$Elm$JsArray$empty,
-				builder.tail);
+				builder.j);
 		} else {
-			var treeLen = builder.nodeListSize * $elm$core$Array$branchFactor;
+			var treeLen = builder.h * $elm$core$Array$branchFactor;
 			var depth = $elm$core$Basics$floor(
 				A2($elm$core$Basics$logBase, $elm$core$Array$branchFactor, treeLen - 1));
-			var correctNodeList = reverseNodeList ? $elm$core$List$reverse(builder.nodeList) : builder.nodeList;
-			var tree = A2($elm$core$Array$treeFromBuilder, correctNodeList, builder.nodeListSize);
+			var correctNodeList = reverseNodeList ? $elm$core$List$reverse(builder.k) : builder.k;
+			var tree = A2($elm$core$Array$treeFromBuilder, correctNodeList, builder.h);
 			return A4(
 				$elm$core$Array$Array_elm_builtin,
-				$elm$core$Elm$JsArray$length(builder.tail) + treeLen,
+				$elm$core$Elm$JsArray$length(builder.j) + treeLen,
 				A2($elm$core$Basics$max, 5, depth * $elm$core$Array$shiftStep),
 				tree,
-				builder.tail);
+				builder.j);
 		}
 	});
 var $elm$core$Basics$idiv = _Basics_idiv;
@@ -5053,7 +5053,7 @@ var $elm$core$Array$initializeHelp = F5(
 				return A2(
 					$elm$core$Array$builderToArray,
 					false,
-					{nodeList: nodeList, nodeListSize: (len / $elm$core$Array$branchFactor) | 0, tail: tail});
+					{k: nodeList, h: (len / $elm$core$Array$branchFactor) | 0, j: tail});
 			} else {
 				var leaf = $elm$core$Array$Leaf(
 					A3($elm$core$Elm$JsArray$initialize, $elm$core$Array$branchFactor, fromIndex, fn));
@@ -5083,9 +5083,9 @@ var $elm$core$Array$initialize = F2(
 			return A5($elm$core$Array$initializeHelp, fn, initialFromIndex, len, _List_Nil, tail);
 		}
 	});
-var $elm$core$Basics$True = {$: 'True'};
+var $elm$core$Basics$True = 0;
 var $elm$core$Result$isOk = function (result) {
-	if (result.$ === 'Ok') {
+	if (!result.$) {
 		return true;
 	} else {
 		return false;
@@ -5096,33 +5096,31 @@ var $elm$json$Json$Decode$map2 = _Json_map2;
 var $elm$json$Json$Decode$succeed = _Json_succeed;
 var $elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 	switch (handler.$) {
-		case 'Normal':
+		case 0:
 			return 0;
-		case 'MayStopPropagation':
+		case 1:
 			return 1;
-		case 'MayPreventDefault':
+		case 2:
 			return 2;
 		default:
 			return 3;
 	}
 };
 var $elm$browser$Browser$External = function (a) {
-	return {$: 'External', a: a};
+	return {$: 1, a: a};
 };
 var $elm$browser$Browser$Internal = function (a) {
-	return {$: 'Internal', a: a};
+	return {$: 0, a: a};
 };
 var $elm$core$Basics$identity = function (x) {
 	return x;
 };
-var $elm$browser$Browser$Dom$NotFound = function (a) {
-	return {$: 'NotFound', a: a};
-};
-var $elm$url$Url$Http = {$: 'Http'};
-var $elm$url$Url$Https = {$: 'Https'};
+var $elm$browser$Browser$Dom$NotFound = $elm$core$Basics$identity;
+var $elm$url$Url$Http = 0;
+var $elm$url$Url$Https = 1;
 var $elm$url$Url$Url = F6(
 	function (protocol, host, port_, path, query, fragment) {
-		return {fragment: fragment, host: host, path: path, port_: port_, protocol: protocol, query: query};
+		return {aY: fragment, a1: host, bc: path, be: port_, bh: protocol, bi: query};
 	});
 var $elm$core$String$contains = _String_contains;
 var $elm$core$String$length = _String_length;
@@ -5158,7 +5156,7 @@ var $elm$url$Url$chompBeforePath = F5(
 					var i = _v0.a;
 					var _v1 = $elm$core$String$toInt(
 						A2($elm$core$String$dropLeft, i + 1, str));
-					if (_v1.$ === 'Nothing') {
+					if (_v1.$ === 1) {
 						return $elm$core$Maybe$Nothing;
 					} else {
 						var port_ = _v1;
@@ -5241,26 +5239,24 @@ var $elm$core$String$startsWith = _String_startsWith;
 var $elm$url$Url$fromString = function (str) {
 	return A2($elm$core$String$startsWith, 'http://', str) ? A2(
 		$elm$url$Url$chompAfterProtocol,
-		$elm$url$Url$Http,
+		0,
 		A2($elm$core$String$dropLeft, 7, str)) : (A2($elm$core$String$startsWith, 'https://', str) ? A2(
 		$elm$url$Url$chompAfterProtocol,
-		$elm$url$Url$Https,
+		1,
 		A2($elm$core$String$dropLeft, 8, str)) : $elm$core$Maybe$Nothing);
 };
 var $elm$core$Basics$never = function (_v0) {
 	never:
 	while (true) {
-		var nvr = _v0.a;
+		var nvr = _v0;
 		var $temp$_v0 = nvr;
 		_v0 = $temp$_v0;
 		continue never;
 	}
 };
-var $elm$core$Task$Perform = function (a) {
-	return {$: 'Perform', a: a};
-};
+var $elm$core$Task$Perform = $elm$core$Basics$identity;
 var $elm$core$Task$succeed = _Scheduler_succeed;
-var $elm$core$Task$init = $elm$core$Task$succeed(_Utils_Tuple0);
+var $elm$core$Task$init = $elm$core$Task$succeed(0);
 var $elm$core$List$foldrHelper = F4(
 	function (fn, acc, ctr, ls) {
 		if (!ls.b) {
@@ -5366,7 +5362,7 @@ var $elm$core$Task$sequence = function (tasks) {
 var $elm$core$Platform$sendToApp = _Platform_sendToApp;
 var $elm$core$Task$spawnCmd = F2(
 	function (router, _v0) {
-		var task = _v0.a;
+		var task = _v0;
 		return _Scheduler_spawn(
 			A2(
 				$elm$core$Task$andThen,
@@ -5378,7 +5374,7 @@ var $elm$core$Task$onEffects = F3(
 		return A2(
 			$elm$core$Task$map,
 			function (_v0) {
-				return _Utils_Tuple0;
+				return 0;
 			},
 			$elm$core$Task$sequence(
 				A2(
@@ -5388,34 +5384,32 @@ var $elm$core$Task$onEffects = F3(
 	});
 var $elm$core$Task$onSelfMsg = F3(
 	function (_v0, _v1, _v2) {
-		return $elm$core$Task$succeed(_Utils_Tuple0);
+		return $elm$core$Task$succeed(0);
 	});
 var $elm$core$Task$cmdMap = F2(
 	function (tagger, _v0) {
-		var task = _v0.a;
-		return $elm$core$Task$Perform(
-			A2($elm$core$Task$map, tagger, task));
+		var task = _v0;
+		return A2($elm$core$Task$map, tagger, task);
 	});
 _Platform_effectManagers['Task'] = _Platform_createManager($elm$core$Task$init, $elm$core$Task$onEffects, $elm$core$Task$onSelfMsg, $elm$core$Task$cmdMap);
 var $elm$core$Task$command = _Platform_leaf('Task');
 var $elm$core$Task$perform = F2(
 	function (toMessage, task) {
 		return $elm$core$Task$command(
-			$elm$core$Task$Perform(
-				A2($elm$core$Task$map, toMessage, task)));
+			A2($elm$core$Task$map, toMessage, task));
 	});
 var $elm$browser$Browser$element = _Browser_element;
 var $author$project$Main$SetFieldPreset = function (a) {
-	return {$: 'SetFieldPreset', a: a};
+	return {$: 4, a: a};
 };
 var $author$project$Main$CorpusFileSelected = function (a) {
-	return {$: 'CorpusFileSelected', a: a};
+	return {$: 3, a: a};
 };
 var $author$project$Main$NewSample = function (a) {
-	return {$: 'NewSample', a: a};
+	return {$: 1, a: a};
 };
 var $author$project$Main$SetFieldCorpus = function (a) {
-	return {$: 'SetFieldCorpus', a: a};
+	return {$: 5, a: a};
 };
 var $elm$core$String$fromList = _String_fromList;
 var $elm_community$list_extra$List$Extra$scanl = F3(
@@ -5454,36 +5448,32 @@ var $author$project$Main$capitalize = function (str) {
 				$elm_community$list_extra$List$Extra$scanl,
 				F2(
 					function (current, prev) {
-						return (_Utils_eq(
-							prev,
-							_Utils_chr(' ')) || _Utils_eq(
-							prev,
-							_Utils_chr('-'))) ? $elm$core$Char$toUpper(current) : current;
+						return ((prev === ' ') || (prev === '-')) ? $elm$core$Char$toUpper(current) : current;
 					}),
-				_Utils_chr(' '),
+				' ',
 				$elm$core$String$toList(str))));
 };
 var $author$project$Corpuses$HarryPotterSpells$corpus = 'Aberto\nAccio\nAguamenti\nAlohomora\nAvada Kedavra\nBat-Bogey Hex\nBubble-Head Charm\nCaterwauling Charm\nCheering Charm\nColloportus\nConfringo\nConfundo\nCrucio\nDescendo\nDiffindo\nDisillusionment Charm\nEngorgio\nEpiskey\nEvanesco\nExpecto Patronum\nExpelliarmus\nFinestra\nHomenum Revelio\nImpedimenta\nImperio\nImpervius\nIncendio\nLevicorpus\nLiberacorpus\nLocomotor\nLumos\nMorsmordre\nMuffliato\nNox\nObliviate\nPermanent Sticking Charm\nPetrificus Totalus\nPortus\nPriori Incantato\nProtego\nReducto\nRennervate\nRelashio\nRennervate\nReparo\nRevelio\nRictusempra\nRiddikulus\nScourgify\nSectumsempra\nSilencio\nSonorus\nStupefy\nTaboo\nTergeo\nUnbreakable Vow\nWingardium Leviosa\nAppare Vestigium\nAvenseguim\nFinite\nNebulus\nProtego Diabolica\nSurgito\nPapyrus Reparo';
 var $author$project$Corpuses$Lotr$corpus = 'Abyss\nAchad Tarlang\nAdorn\nAdurant\nAelin-uial\nAeluin\nAfros\nAgar\nAgathurush\nAglarond\nAglon\nAkallabêth\nAldalómë\nAldburg\nAlmaren\nAlqualondë\nAman\nAmbaróna\nAmon Amarth\nAmon Anwar\nAmon Darthir\nAmon Dîn\nAmon Ereb\nAmon Ethir\nAmon Gwareth\nAmon Hen\nAmon Lanc\nAmon Lhaw\nAmon Obel\nAmon Rûdh\nAmon Sûl\nAmon Uilos\nAnach\nAnadûnê\nAncient West\nAndafalassë\nAndor\nAndram\nAndrast\nAndrath\nAndroth\nAnduin\nAndúne Pelo\nAndúnië\nAndustar\nAnfalas\nAnfauglith\nAngamando\nAngband\nAnghabar\nAngmar\nAngren\nAngrenost\nAnnon-in-Gelydh\nAnnúminas\nAnórien\nAntaro\nAraman\nArandor\nArchet\nArda\nArd-galen\nArgonath\nArmenelos\nArnach\nArnor\nAros\nArossiach\nArthedain\nArthor na Challonnas\nArthor na Forlonnas\nArthórien\nArvernien\nAscar\nAsh Mountains\nAstulat\nAtalantë\nAthrad Angren\nAvallónë\nAvathar\nAzanulbizar\nBag End\nBagshot Row\nBalar\nBamfurlong\nBar-en-Danwedh\nBar-en-Nibin-noeg\nBar-in-Mŷl\u200E\nBar-erib\nBarad-dûr\nBarad Eithel\nBarad Nimras\nBaranduin\nBarazinbar\nBarrow-downs\nBarrowfield\nBattle Pit\nBattle Plain\nBay of Balar\nBay of Belfalas\nBay of Andúnië\nBay of Eldamar\nBay of Eldanna\nBay of Rómenna\nBelegaer\nBelegost\nBeleriand\nBelfalas\nBent Seas\nBeorn\'s House\nBindbale Wood\nBirchwoods of Nimbrethil\nBlack Crack\nBlack Gate\nBlack Land\nBlack Pit\nBlack Pits\nBlackroot\nBlessed Realm\nBlue Mountains\nBombadil\'s House\nBonfire Glade\nBony ridge\nThe Bounds\nBranda-nîn\nBrandywine Bridge\nBree\nBree Hill\nBree-land\nBreredon\nBrethil\nBridge of Esgalduin\nBridge of Mitheithel\nBridge of Khazad-dûm\nBridge of Stonebows\nBridgefields\nBrilthor\nBrithiach\nBrithombar\nBrithon\nBrockenbores\nBrodda\'s hall\nBrown Lands\nBruinen\nBuck Hill\nBuckland\nBuckland Gate\nBuckland Road\nBucklebury\nBucklebury Ferry\nBucklebury Ford\nBudge Ford\nBudgeford\nBundushathûr\nBywater\nBywater Pool\nBywater Road\nCabed-en-Aras\nCair Andros\nCalacirya\nCalacirian\nCalembel\nCalenardhon\nCalenhad\nCalmindon\nCape Balar\nCape of Andrast\nCape of Forochel\nCarach Angren\nCaradhras\nCaragdûr\nCaras Galadhon\nCarchost\nCardolan\nCarn Dûm\nCarnen\nCarrock\nCauseway Forts\nCaverns of Helm\'s Deep\nCaverns of Narog\nCaves of Androth\nCaves of Menegroth\nCelduin\nCelebdil\nCelebrant\nCelebros\nCelon\nCelos\nCentral Highlands\nCerin Amroth\nChamber of Mazarbul\nChambers of Fire\nChetwood\nChill Gulf\nCiril\nCirith Dúath\nCirith Forn en Andrath\nCirith Gorgor\nCirith Ninniach\nCirith Thoronath\nCirith Ungol\nCitadel of Stars\nCity of the Corsairs\nCloudyhead\nCobas Haven\nCôf Belfalas\nColdfells\nCombe\nCormallen\nCorollairë\nCoron Oiolairë\nCourt of the Fountain\nCracks of Doom\nCrickhollow\nCrissaegrim\nCristhorn\nCrossings of Teiglin\nCross-roads\nCuiviénen\nCûl Bîn\nCûl Veleg\nCûm-nan-Arasaith\nDagorlad\nDale\nDark Door\nDark Gate\nDark Land\nDark Lands\nDark Mountains\nDark Tower\nDead Marshes\nDeadmen\'s Dike\nDeath Down\nDeathless Lands\nDeeping\nDeephallow\nDeeping Coomb\nDeeping-road\nDeeping Stream\nDeeping Wall\nDeer\'s Leap\nDeldúwath\nDerndingle\nDesert of Lostladen\nDesolation of Smaug\nDesolation of the Morannon\nDimbar\nDimholt\nDimrill Dale\nDimrill Gate\nDimrill Stair\nDimrost\nDingle\nDol Amroth\nDol Baran\nDol Guldur\nDol Tarlang\nDome of Stars\nDoors of Night\nDoors of Durin\nDor Caranthir\nDor-Cúarthol\nDor Daedeloth\nDor Dínen\nDor-en-Ernil\nDor Firn-i-Guinar\nDor-lómin\nDor-Nu-Fauglith\nDoriath\nDorthonion\nDorwinion\nDownlands\nDrowns\nDrengist\nDrúadan Forest\nDrúwaith Iaur\nDry River\nDuilwen\nDungortheb\nDunharrow\nDúnharg\nDunland\nDurin\'s Bridge\nDurin\'s Tower\nDurthang\nDwaling\nDwarf-Road\nDwarrowdelf\nDwimorberg\nDwimordene\nEagles\' Eyrie\nEast Beleriand\nEast Bight\nEast Emnet\nEastern Eriador\nEast Farthing\nEastfold\nEast-gate\nEast-lands\nEast Lórien\nEast March\nEast Road\nEast Wall of Rohan\nEastwood\nEchad i Sedryn\nEchoing Hills\nEchoriath\nEdge of the Wild\nEdhellond\nEdoras\nEgladil\nEglador\nEglamar\nEglarest\nEilenach\nEilenaer\nEithel Ivrin\nEithel Nínui\nEithel Sirion\nEkkaia\nEldalondë the Green\nEldamar\nElennanórê\nElerrína\nElostirion\nElros\' Tower\nElvenhome\nElwing\'s tower\nEmerië\nEmyn Arnen\nEmyn Beraid\nEmyn Duir\nEmyn Eglain\nEmyn Muil\nEmyn-nu-Fuin\nEmyn Uial\nEnchanted Isles\nEnchanted River\nEncircling Mountains\nEncircling Sea\nEndless Stair\nEndor\nEned\nEnedwaith\nEntwade\nRiver Entwash\nEntwash Vale\nEntwood\nÉothéod\nEphel Brandir\nEphel Dúath\nErebor\nErech\nEred Engrin\nEred Gorgoroth\nEred Lindon\nEred Lithui\nEred Lómin\nEred Mithrin\nEred Nimrais\nEred Wethrin\nEregion\nErelas\nErendis\nEressëa\nEriador\nErui\nEryn Fuir\nEryn Galen\nEryn Vorn\nEsgalduin\nEsgaroth\nEstolad\nEthir Anduin\nEthraid Engrin\nEthring\nEttendales\nEttenmoors\nEvereven\nEverholt\nEvernight\nEzellohar\nFalas\nFalls of Esgalduin\nFalls of Irvin\nFalls of Rauros\nFalls of Sirion\nFangorn Forest\nFanuidhol\nFar Downs\nFar Harad\nFar Shore\nFar West\nFaskalan\nFaskala-númen\nFen Hollen\nFen of Serech\nFenmarch\nFens of Sirion\nFerry Lane\nField of Celebrant\nField of Cormallen\nFingolfin\'s Cairn\nFirienholt\nFirien Wood\nFirst Deep\nFirst Hall\nFirth of Drengist\nFirth of Rómenna\nFoen\nFolde\nFord of Brithiach\nFord of Bruinen\nFord of Stones\nFords of Isen\nForest Gate\nForest of Brethil\nForest of Neldoreth\nForest of Region\nForest River\nForest Road\nForgotten Villages\nForlindon\nForlond\nFormenos\nFornarthan\nFornost Erain\nForochel\nForodwaith\nForostar\nForsaken Inn\nFôs\' Almir\nFountain of Tinúviel\nFox Downs\nFramsburg\nFrogmorton\nFront Gate\nFront Porch\nGabilgathod\nGamwich\nGap of Calenardhon\nGap of Rohan\nGardens of Lórien\nGate of the Dead\nGate of the Noldor\nGate Stream\nGates of Morning\nGates of Sirion\nGelion\nGilrain\nGinglith\nGirdle of Arda\nGirdle of Melian\nGirdley Island\nGladden Fields\nGladden River\nGlanduin\nGlanhír\nGlithui\nGlittering Caves\nGoblin-gate\nGoblin-town\nGolden Gates\nGolden Wood\nGollum\'s Lake\nGondolin\nGondor\nGorbelgod\nGorge of Aglon\nGorgoroth\nGorgoroth\ngreat East Road\nGreat Fens\nGreat Gulf\nGreat Hall of Thráin\nGreat Lakes\nGreat Lands\nGreat Mound\nGreat Plains\nGreat Rift\nGreat River\nGreat Shelf\nGreat Smials\nGreat Southern Forests\nGreat West Road\nGreat Willow\nGreater Gelion\nGreen Dragon\nGreen Hill Country\nGreen Hills\nGreen Hills\nGreenfields\nGreenholm\nGreenway\nGreenwood the Great\nGrey Havens\nGrey Mountains\nGrey Mountains\nGrey Wood\nGreyflood\nGreylin\nGrinding Ice\nGrindwall\nGruir\nGuarded Plain\nGulf of Lhûn\nGundabad\nGwathló\nHadhodrond\nHaeren\nHaerast\nHalifirien\nHall of Brodda\nHall of Fire\nHalls of Aulë\nHalls of Durin\nHalls of Mandos\nHanstovánen\nHarad\nHarad Road\nHardbottle\nHarlindon\nHarlond\nHarnen\nHarondor\nHarrowdale\nHaudh-en-Elleth\nHaudh-en-Ndengin\nHaudh-en-Nirnaeth\nHaudh in Gwanûr\nHaunted Mountain\nHaunted Pass\nHaven of the Eldar\nHaven of the Swans\nHavens of Mithlond\nHavens of Sirion\nHaven of Umbar\nHay Gate\nHaysend\nHeats of the South\nHedge\nHelcar\nHelcaraxë\nHelevorn\nHelm\'s Deep\nHelm\'s Dike\nHelm\'s Gate\nHenneth Annûn\nHidden Ferries\nHidden Way\nHigh Court\nHigh Faroth\nHigh Hay\nHigh Pass\nHildórien\nHill of Awe\nHill of Guard\nHill of Hearing\nHill of Himring\nHill of Ilmarin\nHill of Oromet\nHill of Seeing\nHill of Spies\nHill of the Ear\nHill of the Eye\nHill\nHills of Eglamar\nHills of Evendim\nHills of Scary\nHimlad\nHimring\nHírilorn\nHisilómë\nHithaeglir\nHither Lands\nHither Shore\nHithlum\nHoarwell\nHobbiton\nHobbiton Hill\nHobbiton Road\nHollin\nHollin Gate\nHollin Ridge\nHornburg\nHornrock\nHouse of Oromë\nHouse of the Hundred Chimneys\nHouse of the Kings\nHouse of the Stewards\nHouse of Tulkas\nHouses of Healing\nHouse of the Dead\nHuts of the raft-elves\nHyarastorni\nHyarmentir\nHyarnustar\nHyarrostar\nIant Iaur\nIcebay of Forochel\nIce of the North\nIdril\'s secret way\ni Drann\nIlluin\nIlmarin\nImlad Morgul\nImladris\nImloth Melui\nImrath Gondraith\nInner Seas\nInland Sea\nInland Sea of Helcar\nÍrensaga\nIron Fortress\nIron Hills\nIron Mountains\nIsen\nIsengard\nIsenmouthe\nIshmalog\nIsle of Almaren\nIsle of Balar\nIsle of Elenna\nIsle of Eressëa\nIsle of Meneltarma\nIsle of Werewolves\nIsles of the West\nIthilien\nIvrin\nIvrin\'s Well\nIvy Bush\nN/A\nKalormë\nKarningul\nKelos\nKhand\nKhazad-dûm\nKheled-zâram\nKibil-nâla\nKingdom of the South\nKingdom under the Mountain\nKing\'s Court\nKing\'s House\nKingsland\nKingsland\nKings\' Norbury\nKiril\nKirith Ungol\nKôr\nKortirion\nLadros\nLake Helevorn\nLake Mithrim\nLake Nenuial\nLake-town\nLamedon\nLammoth\nLampwrights\' Street\nLand of Bow-Helm\nLand of the Dead that Live\nLands Under the Wave\nLands Without\nLangflood\nLangstrand\nLangwell\nLanthir Lamath\nLast Bridge\nLast Homely House\nLast Mountain\nLast Shore\nLaurelindórenan\nLebennin\nLefnui\nLegolin\nLhûn\nLinaewen\nLindon\nLindórinan\nLinhir\nLisgardh\nLithir\nLithlad\nLittle Delving\nLittle Gelion\nLockholes\nLoeg Ningloron\nLond Daer Enedh\nLone-lands\nLonely Isle\nLonely Mountain\nLongbottom\nLong Cleeve\nLong Lake\nLong Marshes\nLong Wall\nLórellin\nLórien\nLórinand\nLosgar\nLossarnach\nLost Isle\nLostladen\nLothlann\nLothlórien\nLoudwater\nLower Halls\nLugbúrz\nLune\nLuvailin\nMaggot\'s Farm\nMaggot\'s Lane\nMaglor\'s Gap\nMahanaxar\nMalduin\nMandos\nMansions of Aulë\nMarch of Maedhros\nMarish\nMark\nMar-nu-Falmar\nMarket-pool\nMarshes of Nevrast\nMeduseld\nMen-i-Naugrim\nMenegroth\nMeneltarma\nMere of Dead Faces\nMeres of Twilight\nMerethrond\nMering Stream\nMethed-en-glad\nMethedras\nMichel Delving\nMiddle-earth\nMidgewater Marshes\nMill\nMinas Anor\nMinas Ithil\nMinas Morgul\nMinas Tirith\nMinas Tirith\nMindeb\nMindolluin\nMindon Eldaliéva\nMinhiriath\nMin-Rimmon\nMirkwood\nMirrormere\nMisty Mountains\nMithe\nMithe Steps\nMitheithel\nMithlond\nMithrim\nMittalmar\nMoors of the Neweglu\nMoors of the Nibin-noeg\nMorannon\nMordor\nMorgai\nMorgul Pass\nMorgul-road\nMorgulduin\nMoria\nMornan\nMorthond\nMound of Avarice\nMound of Dunlendings\nMound of Riders\nMounds of Mundburg\nMount Dolmed\nMount Doom\nMount Everwhite\nMount Fang\nMount Gram\nMount Gundabad\nMount Mindolluin\nMount of the Pine Trees\nMount Rerir\nMount Taras\nMountain of Fire\nMountains of Aman\nMountains of Angmar\nMountains of Lune\nMountains of Mirkwood\nMountains of Mithrim\nMountains of Shadow\nMountains of Shadow\nMountains of Terror\nMountains of the East\nMouths of Anduin\nMouths of Entwash\nMouths of Sirion\nMundburg\nNaith\nNameless Land\nNan Curunír\nNan Dungortheb\nNan Elmoth\nNan-tathren\nNanduhirrion\nNarchost\nNardol\nNargothrond\nNarog\nNarrows of the Forest\nNear Harad\nNeedlehole\nNeldoreth\nNen Echui\nNen Girith\nNen Hithoel\nNen Lalaith\nNenning\nNenuial\nNether Dark\nNevrast\nNevrast\nNew Haven\nNew Lands\nNewbury\nNienna\nNimbrethil\nNimrodel\nNindalf\nNindamos\nNinglor\nNîn-in-Eilph\nNísimaldar\nNísinen\nNivrim\nNobottle\nNogrod\nNoirinan\nNoman-lands\nNorbury\nNorth Cape\nNorth Downs\nNorth Farthing\nNorth Gate\nNorth Ithilien\nNorth Kingdom\nNorth Marches\nNorth Moors\nNorth Road\nNorth Road of Ithilien\nNorth Stair\nNorth Undeep\nNortherland\nNorthern Dark\nNorthern Waste\nNovrod\nNúath \nNúmendor\nNúmenor\nNunduinë\nNurn\nOatbarton\nObel Halad\nOcean\nOiolossë\nOiomúrë\nOld Bridge\nOld Ford\nOld Forest\nOld Forest Road\nOld Grange\nOld Guesthouse\nOld Mill\nOld Púkel land\nOld Road\nOld South Road\nOld South Road\nOld Winyards\nOld World\nOndolindë\nOndoluncanando\nOndonórë\nOndosto\nOnodló\nOrc-holds\nOrfalch Echor\nOrmal\nOrocarni\nOrod-na-Thôn\nOrodruin\nOromet\nOrrostar\nOrthanc\nOsgiliath\nOssiriand\nOst-in-Edhil\nOtherworld\nOuter Dark or Outer Darkness\nOuter Lands\nOuter Sea\nOutlands\nOverbourn\nOverbourn Marshes\nOverhill\nPalisor\nParth Celebrant\nParth Galen\nParty Field\nPass of Aglon\nPass of Anach\nPastures of Yavanna\nPaths of the Dead\nPelargir\nPelennor\nPelóri\nPhûrunargian\nPillars of the King\nPincup\nPine-mountain\nPinnath Gelin\nPlace of the Fountain\nPool of Bywater\nPool-side\nPools of Ivrin\nPoros\nPrancing Pony\nQerkaringa\nQuarry\nRadhrim\nRainbow Cleft\nRamdal\nRammas Echor\nRas Mewrim\nRas Morthil\nRath Celerdain\nRath Dínen\nRathlóriel\nRauros\nRavenhill\nRavines of Teiglin\nRedhorn\nRedhorn Gate\nRedwater\nRegion\nRegion of Everlasting Cold\nReunited Kingdom\nRhimdath\nRhosgobel\nRhovanion\nRhudaur\nRhûn\nMin-Rimmon\nRing of Doom\nRing of Isengard\nRingil\nRingil\nRingló\nRingwil\nRivendell\nRiver Running\nRivil\nRivil\'s Well\nRochand\nRómenna\nRûnaer\nRushdown\nRushock Bog\nRushy\nSammath Naur\nSandyman\'s Mill\nSarn Athrad\nSarn Ford\nSarn Gebir\nSauron\'s Isle\nSauron\'s Road\nSauron\'s Temple\nScary\nSea\nSea of Helcar\nSea of Núrnen\nSea of Rhûn\nSea of Ringil\nSeat of Hearing\nSeat of Seeing\nSea-ward Tower\nSecond Hall\nSerni\nSeven Gates of Gondolin\nSeventh Level\nShadowmere\nShadowy Isles\nShadowy Mountains\nShadowy Mountains\nShadowy Seas\nShadowy Spring\nSharabhund\nShathûr\nShelob\'s Lair\nShire\nShirebourn\nSide-door\nSilverlode\nSilvertine\nSindanórie\nSirannon\nSiril\nSirion\nSirith\nSîr Ninglor\nSlag-hills\nSnowbourn\nSorontil\nSouth Downs\nSouth Farthing\nSouth Gondor\nSouth Ithilien\nSouth Kingdom\nSouth Lane\nSouth Road\nSouth Road\nSouth Undeep\nSouthward Road\nSpider\'s Ring\nStaddle\nStair Falls\nStair of the Hold\nStandelf\nStarkhorn\nSteward\'s Door\nStock\nStock Road\nStockbrook\nStonewain Valley\nStoningland\nStraight Road\nStraight Stair\nStraits of the World\nSundering Seas\nSunlands\nSunlendings\nSûthburg\nSûza\nSwanfleet\nTaeglin\nTalath Dirnen\nTalath Rhûnen\nTaniquetil\nTanyasalpë\nTar-Minastir\nTarlang\'s Neck\nTarmasundar\nTarn Aeluin\nTarnost\nTasarinan\nTauremorna\nTauremornalómë\nTaur e-Ndaedelos\nTaur-en-Faroth\nTaur-im-Duinath\nTaur-na-Foen\nTaur-Na-Neldor\nTaur-nu-Fuin\nTaur-nu-Fuin\nTavrobel\nTemple of Sauron\nThalos\nThangorodrim\nTharbad\nThargelion\nThistle Brook\nThorin\'s Halls\nThousand Caves\nThree-Farthing Stone\nThrihyrne\nTighfield\nTindrock\nTirion\nTirith Aear\nTol Brandir\nTol Eressëa\nTol Fuin\nTol Galen\nTol-in-Gaurhoth\nTol Morwen\nTol Sirion\nTol Uinen\nTolfalas\nTomb of the Kings\nTongue\nTookbank\nTookland\nTorech Ungol\nTower Hills\nTower of Cirith Ungol\nTower of Ecthelion\nTower of Ingwë\nTower of the King\nTower of the Stone\nTowers of the Teeth\nTown Hole\nTreebeard\'s Hill\nTreegarth of Orthanc\nTroll\'s Cave\nTrollshaws\nTuckborough\nTumhalad\nTumladen of Gondolin\nTumladen of Gondor\nTumunzahar\nTúna\nTwenty-First Hall of the North-end\nTwilight Meres\nTwo Watchers\nTyrn Gorthad\nUdul\nUdûn\nUdûn of Mordor\nUmbar\nUmboth-muilin\nUndeeps\nUndergate\nUnderhill\nUnder-way\nUnderharrow\nUndertowers\nUndying Lands\nUngoliant\'s Lair\nUlmonan\nUpbourn\nUttermost West\nUtumno\nVale of Sirion\nValandor\nValimar\nValmar\nValinor\nVerna\nVinyalondë\nVinyamar\nVoid\nWaking Water\nWall\'s End\nWalls of Moria\nWalls of the Night\nWalls of the Sun\nWalls of the World\nWargs\' Clearing\nWaste\nWatchwood\nWater-valley\nWater of Awakening\nWay of Escape\nWay of Running Waters\nWaymeet\nWeather Hills\nWeathertop\nWellinghall\nWells of Ivrin\nWells of Varda\nWest-door\nWest-gate of Bree\nWest-gate of Moria\nWest-mark\nWest Beleriand\nWest of the World\nWest Pass\nWest Road\nWestemnet\nWestermanton\nWestern Sea\nWestern Shore\nWesternesse\nWestfarthing\nWestfold\nWestfold Vale\nWestlands\nWestmarch\nWetwang\nWhispering Wood\nWhite Downs\nWhite House of Erendis\nWhite Mountain\nWhite Mountains\nWhite Tower\nWhite Towers\nWhitfurrows\nWhitwell\nWild Wood\nWilderland\nWillowbottom\nWindle-reach\nWinding Stair\nWindow-Curtain\nWindow of the West\nWithered Heath\nWithered Wold\nWithywindle Valley\nWithywindle River\nWithy-path\nWithy-weir\nWizard\'s Isle\nWizard\'s Vale\nWold of Rohan\nWood of Anwar\nWoods of Oromë\nWoodhall\nWoodland Realm\nWoody End\nThe Yale\nYellow Mountains\nYôzâyan\nZirakzigil';
 var $author$project$Corpuses$Namur$corpus = 'Achêne\nAchet\nAgimont\nAhérée\nAische-en-Refail\nAisemont\nAlle\nAndenelle\nAndenne\nAndoy\nAnhée\nAnnevoie-Rouillon\nAnseremme\nAnthée\nArbre\nArsimont\nArville\nAssesse\nAublain\nAuvelais\nAve-et-Auffe\nAwagne\nBagimont\nBaillamont\nBaillonville\nBalâtre\nBambois\nBarcenal\nBaronville\nBarsy\nBarvaux-Condroz\nBassines\nBauche\nBaudecet\nBeauraing\nBeez\nBelgrade\nBellefontaine\nBelvaux\nBerzée\nBesinne\nBeuzet\nBiert\nBiert-le-Roi\nBierwart\nBiesme\nBiesmerée\nBièvre\nBioul\nBlaimont\nBohan\nBohisseaux\nBoignée\nBois-de-Villers\nBoisseilles\nBolinne\nBoneffe\nBoninne\nBonneville\nBonsin\nBormenville\nBossière\nBothey\nBouge\nBourseigne-Neuve\nBourseigne-Vieille\nBousalle\nBoussu-en-Fagne\nBouvignes\nBovesse\nBragard\nBraibant\nBranchon\nBriquemont\nBrûly-de-Pesche\nBrumagne\nBruyères\nBuissonville\nBuresse\nBuzet\nBuzin\nCastillon\nCelles\nCerfontaine\nChairière\nChampion\nChansin\nChapois\nChardeneux\nChastrès\nChaumont\nChevetogne\nCiergnon\nCiney\nClair-Chêne\nClermont\nCognelée\nConjoux\nConneux\nCorbion\nCorenne\nCornimont\nCorroy\nCorroy-le-Château\nCortil-Wodon\nCourrière\nCoutisse\nCouvin\nCroix\nCrupet\nCul-des-Sarts\nCustinne\nDailly\nDaussois\nDaussoulx\nDave\nDenée\nDevant-les-Bois\nDhuy\nDinant\nDion\nDoische\nDonveau\nDorinne\nDourbes\nDoyon\nDurnal\nDréhance\nÉghezée\nÉmeville\nÉmines\nEmptinal\nEmptinne\nEnhet\nÉprave\nErmeton-sur-Biert\nErnage\nErpent\nÉvelette\nÉvrehailles\nFagnolle\nFailon\nFairoul\nFalaën\nFalisolle\nFalmagne\nFalmignoul\nFaulx-les-Tombes\nFays\nFelenne\nFenffe\nFerage\nFeschaux\nFinnevaux\nFlavion\nFlawinne\nFlorée\nFloreffe\nFlorennes\nFloriffoux\nFlostoy\nFocant\nFonds-de-l\'Eau\nFontenelle\nForville\nForzée\nFosses-la-Ville\nFoy-Notre-Dame\nFraire\nFraire-la-Crotteuse\nFrancesse\nFranchimont\nFranc-Waret\nFrandeux\nFranière\nFranquenée\nFrasnes-lez-Couvin\nFreÿr\nFrisée\nFroidfontaine\nFroidmont\nFter\nFurfooz\nFurnaux\nGedinne\nGelbressée\nGembloux\nGemenne\nGendron\nGénimont\nGerin\nGerlimpont\nGéronsart\nGesves\nGimnée\nGochenée\nGodinne\nGoesnes\nGolzinne\nGonoy\nGonrieux\nGourdinne\nGoyet\nGozin\nGraide\nGramptinne\nGrand-Leez\nGrand-Manil\nGraux\nGribelle\nGros Buisson\nGros-Fays\nGroynne\nHaid\nHaillot\nHalloy\nHaltinne\nHambraine\nHamerenne\nHamois\nHam-sur-Sambre\nHanret\nHan-sur-Lesse\nHanzinelle\nHanzinne\nHarlue\nHastière-Lavaux\nHastière-par-delà\nHaut-Bois\nHaut-le-Wastia\nHaut-Vent\nHavelange\nHaversin\nHavrenne\nHeer\nHemptinne\nHemptinne\nHerbefays\nHerhet\nHérisson\nHermeton-sur-Meuse\nHérock\nHeure\nHingeon\nHogne\nHonnay\nHontoir\nHoudremont\nHour\nHoux\nHouyet\nHubaille\nHublet\nHulsonniaux\nHun\nIngremez\nInzemont\nIsnes\nIvoy\nJallet\nJamagne\nJambes\nJamblinne\nJamiolle\nJannée\nJassogne\nJavingue\nJemelle\nJemeppe-sur-Sambre\nJeneffe\nJet\nJodion\nKeumiée\nLa Bouchaille\nLa Butte\nLaforêt\nLa Forge\nLa Galopperie\nLaloux\nLandenne\nLaneffe\nLa Pisselotte\nLa Platinerie\nLa Ronce\nLa Tauminerie\nLautenne\nLa Vallée\nLavaux-Sainte-Anne\nLavis\nLe Brûly\nLe Fraity\nLeignon\nLe Mesnil\nLenne\nLe Pachy\nLe Roux\nLes Basses\nLes Boscailles\nLes Bruyères\nLes Communes\nLessive\nLes Trieux\nLesve\nLeuze\nLez-Fontaine\nLibois\nLiernu\nLigny\nLinciaux\nLiroux\nLisogne\nLissoir\nLives-sur-Meuse\nLongchamps\nLonzée\nLouette-Saint-Denis\nLouette-Saint-Pierre\nLoyers\nLumsonry\nLustin\nMaffe\nMahoux\nMaibelle\nMaillen\nMaison\nMaisoncelle\nMaizeret\nMalonne\nMalvoisin\nMarche-les-Dames\nMarchovelette\nMaredret\nMaredsous\nMariembourg\nMarteau\nMartouzin-Neuville\nMatagne-la-Grande\nMatagne-la-Petite\nMatignolle\nMaulenne\nMaurenne\nMazée\nMazy\nMéan\nMehaigne\nMembre\nMerlemont\nMertenne\nMesnil-Église\nMesnil-Saint-Blaise\nMettet\nMeux\nMianoye\nMiavoye\nMiécret\nMohiville\nMoignelée\nMonceau-en-Ardenne\nMoniat\nMont\nMontegnet\nMont-Gauthier\nMoressée\nMorialmé\nMornimont\nMorville\nMoustier-sur-Sambre\nMouzaive\nMozet\nNafraiture\nNajauge\nNalamont\nNamêche\nNamur\nNaninne\nNaomé\nNatoye\nNavaugle\nNefzée\nNettinne\nNeuve-Cour\nNeuville\nNévremont\nNismes\nNiverlée\nNoiseux\nNoville-les-Bois\nNoville-sur-Mehaigne\nOhey\nOignies-en-Thiérache\nOizy\nOlloy-sur-Viroin\nOmezée\nOnhaye\nOnoz\nOrchimont\nOret\nOssogne\nOstemerée\nPatignies\nPernelle\nPerwez\nPesche\nPessoux\nPetigny\nPetit-Doische\nPetite-Chapelle\nPetite Hour\nPetit-Fays\nPetit-Waret\nPhilippeville\nPlançon\nPondrôme\nPontaury\nPont-de-Pierres\nPontillas\nPorcheresse\nPrée\nPresgaux\nProfondeville\nPry\nPurnode\nPussemange\nRegniessart\nRésimont\nReuleau\nReux\nRevogne\nRhisnes\nRienne\nRissart\nRivière\nRochefort\nRognée\nRoly\nRomedenne\nRomerée\nRonchinne\nRonvaux\nRosée\nRostenne\nRouvroy\nSaint-Aubin\nSaint-Denis\nSaint-Gérard\nSaint-Germain\nSaint-Lambert\nSaint-Marc\nSaint-Martin\nSaint-Mort\nSaint-Servais\nSalet\nSamart\nSart-Bernard\nSart-Custinne\nSart-d\'Avril\nSart-en-Fagne\nSart-Eustache\nSart-Saint-Laurent\nSautour\nSauvenière\nSchaltin\nSclayn\nScry\nScy\nSeilles\nSenenne\nSenzeille\nSerinchamps\nSeron\nServille\nSevry\nSilenrieux\nSinsin\nSix-Planes\nSkeuvre\nSoinne\nSomal\nSombreffe\nSomme-Leuze\nSommière\nSomtet\nSomzée\nSorée\nSorinne-la-Longue\nSorinnes\nSosoye\nSoulme\nSoumoy\nSovet\nSovimont\nSoye\nSpontin\nSpy\nStave\nStée\nStrud\nSuarlée\nSugny\nSurice\nTahier\nTamines\nTarcienne\nTaviers\nTaviet\nTemploux\nThanville\nThon-Samson\nThy-le-Bauduin\nThy-le-Château\nThynes\nTillier\nTongrenelle\nTongrinne\nTreignes\nTrieu\nTrieu-des-Sarts\nTrisogne\nTroka\nTrussogne\nTry-Pochaux\nUpigny\nVaucelles\nVedrin\nVelaine\nVelaine-sur-Sambre\nVencimont\nVer\nVerlée\nVerte-Place\nVezin\nVichenet\nVieille-Maison\nVierves-sur-Viroin\nVieux-Sautour\nVillers-Deux-Églises\nVillers-en-Fagne\nVillers-le-Gambon\nVillers-lez-Heest\nVillers-sur-Lesse\nVincon\nViscourt\nVitrival\nVivier-Annon\nVodecée\nVodelée\nVogenée\nVonêche\nVresse\nWagnée\nWaillet\nWalcourt\nWancennes\nWanlin\nWaret-la-Chaussée\nWarisoulx\nWarnant\nWaulsort\nWavreille\nWeillen\nWépion\nWez-de-Chine\nWierde\nWiesme\nWillerzie\nWinenne\nYchippe\nYves-Gomezée\nYvoir';
 var $author$project$Corpuses$Texas$corpus = 'Abbott\nAbernathy\nAbilene\nAckerly\nAddison\nAdrian\nAgua Dulce\nAlamo\nAlamo Heights\nAlba\nAlbany\nAledo\nAlice\nAllen\nAlma\nAlpine\nAlto\nAlton\nAlvarado\nAlvin\nAlvord\nAmarillo\nAmes\nAmherst\nAnahuac\nAnderson\nAndrews\nAngleton\nAngus\nAnna\nAnnetta\nAnnetta North\nAnnetta South\nAnnona\nAnson\nAnthony\nAnton\nAppleby\nAquilla\nAransas Pass\nArcher City\nArcola\nArgyle\nArlington\nArp\nAsherton\nAspermont\nAthens\nAtlanta\nAubrey\nAurora\nAustin\nAustwell\nAvery\nAvinger\nAzle\nBailey\nBailey\'s Prairie\nBaird\nBalch Springs\nBalcones Heights\nBallinger\nBalmorhea\nBandera\nBangs\nBardwell\nBarry\nBarstow\nBartlett\nBartonville\nBastrop\nBay City\nBayou Vista\nBayside\nBaytown\nBayview\nBeach City\nBear Creek\nBeasley\nBeaumont\nBeckville\nBedford\nBedias\nBee Cave\nBeeville\nBellaire\nBellevue\nBellmead\nBells\nBellville\nBelton\nBenavides\nBenbrook\nBenjamin\nBerryville\nBertram\nBeverly Hills\nBevil Oaks\nBig Lake\nBig Sandy\nBig Spring\nBig Wells\nBishop\nBishop Hills\nBlackwell\nBlanco\nBlanket\nBloomburg\nBlooming Grove\nBlossom\nBlue Mound\nBlue Ridge\nBlum\nBoerne\nBogata\nBonham\nBonney\nBooker\nBorger\nBovina\nBowie\nBoyd\nBrackettville\nBrady\nBrazoria\nBrazos Bend\nBrazos Country\nBreckenridge\nBremond\nBrenham\nBriarcliff\nBriaroaks\nBridge City\nBridgeport\nBroaddus\nBronte\nBrookshire\nBrookside Village\nBrowndell\nBrownfield\nBrownsboro\nBrownsville\nBrownwood\nBruceville-Eddy\nBryan\nBryson\nBuckholts\nBuda\nBuffalo\nBuffalo Gap\nBuffalo Springs\nBullard\nBulverde\nBunker Hill Village\nBurkburnett\nBurke\nBurleson\nBurnet\nBurton\nByers\nBynum\nCactus\nCaddo Mills\nCaldwell\nCallisburg\nCalvert\nCameron\nCamp Wood\nCampbell\nCanadian\nCaney City\nCanton\nCanyon\nCarbon\nCarl\'s Corner\nCarmine\nCarrizo Springs\nCarrollton\nCarthage\nCashion Community\nCastle Hills\nCastroville\nCedar Hill\nCedar Park\nCeleste\nCelina\nCenter\nCenterville\nChandler\nChanning\nCharlotte\nChester\nChico\nChildress\nChillicothe\nChina\nChina Grove\nChireno\nChristine\nCibolo\nCisco\nClarendon\nClarksville\nClarksville City\nClaude\nClear Lake Shores\nCleburne\nCleveland\nClifton\nClint\nClute\nClyde\nCoahoma\nCockrell Hill\nCoffee City\nColdspring\nColeman\nCollege Station\nColleyville\nCollinsville\nColmesneil\nColorado City\nColumbus\nComanche\nCombes\nCombine\nCommerce\nComo\nConroe\nConverse\nCool\nCoolidge\nCooper\nCoppell\nCopper Canyon\nCopperas Cove\nCorinth\nCorpus Christi\nCorrigan\nCorsicana\nCottonwood\nCottonwood Shores\nCotulla\nCoupland\nCove\nCovington\nCoyote Flats\nCrandall\nCrane\nCranfills Gap\nCrawford\nCreedmoor\nCresson\nCrockett\nCrosbyton\nCross Plains\nCross Roads\nCross Timber\nCrowell\nCrowley\nCrystal City\nCuero\nCumby\nCuney\nCushing\nCut and Shoot\nDaingerfield\nDaisetta\nDalhart\nDallas\nDalworthington Gardens\nDanbury\nDarrouzett\nDawson\nDayton\nDayton Lakes\nDe Kalb\nDe Leon\nDean\nDecatur\nDeCordova\nDeer Park\nDel Rio\nDell City\nDenison\nDenton\nDenver City\nDeport\nDeSoto\nDetroit\nDevers\nDevine\nDiboll\nDickens\nDickinson\nDilley\nDimmitt\nDISH\nDodd City\nDodson\nDomino\nDonna\nDorchester\nDouble Oak\nDouglassville\nDraper\nDripping Springs\nDriscoll\nDublin\nDumas\nDuncanville\nEagle Lake\nEagle Pass\nEarly\nEarth\nEast Bernard\nEast Mountain\nEast Tawakoni\nEastland\nEaston\nEctor\nEdcouch\nEden\nEdgecliff Village\nEdgewood\nEdinburg\nEdmonson\nEdna\nEdom\nEl Campo\nEl Cenizo\nEl Lago\nEl Paso\nEldorado\nElectra\nElgin\nElkhart\nElmendorf\nElsa\nEmhouse\nEmory\nEnchanted Oaks\nEncinal\nEnnis\nEscobares\nEstelline\nEuless\nEureka\nEustace\nEvant\nEverman\nFair Oaks Ranch\nFairchilds\nFairfield\nFairview\nFalfurrias\nFalls City\nFarmers Branch\nFarmersville\nFarwell\nFate\nFayetteville\nFerris\nFlatonia\nFlorence\nFloresville\nFlower Mound\nFloydada\nFollett\nForest Hill\nForney\nForsan\nFort Stockton\nFort Worth\nFranklin\nFrankston\nFredericksburg\nFreeport\nFreer\nFriendswood\nFriona\nFrisco\nFritch\nFrost\nFruitvale\nFulshear\nFulton\nGainesville\nGalena Park\nGallatin\nGalveston\nGanado\nGarden Ridge\nGarland\nGarrett\nGarrison\nGary City\nGatesville\nGeorge West\nGeorgetown\nGholson\nGiddings\nGilmer\nGladewater\nGlen Rose\nGlenn Heights\nGodley\nGoldsmith\nGoldthwaite\nGoliad\nGolinda\nGonzales\nGoodlow\nGoodrich\nGordon\nGoree\nGorman\nGraford\nGraham\nGranbury\nGrand Prairie\nGrand Saline\nGrandfalls\nGrandview\nGranger\nGranite Shoals\nGranjeno\nGrapeland\nGrapevine\nGrays Prairie\nGreenville\nGregory\nGrey Forest\nGroesbeck\nGroom\nGroves\nGroveton\nGruver\nGun Barrel City\nGunter\nGustine\nHackberry\nHale Center\nHallettsville\nHallsburg\nHallsville\nHaltom City\nHamilton\nHamlin\nHappy\nHardin\nHarker Heights\nHarlingen\nHart\nHaskell\nHaslet\nHawk Cove\nHawkins\nHawley\nHays\nHearne\nHeath\nHebron\nHedley\nHedwig Village\nHelotes\nHemphill\nHempstead\nHenderson\nHenrietta\nHereford\nHewitt\nHickory Creek\nHico\nHidalgo\nHideaway\nHiggins\nHighland Haven\nHighland Park\nHighland Village\nHill Country Village\nHillcrest\nHillsboro\nHilshire Village\nHitchcock\nHoliday Lakes\nHolland\nHolliday\nHollywood Park\nHondo\nHoney Grove\nHooks\nHorizon City\nHorseshoe Bay\nHouston\nHowardwick\nHowe\nHubbard\nHudson\nHudson Oaks\nHughes Springs\nHumble\nHunters Creek Village\nHuntington\nHuntsville\nHurst\nHutchins\nHutto\nHuxley\nIdalou\nImpact\nIndian Lake\nIndustry\nIngleside\nIngleside on the Bay\nIngram\nIola\nIowa Colony\nIowa Park\nIraan\nIredell\nIrving\nItaly\nItasca\nIvanhoe\nJacinto City\nJacksboro\nJacksonville\nJamaica Beach\nJarrell\nJasper\nJayton\nJefferson\nJersey Village\nJewett\nJoaquin\nJohnson City\nJolly\nJones Creek\nJonestown\nJosephine\nJoshua\nJourdanton\nJunction\nJustin\nKarnes City\nKaty\nKaufman\nKeene\nKeller\nKemah\nKemp\nKempner\nKendleton\nKenedy\nKenefick\nKennard\nKennedale\nKerens\nKermit\nKerrville\nKilgore\nKilleen\nKingsbury\nKingsville\nKirby\nKirbyville\nKirvin\nKnollwood\nKnox City\nKosse\nKountze\nKress\nKrugerville\nKrum\nKurten\nKyle\nLa Feria\nLa Grange\nLa Grulla\nLa Joya\nLa Marque\nLa Porte\nLa Vernia\nLa Villa\nLa Ward\nLaCoste\nLacy-Lakeview\nLadonia\nLago Vista\nLaguna Vista\nLake Bridgeport\nLake City\nLake Dallas\nLake Jackson\nLake Tanglewood\nLake Worth\nLakeport\nLakeside\nLakeside\nLakeside City\nLakeview\nLakeway\nLakewood Village\nLamesa\nLampasas\nLancaster\nLaredo\nLatexo\nLavon\nLawn\nLeague City\nLeakey\nLeander\nLeary\nLefors\nLeon Valley\nLeona\nLeonard\nLeroy\nLevelland\nLewisville\nLexington\nLiberty\nLiberty Hill\nLincoln Park\nLindale\nLinden\nLindsay\nLipan\nLittle Elm\nLittle River-Academy\nLittlefield\nLive Oak\nLiverpool\nLivingston\nLlano\nLockhart\nLockney\nLog Cabin\nLometa\nLone Oak\nLone Star\nLongview\nLoraine\nLorena\nLorenzo\nLos Fresnos\nLos Indios\nLos Ybanez\nLott\nLovelady\nLowry Crossing\nLubbock\nLucas\nLueders\nLufkin\nLuling\nLumberton\nLyford\nLytle\nMabank\nMadisonville\nMagnolia\nMalakoff\nMalone\nManor\nMansfield\nManvel\nMarble Falls\nMarfa\nMarietta\nMarion\nMarlin\nMarquez\nMarshall\nMart\nMartindale\nMason\nMatador\nMathis\nMaud\nMaypearl\nMcAllen\nMcCamey\nMcGregor\nMcKinney\nMcLean\nMcLendon-Chisholm\nMeadow\nMeadowlakes\nMeadows Place\nMegargel\nMelissa\nMelvin\nMemphis\nMenard\nMercedes\nMeridian\nMerkel\nMertens\nMertzon\nMesquite\nMexia\nMiami\nMidland\nMidlothian\nMidway\nMilano\nMildred\nMiles\nMilford\nMiller\'s Cove\nMillican\nMillsap\nMineola\nMineral Wells\nMingus\nMission\nMissouri City\nMobeetie\nMobile City\nMonahans\nMont Belvieu\nMontgomery\nMoody\nMoore Station\nMoran\nMorgan\nMorgan\'s Point\nMorgan\'s Point Resort\nMorton\nMoulton\nMount Calm\nMount Enterprise\nMount Pleasant\nMount Vernon\nMountain City\nMuenster\nMuleshoe\nMullin\nMunday\nMurchison\nMurphy\nMustang\nMustang Ridge\nNacogdoches\nNaples\nNash\nNassau Bay\nNatalia\nNavarro\nNavasota\nNazareth\nNederland\nNeedville\nNevada\nNew Berlin\nNew Boston\nNew Braunfels\nNew Chapel Hill\nNew Deal\nNew Fairview\nNew Home\nNew Hope\nNew London\nNew Summerfield\nNew Waverly\nNewark\nNewcastle\nNewton\nNeylandville\nNiederwald\nNixon\nNocona\nNolanville\nNome\nNoonday\nNordheim\nNormangee\nNorth Cleveland\nNorth Richland Hills\nNorthlake\nNovice\nO\'Brien\nO\'Donnell\nOak Grove\nOak Leaf\nOak Point\nOak Ridge\nOak Ridge\nOak Ridge North\nOak Valley\nOakwood\nOdem\nOdessa\nOglesby\nOld River-Winfree\nOlmos Park\nOlney\nOlton\nOmaha\nOnalaska\nOpdyke West\nOrange\nOrange Grove\nOrchard\nOre City\nOverton\nOvilla\nOyster Creek\nPaducah\nPaint Rock\nPalacios\nPalestine\nPalisades\nPalm Valley\nPalmer\nPalmhurst\nPalmview\nPampa\nPanhandle\nPanorama Village\nPantego\nParadise\nParis\nParker\nPasadena\nPattison\nPatton Village\nPayne Springs\nPearland\nPearsall\nPecan Gap\nPecan Hill\nPecos\nPelican Bay\nPenelope\nPenitas\nPerryton\nPetersburg\nPetrolia\nPetronila\nPflugerville\nPharr\nPilot Point\nPine Forest\nPine Island\nPinehurst\nPineland\nPiney Point Village\nPittsburg\nPlains\nPlainview\nPlano\nPlantersville\nPleak\nPleasant Valley\nPleasanton\nPlum Grove\nPoint\nPoint Blank\nPoint Comfort\nPoint Venture\nPonder\nPort Aransas\nPort Arthur\nPort Isabel\nPort Lavaca\nPort Neches\nPortland\nPost\nPost Oak Bend City\nPoteet\nPoth\nPottsboro\nPowell\nPoynor\nPrairie View\nPremont\nPresidio\nPrimera\nPrinceton\nProgreso\nProgreso Lakes\nProsper\nProvidence Village\nPutnam\nPyote\nQuanah\nQueen City\nQuinlan\nQuintana\nQuitaque\nQuitman\nRalls\nRancho Viejo\nRanger\nRankin\nRansom Canyon\nRavenna\nRaymondville\nRed Lick\nRed Oak\nRedwater\nRefugio\nReklaw\nReno\nReno\nRetreat\nRhome\nRice\nRichardson\nRichland\nRichland Hills\nRichland Springs\nRichmond\nRichwood\nRiesel\nRio Bravo\nRio Grande City\nRio Hondo\nRio Vista\nRising Star\nRiver Oaks\nRiverside\nRoanoke\nRoaring Springs\nRobert Lee\nRobinson\nRobstown\nRoby\nRochester\nRockdale\nRockport\nRocksprings\nRockwall\nRocky Mound\nRogers\nRollingwood\nRoma\nRoman Forest\nRopesville\nRoscoe\nRose City\nRose Hill Acres\nRosebud\nRosenberg\nRoss\nRosser\nRotan\nRound Mountain\nRound Rock\nRound Top\nRowlett\nRoxton\nRoyse City\nRule\nRunaway Bay\nRunge\nRusk\nSabinal\nSachse\nSadler\nSaginaw\nSalado\nSan Angelo\nSan Antonio\nSan Augustine\nSan Benito\nSan Diego\nSan Elizario\nSan Felipe\nSan Juan\nSan Leanna\nSan Marcos\nSan Patricio\nSan Perlita\nSan Saba\nSanctuary\nSandy Oaks\nSandy Point\nSanford\nSanger\nSansom Park\nSanta Anna\nSanta Clara\nSanta Fe\nSanta Rosa\nSavoy\nSchertz\nSchulenburg\nScotland\nScottsville\nScurry\nSeabrook\nSeadrift\nSeagoville\nSeagraves\nSealy\nSeguin\nSelma\nSeminole\nSeven Oaks\nSeven Points\nSeymour\nShady Shores\nShallowater\nShamrock\nShavano Park\nShenandoah\nShepherd\nSherman\nShiner\nShoreacres\nSilsbee\nSilverton\nSimonton\nSinton\nSkellytown\nSlaton\nSmiley\nSmithville\nSmyer\nSnook\nSnyder\nSocorro\nSomerset\nSomerville\nSonora\nSour Lake\nSouth Houston\nSouth Mountain\nSouth Padre Island\nSouthlake\nSouthmayd\nSouthside Place\nSpearman\nSplendora\nSpofford\nSpring Branch\nSpring Valley Village\nSpringlake\nSpringtown\nSpur\nSt. Hedwig\nSt. Jo\nSt. Paul\nStafford\nStagecoach\nStamford\nStanton\nStaples\nStar Harbor\nStephenville\nSterling City\nStinnett\nStockdale\nStratford\nStrawn\nStreetman\nSudan\nSugar Land\nSullivan City\nSulphur Springs\nSun Valley\nSundown\nSunnyvale\nSunray\nSunrise Beach Village\nSunset Valley\nSurfside Beach\nSweeny\nSweetwater\nTaft\nTahoka\nTalco\nTalty\nTatum\nTaylor\nTaylor Lake Village\nTaylor Landing\nTeague\nTehuacana\nTemple\nTenaha\nTerrell\nTerrell Hills\nTexarkana\nTexas City\nTexhoma\nTexline\nThe Colony\nThe Hills\nThompsons\nThorndale\nThornton\nThorntonville\nThrall\nThree Rivers\nThrockmorton\nTiki Island\nTimbercreek Canyon\nTimpson\nTioga\nTira\nToco\nTodd Mission\nTolar\nTom Bean\nTomball\nTool\nToyah\nTrent\nTrenton\nTrinidad\nTrinity\nTrophy Club\nTroup\nTroy\nTulia\nTurkey\nTuscola\nTye\nTyler\nUhland\nUncertain\nUnion Grove\nUnion Valley\nUniversal City\nUniversity Park\nUvalde\nValentine\nValley Mills\nValley View\nVan\nVan Alstyne\nVan Horn\nVega\nVenus\nVernon\nVictoria\nVidor\nVinton\nVolente\nVon Ormy\nWaco\nWaelder\nWake Village\nWaller\nWallis\nWalnut Springs\nWarren City\nWaskom\nWatauga\nWaxahachie\nWeatherford\nWebberville\nWebster\nWeimar\nWeinert\nWeir\nWellington\nWellman\nWells\nWeslaco\nWest\nWest Columbia\nWest Lake Hills\nWest Orange\nWest Tawakoni\nWest University Place\nWestbrook\nWestlake\nWeston\nWeston Lakes\nWestover Hills\nWestworth Village\nWharton\nWheeler\nWhite Deer\nWhite Oak\nWhite Settlement\nWhiteface\nWhitehouse\nWhitesboro\nWhitewright\nWhitney\nWichita Falls\nWickett\nWillis\nWillow Park\nWills Point\nWilmer\nWilson\nWimberley\nWindcrest\nWindom\nWindthorst\nWinfield\nWink\nWinnsboro\nWinona\nWinters\nWixon Valley\nWolfe City\nWolfforth\nWoodbranch\nWoodcreek\nWoodloch\nWoodsboro\nWoodson\nWoodville\nWoodway\nWortham\nWylie\nYantis\nYoakum\nYorktown\nZavalla';
-var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
+var $elm$core$Dict$RBEmpty_elm_builtin = {$: -2};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
-var $elm$core$Dict$Black = {$: 'Black'};
+var $elm$core$Dict$Black = 1;
 var $elm$core$Dict$RBNode_elm_builtin = F5(
 	function (a, b, c, d, e) {
-		return {$: 'RBNode_elm_builtin', a: a, b: b, c: c, d: d, e: e};
+		return {$: -1, a: a, b: b, c: c, d: d, e: e};
 	});
-var $elm$core$Dict$Red = {$: 'Red'};
+var $elm$core$Dict$Red = 0;
 var $elm$core$Dict$balance = F5(
 	function (color, key, value, left, right) {
-		if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Red')) {
+		if ((right.$ === -1) && (!right.a)) {
 			var _v1 = right.a;
 			var rK = right.b;
 			var rV = right.c;
 			var rLeft = right.d;
 			var rRight = right.e;
-			if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
+			if ((left.$ === -1) && (!left.a)) {
 				var _v3 = left.a;
 				var lK = left.b;
 				var lV = left.c;
@@ -5491,22 +5481,22 @@ var $elm$core$Dict$balance = F5(
 				var lRight = left.e;
 				return A5(
 					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Red,
+					0,
 					key,
 					value,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, rK, rV, rLeft, rRight));
+					A5($elm$core$Dict$RBNode_elm_builtin, 1, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, 1, rK, rV, rLeft, rRight));
 			} else {
 				return A5(
 					$elm$core$Dict$RBNode_elm_builtin,
 					color,
 					rK,
 					rV,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, left, rLeft),
+					A5($elm$core$Dict$RBNode_elm_builtin, 0, key, value, left, rLeft),
 					rRight);
 			}
 		} else {
-			if ((((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) && (left.d.$ === 'RBNode_elm_builtin')) && (left.d.a.$ === 'Red')) {
+			if ((((left.$ === -1) && (!left.a)) && (left.d.$ === -1)) && (!left.d.a)) {
 				var _v5 = left.a;
 				var lK = left.b;
 				var lV = left.c;
@@ -5519,11 +5509,11 @@ var $elm$core$Dict$balance = F5(
 				var lRight = left.e;
 				return A5(
 					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Red,
+					0,
 					lK,
 					lV,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, llK, llV, llLeft, llRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, key, value, lRight, right));
+					A5($elm$core$Dict$RBNode_elm_builtin, 1, llK, llV, llLeft, llRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, 1, key, value, lRight, right));
 			} else {
 				return A5($elm$core$Dict$RBNode_elm_builtin, color, key, value, left, right);
 			}
@@ -5532,8 +5522,8 @@ var $elm$core$Dict$balance = F5(
 var $elm$core$Basics$compare = _Utils_compare;
 var $elm$core$Dict$insertHelp = F3(
 	function (key, value, dict) {
-		if (dict.$ === 'RBEmpty_elm_builtin') {
-			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
+		if (dict.$ === -2) {
+			return A5($elm$core$Dict$RBNode_elm_builtin, 0, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
 		} else {
 			var nColor = dict.a;
 			var nKey = dict.b;
@@ -5541,8 +5531,8 @@ var $elm$core$Dict$insertHelp = F3(
 			var nLeft = dict.d;
 			var nRight = dict.e;
 			var _v1 = A2($elm$core$Basics$compare, key, nKey);
-			switch (_v1.$) {
-				case 'LT':
+			switch (_v1) {
+				case 0:
 					return A5(
 						$elm$core$Dict$balance,
 						nColor,
@@ -5550,7 +5540,7 @@ var $elm$core$Dict$insertHelp = F3(
 						nValue,
 						A3($elm$core$Dict$insertHelp, key, value, nLeft),
 						nRight);
-				case 'EQ':
+				case 1:
 					return A5($elm$core$Dict$RBNode_elm_builtin, nColor, nKey, value, nLeft, nRight);
 				default:
 					return A5(
@@ -5566,13 +5556,13 @@ var $elm$core$Dict$insertHelp = F3(
 var $elm$core$Dict$insert = F3(
 	function (key, value, dict) {
 		var _v0 = A3($elm$core$Dict$insertHelp, key, value, dict);
-		if ((_v0.$ === 'RBNode_elm_builtin') && (_v0.a.$ === 'Red')) {
+		if ((_v0.$ === -1) && (!_v0.a)) {
 			var _v1 = _v0.a;
 			var k = _v0.b;
 			var v = _v0.c;
 			var l = _v0.d;
 			var r = _v0.e;
-			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, l, r);
+			return A5($elm$core$Dict$RBNode_elm_builtin, 1, k, v, l, r);
 		} else {
 			var x = _v0;
 			return x;
@@ -5609,10 +5599,8 @@ var $author$project$Corpuses$corpuses = $elm$core$Dict$fromList(
 			'zcustom',
 			_Utils_Tuple2('Custom...', ''))
 		]));
-var $elm$time$Time$Posix = function (a) {
-	return {$: 'Posix', a: a};
-};
-var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
+var $elm$time$Time$Posix = $elm$core$Basics$identity;
+var $elm$time$Time$millisToPosix = $elm$core$Basics$identity;
 var $elm$file$File$Select$file = F2(
 	function (mimes, toMsg) {
 		return A2(
@@ -5620,12 +5608,10 @@ var $elm$file$File$Select$file = F2(
 			toMsg,
 			_File_uploadOne(mimes));
 	});
-var $elm$random$Random$Generate = function (a) {
-	return {$: 'Generate', a: a};
-};
+var $elm$random$Random$Generate = $elm$core$Basics$identity;
 var $elm$random$Random$Seed = F2(
 	function (a, b) {
-		return {$: 'Seed', a: a, b: b};
+		return {$: 0, a: a, b: b};
 	});
 var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
 var $elm$random$Random$next = function (_v0) {
@@ -5643,19 +5629,19 @@ var $elm$random$Random$initialSeed = function (x) {
 		A2($elm$random$Random$Seed, state2, incr));
 };
 var $elm$time$Time$Name = function (a) {
-	return {$: 'Name', a: a};
+	return {$: 0, a: a};
 };
 var $elm$time$Time$Offset = function (a) {
-	return {$: 'Offset', a: a};
+	return {$: 1, a: a};
 };
 var $elm$time$Time$Zone = F2(
 	function (a, b) {
-		return {$: 'Zone', a: a, b: b};
+		return {$: 0, a: a, b: b};
 	});
 var $elm$time$Time$customZone = $elm$time$Time$Zone;
 var $elm$time$Time$now = _Time_now($elm$time$Time$millisToPosix);
 var $elm$time$Time$posixToMillis = function (_v0) {
-	var millis = _v0.a;
+	var millis = _v0;
 	return millis;
 };
 var $elm$random$Random$init = A2(
@@ -5668,7 +5654,7 @@ var $elm$random$Random$init = A2(
 	$elm$time$Time$now);
 var $elm$random$Random$step = F2(
 	function (_v0, seed) {
-		var generator = _v0.a;
+		var generator = _v0;
 		return generator(seed);
 	});
 var $elm$random$Random$onEffects = F3(
@@ -5676,7 +5662,7 @@ var $elm$random$Random$onEffects = F3(
 		if (!commands.b) {
 			return $elm$core$Task$succeed(seed);
 		} else {
-			var generator = commands.a.a;
+			var generator = commands.a;
 			var rest = commands.b;
 			var _v1 = A2($elm$random$Random$step, generator, seed);
 			var value = _v1.a;
@@ -5693,41 +5679,36 @@ var $elm$random$Random$onSelfMsg = F3(
 	function (_v0, _v1, seed) {
 		return $elm$core$Task$succeed(seed);
 	});
-var $elm$random$Random$Generator = function (a) {
-	return {$: 'Generator', a: a};
-};
+var $elm$random$Random$Generator = $elm$core$Basics$identity;
 var $elm$random$Random$map = F2(
 	function (func, _v0) {
-		var genA = _v0.a;
-		return $elm$random$Random$Generator(
-			function (seed0) {
-				var _v1 = genA(seed0);
-				var a = _v1.a;
-				var seed1 = _v1.b;
-				return _Utils_Tuple2(
-					func(a),
-					seed1);
-			});
+		var genA = _v0;
+		return function (seed0) {
+			var _v1 = genA(seed0);
+			var a = _v1.a;
+			var seed1 = _v1.b;
+			return _Utils_Tuple2(
+				func(a),
+				seed1);
+		};
 	});
 var $elm$random$Random$cmdMap = F2(
 	function (func, _v0) {
-		var generator = _v0.a;
-		return $elm$random$Random$Generate(
-			A2($elm$random$Random$map, func, generator));
+		var generator = _v0;
+		return A2($elm$random$Random$map, func, generator);
 	});
 _Platform_effectManagers['Random'] = _Platform_createManager($elm$random$Random$init, $elm$random$Random$onEffects, $elm$random$Random$onSelfMsg, $elm$random$Random$cmdMap);
 var $elm$random$Random$command = _Platform_leaf('Random');
 var $elm$random$Random$generate = F2(
 	function (tagger, generator) {
 		return $elm$random$Random$command(
-			$elm$random$Random$Generate(
-				A2($elm$random$Random$map, tagger, generator)));
+			A2($elm$random$Random$map, tagger, generator));
 	});
 var $elm$core$Dict$get = F2(
 	function (targetKey, dict) {
 		get:
 		while (true) {
-			if (dict.$ === 'RBEmpty_elm_builtin') {
+			if (dict.$ === -2) {
 				return $elm$core$Maybe$Nothing;
 			} else {
 				var key = dict.b;
@@ -5735,14 +5716,14 @@ var $elm$core$Dict$get = F2(
 				var left = dict.d;
 				var right = dict.e;
 				var _v1 = A2($elm$core$Basics$compare, targetKey, key);
-				switch (_v1.$) {
-					case 'LT':
+				switch (_v1) {
+					case 0:
 						var $temp$targetKey = targetKey,
 							$temp$dict = left;
 						targetKey = $temp$targetKey;
 						dict = $temp$dict;
 						continue get;
-					case 'EQ':
+					case 1:
 						return $elm$core$Maybe$Just(value);
 					default:
 						var $temp$targetKey = targetKey,
@@ -5756,7 +5737,7 @@ var $elm$core$Dict$get = F2(
 	});
 var $elm$core$Maybe$map = F2(
 	function (f, maybe) {
-		if (maybe.$ === 'Just') {
+		if (!maybe.$) {
 			var value = maybe.a;
 			return $elm$core$Maybe$Just(
 				f(value));
@@ -5798,22 +5779,20 @@ var $author$project$Main$prepareCorpus = function (corpus) {
 };
 var $elm$random$Random$andThen = F2(
 	function (callback, _v0) {
-		var genA = _v0.a;
-		return $elm$random$Random$Generator(
-			function (seed) {
-				var _v1 = genA(seed);
-				var result = _v1.a;
-				var newSeed = _v1.b;
-				var _v2 = callback(result);
-				var genB = _v2.a;
-				return genB(newSeed);
-			});
+		var genA = _v0;
+		return function (seed) {
+			var _v1 = genA(seed);
+			var result = _v1.a;
+			var newSeed = _v1.b;
+			var _v2 = callback(result);
+			var genB = _v2;
+			return genB(newSeed);
+		};
 	});
 var $elm$random$Random$constant = function (value) {
-	return $elm$random$Random$Generator(
-		function (seed) {
-			return _Utils_Tuple2(value, seed);
-		});
+	return function (seed) {
+		return _Utils_Tuple2(value, seed);
+	};
 };
 var $author$project$Main$resampleUntil = F3(
 	function (maxAttempts, predicate, generator) {
@@ -5836,7 +5815,7 @@ var $elm$core$Dict$values = function (dict) {
 		dict);
 };
 var $turboMaCk$any_dict$Dict$Any$toList = function (_v0) {
-	var dict = _v0.a.dict;
+	var dict = _v0.b;
 	return $elm$core$Dict$values(dict);
 };
 var $elm_community$list_extra$List$Extra$uncons = function (list) {
@@ -5864,20 +5843,19 @@ var $elm$random$Random$peel = function (_v0) {
 };
 var $elm$random$Random$float = F2(
 	function (a, b) {
-		return $elm$random$Random$Generator(
-			function (seed0) {
-				var seed1 = $elm$random$Random$next(seed0);
-				var range = $elm$core$Basics$abs(b - a);
-				var n1 = $elm$random$Random$peel(seed1);
-				var n0 = $elm$random$Random$peel(seed0);
-				var lo = (134217727 & n1) * 1.0;
-				var hi = (67108863 & n0) * 1.0;
-				var val = ((hi * 134217728.0) + lo) / 9007199254740992.0;
-				var scaled = (val * range) + a;
-				return _Utils_Tuple2(
-					scaled,
-					$elm$random$Random$next(seed1));
-			});
+		return function (seed0) {
+			var seed1 = $elm$random$Random$next(seed0);
+			var range = $elm$core$Basics$abs(b - a);
+			var n1 = $elm$random$Random$peel(seed1);
+			var n0 = $elm$random$Random$peel(seed0);
+			var lo = (134217727 & n1) * 1.0;
+			var hi = (67108863 & n0) * 1.0;
+			var val = ((hi * 134217728.0) + lo) / 9007199254740992.0;
+			var scaled = (val * range) + a;
+			return _Utils_Tuple2(
+				scaled,
+				$elm$random$Random$next(seed1));
+		};
 	});
 var $elm$random$Random$getByWeight = F3(
 	function (_v0, others, countdown) {
@@ -5924,7 +5902,7 @@ var $elm$random$Random$weighted = F2(
 	});
 var $elm$core$Maybe$withDefault = F2(
 	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
+		if (!maybe.$) {
 			var value = maybe.a;
 			return value;
 		} else {
@@ -5965,19 +5943,19 @@ var $elm$core$String$right = F2(
 			string);
 	});
 var $author$project$NGram$sampler = function (_v0) {
-	var n = _v0.n;
-	var rules = _v0.rules;
+	var n = _v0.aj;
+	var rules = _v0.am;
 	var helper = function (soFar) {
 		var prev = A2($elm$core$String$right, n, soFar);
 		var _v1 = A2($elm$core$Dict$get, prev, rules);
-		if (_v1.$ === 'Nothing') {
+		if (_v1.$ === 1) {
 			return $elm$random$Random$constant(soFar);
 		} else {
 			var d = _v1.a;
 			return A2(
 				$elm$random$Random$andThen,
 				function (maybeC) {
-					if (maybeC.$ === 'Nothing') {
+					if (maybeC.$ === 1) {
 						return $elm$random$Random$constant(soFar);
 					} else {
 						var c = maybeC.a;
@@ -5998,7 +5976,7 @@ var $elm$core$Tuple$second = function (_v0) {
 };
 var $elm$file$File$toString = _File_toString;
 var $author$project$NGram$empty = function (n) {
-	return {n: n, rules: $elm$core$Dict$empty};
+	return {aj: n, am: $elm$core$Dict$empty};
 };
 var $author$project$NGram$strToNGrams = F2(
 	function (n, str) {
@@ -6013,7 +5991,7 @@ var $author$project$NGram$strToNGrams = F2(
 				$elm$core$Tuple$first,
 				$elm$core$String$uncons(
 					A2($elm$core$String$dropLeft, i, str)));
-			if (next.$ === 'Nothing') {
+			if (next.$ === 1) {
 				return _List_fromArray(
 					[
 						_Utils_Tuple2(prev, next)
@@ -6027,12 +6005,9 @@ var $author$project$NGram$strToNGrams = F2(
 		};
 		return helper(0);
 	});
-var $turboMaCk$any_dict$Dict$Any$AnyDict = function (a) {
-	return {$: 'AnyDict', a: a};
-};
+var $turboMaCk$any_dict$Dict$Any$AnyDict = $elm$core$Basics$identity;
 var $turboMaCk$any_dict$Dict$Any$empty = function (toKey) {
-	return $turboMaCk$any_dict$Dict$Any$AnyDict(
-		{dict: $elm$core$Dict$empty, toKey: toKey});
+	return {b: $elm$core$Dict$empty, v: toKey};
 };
 var $author$project$NGram$maybeCharKey = function (c) {
 	return 1 + A2(
@@ -6043,7 +6018,7 @@ var $author$project$NGram$maybeCharKey = function (c) {
 var $elm$core$Dict$getMin = function (dict) {
 	getMin:
 	while (true) {
-		if ((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) {
+		if ((dict.$ === -1) && (dict.d.$ === -1)) {
 			var left = dict.d;
 			var $temp$dict = left;
 			dict = $temp$dict;
@@ -6054,8 +6029,8 @@ var $elm$core$Dict$getMin = function (dict) {
 	}
 };
 var $elm$core$Dict$moveRedLeft = function (dict) {
-	if (((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) && (dict.e.$ === 'RBNode_elm_builtin')) {
-		if ((dict.e.d.$ === 'RBNode_elm_builtin') && (dict.e.d.a.$ === 'Red')) {
+	if (((dict.$ === -1) && (dict.d.$ === -1)) && (dict.e.$ === -1)) {
+		if ((dict.e.d.$ === -1) && (!dict.e.d.a)) {
 			var clr = dict.a;
 			var k = dict.b;
 			var v = dict.c;
@@ -6078,17 +6053,17 @@ var $elm$core$Dict$moveRedLeft = function (dict) {
 			var rRight = _v2.e;
 			return A5(
 				$elm$core$Dict$RBNode_elm_builtin,
-				$elm$core$Dict$Red,
+				0,
 				rlK,
 				rlV,
 				A5(
 					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Black,
+					1,
 					k,
 					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, 0, lK, lV, lLeft, lRight),
 					rlL),
-				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, rK, rV, rlR, rRight));
+				A5($elm$core$Dict$RBNode_elm_builtin, 1, rK, rV, rlR, rRight));
 		} else {
 			var clr = dict.a;
 			var k = dict.b;
@@ -6105,22 +6080,22 @@ var $elm$core$Dict$moveRedLeft = function (dict) {
 			var rV = _v5.c;
 			var rLeft = _v5.d;
 			var rRight = _v5.e;
-			if (clr.$ === 'Black') {
+			if (clr === 1) {
 				return A5(
 					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Black,
+					1,
 					k,
 					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+					A5($elm$core$Dict$RBNode_elm_builtin, 0, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, 0, rK, rV, rLeft, rRight));
 			} else {
 				return A5(
 					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Black,
+					1,
 					k,
 					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+					A5($elm$core$Dict$RBNode_elm_builtin, 0, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, 0, rK, rV, rLeft, rRight));
 			}
 		}
 	} else {
@@ -6128,8 +6103,8 @@ var $elm$core$Dict$moveRedLeft = function (dict) {
 	}
 };
 var $elm$core$Dict$moveRedRight = function (dict) {
-	if (((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) && (dict.e.$ === 'RBNode_elm_builtin')) {
-		if ((dict.d.d.$ === 'RBNode_elm_builtin') && (dict.d.d.a.$ === 'Red')) {
+	if (((dict.$ === -1) && (dict.d.$ === -1)) && (dict.e.$ === -1)) {
+		if ((dict.d.d.$ === -1) && (!dict.d.d.a)) {
 			var clr = dict.a;
 			var k = dict.b;
 			var v = dict.c;
@@ -6152,17 +6127,17 @@ var $elm$core$Dict$moveRedRight = function (dict) {
 			var rRight = _v4.e;
 			return A5(
 				$elm$core$Dict$RBNode_elm_builtin,
-				$elm$core$Dict$Red,
+				0,
 				lK,
 				lV,
-				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, llK, llV, llLeft, llRight),
+				A5($elm$core$Dict$RBNode_elm_builtin, 1, llK, llV, llLeft, llRight),
 				A5(
 					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Black,
+					1,
 					k,
 					v,
 					lRight,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight)));
+					A5($elm$core$Dict$RBNode_elm_builtin, 0, rK, rV, rLeft, rRight)));
 		} else {
 			var clr = dict.a;
 			var k = dict.b;
@@ -6179,22 +6154,22 @@ var $elm$core$Dict$moveRedRight = function (dict) {
 			var rV = _v6.c;
 			var rLeft = _v6.d;
 			var rRight = _v6.e;
-			if (clr.$ === 'Black') {
+			if (clr === 1) {
 				return A5(
 					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Black,
+					1,
 					k,
 					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+					A5($elm$core$Dict$RBNode_elm_builtin, 0, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, 0, rK, rV, rLeft, rRight));
 			} else {
 				return A5(
 					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Black,
+					1,
 					k,
 					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+					A5($elm$core$Dict$RBNode_elm_builtin, 0, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, 0, rK, rV, rLeft, rRight));
 			}
 		}
 	} else {
@@ -6203,7 +6178,7 @@ var $elm$core$Dict$moveRedRight = function (dict) {
 };
 var $elm$core$Dict$removeHelpPrepEQGT = F7(
 	function (targetKey, dict, color, key, value, left, right) {
-		if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
+		if ((left.$ === -1) && (!left.a)) {
 			var _v1 = left.a;
 			var lK = left.b;
 			var lV = left.c;
@@ -6215,13 +6190,13 @@ var $elm$core$Dict$removeHelpPrepEQGT = F7(
 				lK,
 				lV,
 				lLeft,
-				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, lRight, right));
+				A5($elm$core$Dict$RBNode_elm_builtin, 0, key, value, lRight, right));
 		} else {
 			_v2$2:
 			while (true) {
-				if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Black')) {
-					if (right.d.$ === 'RBNode_elm_builtin') {
-						if (right.d.a.$ === 'Black') {
+				if ((right.$ === -1) && (right.a === 1)) {
+					if (right.d.$ === -1) {
+						if (right.d.a === 1) {
 							var _v3 = right.a;
 							var _v4 = right.d;
 							var _v5 = _v4.a;
@@ -6242,7 +6217,7 @@ var $elm$core$Dict$removeHelpPrepEQGT = F7(
 		}
 	});
 var $elm$core$Dict$removeMin = function (dict) {
-	if ((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) {
+	if ((dict.$ === -1) && (dict.d.$ === -1)) {
 		var color = dict.a;
 		var key = dict.b;
 		var value = dict.c;
@@ -6250,8 +6225,8 @@ var $elm$core$Dict$removeMin = function (dict) {
 		var lColor = left.a;
 		var lLeft = left.d;
 		var right = dict.e;
-		if (lColor.$ === 'Black') {
-			if ((lLeft.$ === 'RBNode_elm_builtin') && (lLeft.a.$ === 'Red')) {
+		if (lColor === 1) {
+			if ((lLeft.$ === -1) && (!lLeft.a)) {
 				var _v3 = lLeft.a;
 				return A5(
 					$elm$core$Dict$RBNode_elm_builtin,
@@ -6262,7 +6237,7 @@ var $elm$core$Dict$removeMin = function (dict) {
 					right);
 			} else {
 				var _v4 = $elm$core$Dict$moveRedLeft(dict);
-				if (_v4.$ === 'RBNode_elm_builtin') {
+				if (_v4.$ === -1) {
 					var nColor = _v4.a;
 					var nKey = _v4.b;
 					var nValue = _v4.c;
@@ -6294,7 +6269,7 @@ var $elm$core$Dict$removeMin = function (dict) {
 };
 var $elm$core$Dict$removeHelp = F2(
 	function (targetKey, dict) {
-		if (dict.$ === 'RBEmpty_elm_builtin') {
+		if (dict.$ === -2) {
 			return $elm$core$Dict$RBEmpty_elm_builtin;
 		} else {
 			var color = dict.a;
@@ -6303,10 +6278,10 @@ var $elm$core$Dict$removeHelp = F2(
 			var left = dict.d;
 			var right = dict.e;
 			if (_Utils_cmp(targetKey, key) < 0) {
-				if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Black')) {
+				if ((left.$ === -1) && (left.a === 1)) {
 					var _v4 = left.a;
 					var lLeft = left.d;
-					if ((lLeft.$ === 'RBNode_elm_builtin') && (lLeft.a.$ === 'Red')) {
+					if ((lLeft.$ === -1) && (!lLeft.a)) {
 						var _v6 = lLeft.a;
 						return A5(
 							$elm$core$Dict$RBNode_elm_builtin,
@@ -6317,7 +6292,7 @@ var $elm$core$Dict$removeHelp = F2(
 							right);
 					} else {
 						var _v7 = $elm$core$Dict$moveRedLeft(dict);
-						if (_v7.$ === 'RBNode_elm_builtin') {
+						if (_v7.$ === -1) {
 							var nColor = _v7.a;
 							var nKey = _v7.b;
 							var nValue = _v7.c;
@@ -6353,7 +6328,7 @@ var $elm$core$Dict$removeHelp = F2(
 	});
 var $elm$core$Dict$removeHelpEQGT = F2(
 	function (targetKey, dict) {
-		if (dict.$ === 'RBNode_elm_builtin') {
+		if (dict.$ === -1) {
 			var color = dict.a;
 			var key = dict.b;
 			var value = dict.c;
@@ -6361,7 +6336,7 @@ var $elm$core$Dict$removeHelpEQGT = F2(
 			var right = dict.e;
 			if (_Utils_eq(targetKey, key)) {
 				var _v1 = $elm$core$Dict$getMin(right);
-				if (_v1.$ === 'RBNode_elm_builtin') {
+				if (_v1.$ === -1) {
 					var minKey = _v1.b;
 					var minValue = _v1.c;
 					return A5(
@@ -6390,13 +6365,13 @@ var $elm$core$Dict$removeHelpEQGT = F2(
 var $elm$core$Dict$remove = F2(
 	function (key, dict) {
 		var _v0 = A2($elm$core$Dict$removeHelp, key, dict);
-		if ((_v0.$ === 'RBNode_elm_builtin') && (_v0.a.$ === 'Red')) {
+		if ((_v0.$ === -1) && (!_v0.a)) {
 			var _v1 = _v0.a;
 			var k = _v0.b;
 			var v = _v0.c;
 			var l = _v0.d;
 			var r = _v0.e;
-			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, l, r);
+			return A5($elm$core$Dict$RBNode_elm_builtin, 1, k, v, l, r);
 		} else {
 			var x = _v0;
 			return x;
@@ -6406,7 +6381,7 @@ var $elm$core$Dict$update = F3(
 	function (targetKey, alter, dictionary) {
 		var _v0 = alter(
 			A2($elm$core$Dict$get, targetKey, dictionary));
-		if (_v0.$ === 'Just') {
+		if (!_v0.$) {
 			var value = _v0.a;
 			return A3($elm$core$Dict$insert, targetKey, value, dictionary);
 		} else {
@@ -6415,7 +6390,7 @@ var $elm$core$Dict$update = F3(
 	});
 var $turboMaCk$any_dict$Dict$Any$update = F3(
 	function (k, f, _v0) {
-		var inner = _v0.a;
+		var inner = _v0;
 		var updateDict = A2(
 			$elm$core$Basics$composeL,
 			A2(
@@ -6426,16 +6401,15 @@ var $turboMaCk$any_dict$Dict$Any$update = F3(
 					}),
 				f),
 			$elm$core$Maybe$map($elm$core$Tuple$second));
-		return $turboMaCk$any_dict$Dict$Any$AnyDict(
-			_Utils_update(
-				inner,
-				{
-					dict: A3(
-						$elm$core$Dict$update,
-						inner.toKey(k),
-						updateDict,
-						inner.dict)
-				}));
+		return _Utils_update(
+			inner,
+			{
+				b: A3(
+					$elm$core$Dict$update,
+					inner.v(k),
+					updateDict,
+					inner.b)
+			});
 	});
 var $author$project$NGram$updateRulesWithNGram = F2(
 	function (_v0, rules) {
@@ -6459,11 +6433,11 @@ var $author$project$NGram$updateRulesWithNGram = F2(
 	});
 var $author$project$NGram$updateWithPhrase = F2(
 	function (word, _v0) {
-		var n = _v0.n;
-		var rules = _v0.rules;
+		var n = _v0.aj;
+		var rules = _v0.am;
 		return {
-			n: n,
-			rules: A3(
+			aj: n,
+			am: A3(
 				$elm$core$List$foldl,
 				$author$project$NGram$updateRulesWithNGram,
 				rules,
@@ -6513,29 +6487,29 @@ var $elm$core$List$any = F2(
 	});
 var $author$project$Main$verifySample = F2(
 	function (model, sample) {
-		return !(model.resultsExcludeCorpus && A2(
+		return !(model.X && A2(
 			$elm$core$List$any,
 			$elm$core$Basics$eq(sample),
-			model.corpus));
+			model.ad));
 	});
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
-			case 'GenerateSample':
+			case 0:
 				var _v1 = function () {
-					var _v2 = model.wordModel;
-					if (_v2.$ === 'Nothing') {
-						var newCorpus = $author$project$Main$prepareCorpus(model.fieldCorpus);
+					var _v2 = model.S;
+					if (_v2.$ === 1) {
+						var newCorpus = $author$project$Main$prepareCorpus(model.V);
 						var n = A2(
 							$elm$core$Maybe$withDefault,
 							1,
-							$elm$core$String$toInt(model.fieldN));
+							$elm$core$String$toInt(model.af));
 						return _Utils_Tuple2(
 							newCorpus,
 							A2($author$project$NGram$train, n, newCorpus));
 					} else {
 						var x = _v2.a;
-						return _Utils_Tuple2(model.corpus, x);
+						return _Utils_Tuple2(model.ad, x);
 					}
 				}();
 				var corpus = _v1.a;
@@ -6543,8 +6517,8 @@ var $author$project$Main$update = F2(
 				var newModel = _Utils_update(
 					model,
 					{
-						corpus: corpus,
-						wordModel: $elm$core$Maybe$Just(wordModel)
+						ad: corpus,
+						S: $elm$core$Maybe$Just(wordModel)
 					});
 				var cmd = A2(
 					$elm$random$Random$generate,
@@ -6555,27 +6529,27 @@ var $author$project$Main$update = F2(
 						$author$project$Main$verifySample(newModel),
 						$author$project$NGram$sampler(wordModel)));
 				return _Utils_Tuple2(newModel, cmd);
-			case 'NewSample':
+			case 1:
 				var maybeSample = msg.a;
-				if (maybeSample.$ === 'Nothing') {
+				if (maybeSample.$ === 1) {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{resultError: true}),
+							{al: true}),
 						$elm$core$Platform$Cmd$none);
 				} else {
 					var sample = maybeSample.a;
-					var capitalized = model.resultsCapitalize ? $author$project$Main$capitalize(sample) : sample;
+					var capitalized = model.W ? $author$project$Main$capitalize(sample) : sample;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{
-								resultError: false,
-								samples: A2($elm$core$List$cons, capitalized, model.samples)
+								al: false,
+								an: A2($elm$core$List$cons, capitalized, model.an)
 							}),
 						$elm$core$Platform$Cmd$none);
 				}
-			case 'CorpusFileRequested':
+			case 2:
 				return _Utils_Tuple2(
 					model,
 					A2(
@@ -6583,7 +6557,7 @@ var $author$project$Main$update = F2(
 						_List_fromArray(
 							['text/plain']),
 						$author$project$Main$CorpusFileSelected));
-			case 'CorpusFileSelected':
+			case 3:
 				var file = msg.a;
 				return _Utils_Tuple2(
 					model,
@@ -6591,53 +6565,53 @@ var $author$project$Main$update = F2(
 						$elm$core$Task$perform,
 						$author$project$Main$SetFieldCorpus,
 						$elm$file$File$toString(file)));
-			case 'SetFieldPreset':
+			case 4:
 				var fieldPreset = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
-							fieldCorpus: A2(
+							V: A2(
 								$elm$core$Maybe$withDefault,
 								'',
 								A2(
 									$elm$core$Maybe$map,
 									$elm$core$Tuple$second,
 									A2($elm$core$Dict$get, fieldPreset, $author$project$Corpuses$corpuses))),
-							fieldPreset: fieldPreset,
-							wordModel: $elm$core$Maybe$Nothing
+							ag: fieldPreset,
+							S: $elm$core$Maybe$Nothing
 						}),
 					$elm$core$Platform$Cmd$none);
-			case 'SetFieldCorpus':
+			case 5:
 				var fieldCorpus = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{fieldCorpus: fieldCorpus, fieldPreset: 'zcustom', wordModel: $elm$core$Maybe$Nothing}),
+						{V: fieldCorpus, ag: 'zcustom', S: $elm$core$Maybe$Nothing}),
 					$elm$core$Platform$Cmd$none);
-			case 'SetFieldN':
+			case 6:
 				var fieldN = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{fieldN: fieldN, wordModel: $elm$core$Maybe$Nothing}),
+						{af: fieldN, S: $elm$core$Maybe$Nothing}),
 					$elm$core$Platform$Cmd$none);
-			case 'ToggleResultsCapitalize':
+			case 7:
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{resultsCapitalize: !model.resultsCapitalize}),
+						{W: !model.W}),
 					$elm$core$Platform$Cmd$none);
 			default:
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{resultsExcludeCorpus: !model.resultsExcludeCorpus}),
+						{X: !model.X}),
 					$elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$Main$init = function (_v0) {
-	var model = {corpus: _List_Nil, fieldCorpus: '', fieldN: '3', fieldPreset: '', resultError: false, resultsCapitalize: true, resultsExcludeCorpus: true, samples: _List_Nil, wordModel: $elm$core$Maybe$Nothing};
+	var model = {ad: _List_Nil, V: '', af: '3', ag: '', al: false, W: true, X: true, an: _List_Nil, S: $elm$core$Maybe$Nothing};
 	return A2(
 		$author$project$Main$update,
 		$author$project$Main$SetFieldPreset('namur'),
@@ -6648,13 +6622,13 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
-var $author$project$Main$CorpusFileRequested = {$: 'CorpusFileRequested'};
-var $author$project$Main$GenerateSample = {$: 'GenerateSample'};
+var $author$project$Main$CorpusFileRequested = {$: 2};
+var $author$project$Main$GenerateSample = {$: 0};
 var $author$project$Main$SetFieldN = function (a) {
-	return {$: 'SetFieldN', a: a};
+	return {$: 6, a: a};
 };
-var $author$project$Main$ToggleResultsCapitalize = {$: 'ToggleResultsCapitalize'};
-var $author$project$Main$ToggleResultsExcludeCorpus = {$: 'ToggleResultsExcludeCorpus'};
+var $author$project$Main$ToggleResultsCapitalize = {$: 7};
+var $author$project$Main$ToggleResultsExcludeCorpus = {$: 8};
 var $elm$html$Html$a = _VirtualDom_node('a');
 var $elm$html$Html$br = _VirtualDom_node('br');
 var $elm$html$Html$button = _VirtualDom_node('button');
@@ -6692,7 +6666,7 @@ var $elm$html$Html$label = _VirtualDom_node('label');
 var $elm$html$Html$legend = _VirtualDom_node('legend');
 var $elm$html$Html$Attributes$min = $elm$html$Html$Attributes$stringProperty('min');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
+	return {$: 0, a: a};
 };
 var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
 var $elm$html$Html$Events$on = F2(
@@ -6712,7 +6686,7 @@ var $elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
 };
 var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
-	return {$: 'MayStopPropagation', a: a};
+	return {$: 1, a: a};
 };
 var $elm$html$Html$Events$stopPropagationOn = F2(
 	function (event, decoder) {
@@ -6838,7 +6812,7 @@ var $author$project$Main$view = function (model) {
 												[
 													$author$project$Main$value_(name),
 													$elm$html$Html$Attributes$selected(
-													_Utils_eq(name, model.fieldPreset))
+													_Utils_eq(name, model.ag))
 												]),
 											_List_fromArray(
 												[
@@ -6897,7 +6871,7 @@ var $author$project$Main$view = function (model) {
 										$elm$html$Html$Attributes$id('corpus'),
 										$elm$html$Html$Attributes$rows(7),
 										$elm$html$Html$Events$onInput($author$project$Main$SetFieldCorpus),
-										$author$project$Main$value_(model.fieldCorpus)
+										$author$project$Main$value_(model.V)
 									]),
 								_List_Nil)
 							]))
@@ -6960,7 +6934,7 @@ var $author$project$Main$view = function (model) {
 										A2($elm$html$Html$Attributes$style, 'width', '2.5em'),
 										A2($elm$html$Html$Attributes$style, 'text-align', 'right'),
 										$elm$html$Html$Attributes$min('1'),
-										$author$project$Main$value_(model.fieldN),
+										$author$project$Main$value_(model.af),
 										$elm$html$Html$Events$onInput($author$project$Main$SetFieldN)
 									]),
 								_List_Nil)
@@ -7004,7 +6978,7 @@ var $author$project$Main$view = function (model) {
 									[
 										$elm$html$Html$Attributes$id('param-capitalize'),
 										$elm$html$Html$Attributes$type_('checkbox'),
-										$elm$html$Html$Attributes$checked(model.resultsCapitalize),
+										$elm$html$Html$Attributes$checked(model.W),
 										$elm$html$Html$Events$onClick($author$project$Main$ToggleResultsCapitalize)
 									]),
 								_List_Nil),
@@ -7030,7 +7004,7 @@ var $author$project$Main$view = function (model) {
 									[
 										$elm$html$Html$Attributes$id('param-exclude-corpus'),
 										$elm$html$Html$Attributes$type_('checkbox'),
-										$elm$html$Html$Attributes$checked(model.resultsExcludeCorpus),
+										$elm$html$Html$Attributes$checked(model.X),
 										$elm$html$Html$Events$onClick($author$project$Main$ToggleResultsExcludeCorpus)
 									]),
 								_List_Nil),
@@ -7079,7 +7053,7 @@ var $author$project$Main$view = function (model) {
 					_Utils_ap(
 						A2(
 							$author$project$Main$viewWhen,
-							model.resultError,
+							model.al,
 							A2(
 								$elm$html$Html$p,
 								_List_fromArray(
@@ -7099,7 +7073,7 @@ var $author$project$Main$view = function (model) {
 									$elm$html$Html$div(_List_Nil),
 									$elm$core$List$singleton),
 								$elm$html$Html$text),
-							model.samples)))),
+							model.an)))),
 				A2(
 				$elm$html$Html$p,
 				_List_fromArray(
@@ -7124,6 +7098,6 @@ var $author$project$Main$view = function (model) {
 			]));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
-	{init: $author$project$Main$init, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});
+	{bV: $author$project$Main$init, ch: $author$project$Main$subscriptions, cm: $author$project$Main$update, cn: $author$project$Main$view});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}});}(this));
+	$elm$json$Json$Decode$succeed(0))(0)}});}(this));

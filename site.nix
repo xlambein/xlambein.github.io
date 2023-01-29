@@ -22,33 +22,35 @@
     to = "html";
     shift-heading-level-by = -1;
     wrap = "preserve";
-  } (nixss.replaceExt "md" "html");
+  } (nixss.util.replaceExt "md" "html");
 
   renderInTemplate = nixss.template.instantiate ./templates/base.html.nix {};
 
   tidyHtml = nixss.html-tidy.process {
     indent = "auto";
     wrap = "80";
+    # forkawesome uses empty elements for icons, so we need to keep those
+    drop-empty-elements = "no";
   };
 
   processProjectFile =
-    nixss.mapExt
+    nixss.util.mapExt
     (path:
       if lib.pathIsDirectory path
       then processProjectDir path
-      else if builtins.elem (nixss.getExt path) assetExts
+      else if builtins.elem (nixss.util.getExt path) assetExts
       then path
       else null)
     {
-      "nxt" = nixss.chain [
+      "nxt" = nixss.util.chain [
         (nixss.nixt.process nixtEnv)
         processProjectFile
       ];
-      "md" = nixss.chain [
+      "md" = nixss.util.chain [
         md2html
         processProjectFile
       ];
-      "html" = nixss.chain [
+      "html" = nixss.util.chain [
         renderInTemplate
         tidyHtml
       ];
@@ -60,12 +62,12 @@
       if builtins.pathExists /${path}/default.nix
       then callPackage path {}
       else
-        nixss.gather
+        nixss.util.gather
         (builtins.baseNameOf path)
-        (nixss.processDirectory processProjectFile path)
+        (nixss.util.processDirectory processProjectFile path)
     else null;
 
-  pages = nixss.processDirectory processProjectDir ./pages;
+  pages = nixss.util.processDirectory processProjectDir ./pages;
 
   externalProjects = [
     {
@@ -113,7 +115,7 @@
 
   assets = nixss.util.wrap ./assets;
 in
-  nixss.gather "www" ([
+  nixss.util.gather "www" ([
       assets
       index
     ]

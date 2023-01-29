@@ -39,7 +39,7 @@
         apps.publish = flake-utils.lib.mkApp {drv = publish;};
 
         devShell = pkgs.mkShell {
-          buildInputs = [pkgs.nixss.develop publish];
+          buildInputs = [pkgs.nixss.dev-server.develop publish];
         };
       }
     );

@@ -2,7 +2,7 @@
   title ? null,
   template ? "page",
   content,
-  eval,
+  include,
   escape,
 }: ''
   <!doctype html>
@@ -32,7 +32,7 @@
     </nav>
     ${
     if template != null
-    then eval ./${template}.html.nix
+    then include ./${template}.html.nix
     else content
   }
   </body>

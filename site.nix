@@ -33,22 +33,23 @@
     drop-empty-elements = "no";
   };
 
-  processProjectFile =
+  processFile =
     nixss.util.mapExt
     (path:
-      if lib.pathIsDirectory path
-      then processProjectDir path
-      else if builtins.elem (nixss.util.getExt path) assetExts
-      then path
-      else null)
+      # Process sub-directories, copy assets, ignore the rest
+        if lib.pathIsDirectory path
+        then processDir path
+        else if builtins.elem (nixss.util.getExt path) assetExts
+        then path
+        else null)
     {
       "nxt" = nixss.util.chain [
         (nixss.nixt.process nixtEnv)
-        processProjectFile
+        processFile
       ];
       "md" = nixss.util.chain [
         md2html
-        processProjectFile
+        processFile
       ];
       "html" = nixss.util.chain [
         renderInTemplate
@@ -56,20 +57,21 @@
       ];
     };
 
-  processProjectDir = path:
+  processDir = path:
     if lib.pathIsDirectory path
     then
       if builtins.pathExists /${path}/default.nix
       then callPackage path {}
       else
-        nixss.util.gather
-        (builtins.baseNameOf path)
-        (nixss.util.processDirectory processProjectFile path)
+        nixss.util.directoryWithIndex {
+          name = builtins.baseNameOf path;
+          src = nixss.util.mapDirectory processFile path;
+        }
     else null;
 
-  pages = nixss.util.processDirectory processProjectDir ./pages;
+  pages = nixss.util.mapDirectory processDir ./pages;
 
-  externalProjects = [
+  remoteProjects = [
     {
       title = "Twit-Commit, a Git Commit-based Social Network";
       url = "https://github.com/xlambein/twit-commit";
@@ -104,19 +106,21 @@
   projects =
     builtins.sort
     (l: r: l.pubdate or "" > r.pubdate or "")
-    (localProjects ++ externalProjects);
+    (localProjects ++ remoteProjects);
 
   index = let
     src = (nixss.util.wrap ./pages/index.md.nxt).withMetadata {
       inherit projects;
     };
   in
-    processProjectFile src;
-
-  assets = nixss.util.wrap ./assets;
+    processFile src;
 in
-  nixss.util.gather "www" ([
-      assets
-      index
-    ]
-    ++ pages)
+  nixss.util.directoryWithIndex {
+    name = "www";
+    src =
+      [
+        ./assets
+        index
+      ]
+      ++ pages;
+  }

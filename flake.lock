@@ -15,29 +15,14 @@
         "type": "github"
       }
     },
-    "flake-utils_2": {
-      "locked": {
-        "lastModified": 1659877975,
-        "narHash": "sha256-zllb8aq3YO3h8B/U0/J1WBgAL8EX5yWf5pMj3G0NAmc=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "c0e246b9b83f637f4681389ecabcb2681b4f3af0",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
     "kde-syntax-highlighting": {
       "flake": false,
       "locked": {
-        "lastModified": 1666950451,
-        "narHash": "sha256-9fedqQ9KUkhGlrC8CGxG8nHNr7dzrvp4Fy7sKA3B/rg=",
+        "lastModified": 1674976906,
+        "narHash": "sha256-xtzzQbBrKPWAwE+5a5dG4v65iv0nyJunQAJ0T1w26SY=",
         "owner": "KDE",
         "repo": "syntax-highlighting",
-        "rev": "c3b78386af6deda3cc2db1dde96fa3c1648f2334",
+        "rev": "c89898d3c5da9f0d9dff6c199ecb5b2b3fe494e2",
         "type": "github"
       },
       "original": {
@@ -49,13 +34,13 @@
     "livejs": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-GI6PXd/gZ+8lKPs81a9/vgJOprrey9RqpHSElroDBcU=",
+        "narHash": "sha256-7eV+s5WIMJs+HuwfvP0XcHDddJD85VH0ZP283RAQRXs=",
         "type": "file",
-        "url": "https://web.archive.org/web/20221016063532id_/livejs.com/live.js"
+        "url": "https://gist.githubusercontent.com/thykka/9727654/raw/7cf3b3cace9b76c88acd5b54e49fbf5a28a575ec/live.js"
       },
       "original": {
         "type": "file",
-        "url": "https://web.archive.org/web/20221016063532id_/livejs.com/live.js"
+        "url": "https://gist.githubusercontent.com/thykka/9727654/raw/7cf3b3cace9b76c88acd5b54e49fbf5a28a575ec/live.js"
       }
     },
     "nixpkgs": {
@@ -72,36 +57,29 @@
         "type": "indirect"
       }
     },
-    "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1666164185,
-        "narHash": "sha256-5v+YB4ijeUfg5LCz9ck4gIpCPhIS+qn02OyPJO48bCE=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "c5203abb1329f7ea084c04acda330ca75d5b9fb5",
-        "type": "github"
-      },
-      "original": {
-        "id": "nixpkgs",
-        "type": "indirect"
-      }
-    },
     "nixss": {
       "inputs": {
-        "flake-utils": "flake-utils_2",
+        "flake-utils": [
+          "flake-utils"
+        ],
         "kde-syntax-highlighting": "kde-syntax-highlighting",
         "livejs": "livejs",
-        "nixpkgs": "nixpkgs_2"
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
-        "lastModified": 1675004046,
-        "narHash": "sha256-KrxX9+X0vAzob+La0OGjBMQd5exdmTPBp56sVlyyS/o=",
-        "path": "/home/xlambein/xavier/nix-ssg",
-        "type": "path"
+        "lastModified": 1675021366,
+        "narHash": "sha256-NSWO16wsPvOOPFRTSbpDxpUzFRNtdyIBMLIYT65gbYU=",
+        "ref": "refs/heads/main",
+        "rev": "8289e3b17ed4fdaaba7892e633400ff72ffa4725",
+        "revCount": 4,
+        "type": "git",
+        "url": "https://codeberg.org/xlambein/nixss"
       },
       "original": {
-        "path": "/home/xlambein/xavier/nix-ssg",
-        "type": "path"
+        "type": "git",
+        "url": "https://codeberg.org/xlambein/nixss"
       }
     },
     "root": {

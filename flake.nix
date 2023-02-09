@@ -23,6 +23,7 @@
           [[ -n $(git status -s) ]] && echo 'Repository is dirty, aborting' && exit 1
 
           path=$(nix build --no-link --print-out-paths)
+          message=$(git log -1 --format=format:%s)
 
           cd ../gh-pages
 
@@ -32,7 +33,7 @@
           cp -r --dereference --no-preserve=mode,ownership $path/* .
 
           git add .
-          git commit -v
+          git commit -vem "$message"
           git push
         '';
       in {

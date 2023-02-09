@@ -4,7 +4,7 @@ You can find me in all those places:
 
 <nav>
   <ul class="fa-ul">
-    <li><i class="fa-list fa fa-fw fa-envelope" aria-hidden="true"></i> E-mail: <code>xlambein [at] gmail</code></li>
+    <li><i class="fa-list fa fa-fw fa-envelope" aria-hidden="true"></i> E-mail: <a href="mailto:xavier@lambein.xyz">xavier@lambein.xyz</a></li>
     <li><i class="fa-list fa fa-fw fa-mastodon" aria-hidden="true"></i> Mastodon: <a href="https://vis.social/@xlambein">@xlambein@vis.social</a></li>
     <li><i class="fa-list fa fa-fw fa-github" aria-hidden="true"></i> GitHub: <a href="https://github.com/xlambein">xlambein</a></li>
     <li><i class="fa-list fa fa-fw fa-gitea" aria-hidden="true"></i> Codeberg: <a href="https://codeberg.org/xlambein">xlambein</a></li>

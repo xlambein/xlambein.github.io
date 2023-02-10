@@ -120,7 +120,12 @@ in
     src =
       [
         ./assets
+        ./.well-known
         index
+        (nixss.util.text {
+          name = ".nojekyll";
+          text = "";
+        })
       ]
       ++ pages;
   }

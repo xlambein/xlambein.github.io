@@ -5,6 +5,8 @@ tags:
   - ludum dare
   - game
   - rust
+description: >-
+  My submission to the Ludum Dare 49 game jam, along with a making of and the hurdles of porting a Bevy game to the web.
 ---
 
 # Ludum Dare 49: Chevalchemy: A Hoof of Concept

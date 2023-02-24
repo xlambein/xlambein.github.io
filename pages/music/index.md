@@ -1,3 +1,8 @@
+---
+description: >-
+  The music I've made and where to listen to it.
+---
+
 # Music
 
 I make music under my own name, you can buy it on [Bandcamp](https://xavierlambein.bandcamp.com/):

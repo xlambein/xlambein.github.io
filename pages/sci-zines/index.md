@@ -5,6 +5,8 @@ tags:
   - zine
   - art
   - explanation
+description: >-
+  A series of two zines explaining a topic relating to exoplanet detection.  Read them here or print your own.
 ---
 
 # Mini Sci-Zines

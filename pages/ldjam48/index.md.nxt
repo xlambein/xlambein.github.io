@@ -5,6 +5,8 @@ tags:
   - ludum dare
   - game
   - godot
+description: >-
+  My submission to the Ludum Dare 48 game jam, along with a few thoughts about Godot.
 ---
 
 # Ludum Dare 48: Truck or Pupper
@@ -19,6 +21,6 @@ The gameplay itself is an unapologetic Tetris rip-off, somehow combined with tho
 
 This was my first time using Godot, so I wanted to do something relatively straightforward.  Even then, I struggled to finish the game on time, and it could certainly use some more balancing.
 
-I did not score particularly great at the competition, although I did finish 41st in humor, and honestly that's a totaly win for me.
+I did not score particularly great at the competition, although I did finish 41st in humor, and honestly that's a total win for me.
 
 Source code is available on [GitHub](https://github.com/xlambein/ldjam48).

@@ -1,3 +1,8 @@
+---
+description: >-
+  Where to find me.
+---
+
 # About
 
 You can find me in all those places:

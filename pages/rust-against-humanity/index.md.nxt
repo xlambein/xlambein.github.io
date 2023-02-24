@@ -5,6 +5,8 @@ tags:
   - game
   - web
   - rust
+description: >-
+  A replica of Cards Against Humanity, written in Rust with warp and yew.
 ---
 
 # Rust Against Humanity

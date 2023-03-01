@@ -25,12 +25,12 @@
       as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
       integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous"></noscript>
-    <link rel="me" href="https://vis.social/@xlambein" />
+    <link rel="me" href="https://sunny.garden/@xavier" />
   </head>
 
   <body>
     <nav>
-      <a href="/" tabindex="-1" aria-hidden="true"><img src="/assets/img/logo.svg" width="61.2" height="61.2" alt="website logo" id="logo" aria-hidden="true" tabindex="-1"></a>
+      <a href="/" tabindex="-1" aria-hidden="true"><img src="/assets/img/logo.svg" width="61.2" height="61.2" alt="website logo" id="logo"></a>
       <a href="/">Home</a>
       <a href="/about/">About</a>
       <a href="/music/">Music</a>

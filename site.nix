@@ -90,6 +90,12 @@
       pubdate = "2021-09-16";
       tags = ["program" "rust"];
     }
+    {
+      title = "Huemility: Philips Hue Schedules for Dumb Homes";
+      url = "https://codeberg.org/xlambein/huemility";
+      pubdate = "2023-04-13";
+      tags = ["program" "rust" "nix"];
+    }
   ];
 
   localProjects =

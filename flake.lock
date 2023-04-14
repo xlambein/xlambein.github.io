@@ -69,11 +69,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1675021366,
-        "narHash": "sha256-NSWO16wsPvOOPFRTSbpDxpUzFRNtdyIBMLIYT65gbYU=",
+        "lastModified": 1681467260,
+        "narHash": "sha256-+SHJE0P/GIqixG68uLnrsyJEbmgJC4hayi5tfMZkyYI=",
         "ref": "refs/heads/main",
-        "rev": "8289e3b17ed4fdaaba7892e633400ff72ffa4725",
-        "revCount": 4,
+        "rev": "5297848933e2ca9bfe45ff56e149f094c8b14abf",
+        "revCount": 5,
         "type": "git",
         "url": "https://codeberg.org/xlambein/nixss"
       },

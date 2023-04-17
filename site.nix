@@ -96,6 +96,12 @@
       pubdate = "2023-04-13";
       tags = ["program" "rust" "nix"];
     }
+    {
+      title = "`swaylead`: a Leader Key-Style Tool for Running Commands in the `sway` Window Manager";
+      url = "https://codeberg.org/xlambein/swaylead";
+      pubdate = "2023-04-17";
+      tags = ["program" "rust" "sway"];
+    }
   ];
 
   localProjects =

@@ -10,10 +10,14 @@ body {
 }
 
 article {
-  max-width: 640px;
-  margin: 0 auto;
   padding: 0 1rem;
   padding-bottom: 20rem;
+}
+
+article>* {
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 body>nav {
@@ -122,22 +126,17 @@ p {
 ol,
 ul,
 li {
-  margin-left: 0;
-  padding-left: 0;
   text-align: justify;
 }
 
 ol,
 ul {
-  margin-left: 1.5em;
+  padding-left: 20px;
 }
 
-ul.fa-ul {
-  margin-left: 1.25em;
-}
+ul.fa-ul {}
 
 blockquote {
-  margin: 0;
   padding-left: 0.75em;
   font-style: italic;
   border-left: 0.5em solid #ffe0e0;
@@ -148,11 +147,11 @@ code {
   background-color: #ffe0e0;
   font-family: "Fira Code", monospace;
   font-weight: 500;
+  hyphens: none;
 }
 
 pre {
-  margin-left: -0.5em;
-  margin-right: -0.5em;
+  max-width: calc(640px + 8em);
   padding: 0.5em;
 }
 
@@ -168,20 +167,18 @@ a:hover code {
   background-color: transparent;
 }
 
-img {
-  max-width: 100%;
+img,
+video {
+  max-width: min(640px, 100%);
 }
 
 figure {
-  max-width: 100%;
-  margin: 1em 0;
+  max-width: min(640px, 100%);
   padding: 0;
   text-align: center;
 }
 
-figure img {
-  max-width: 100%;
-}
+figure img {}
 
 figcaption {
   padding: 0 1em;
@@ -218,27 +215,19 @@ article a[href^='http']:not([href*='lambein.xyz']):after {
   padding-bottom: 9px;
 }
 
-/* Thanks to https://blog.theodo.fr/2018/01/responsive-iframes-css-trick/ */
-.resp-container {
-  position: relative;
-  overflow: hidden;
-  padding-top: 56.25%;
-}
-
 .resp-iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
+  aspect-ratio: 16 / 9;
   width: 100%;
-  height: 100%;
-  border: 0;
 }
 
 .music-list {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
-  margin: -9px;
+}
+
+.music-list>iframe {
+  margin: 0;
 }
 
 .music-item {
@@ -261,7 +250,8 @@ article a[href^='http']:not([href*='lambein.xyz']):after {
 }
 
 .page-ref {
-  margin: 1em 0;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 .page-ref>.page-url {

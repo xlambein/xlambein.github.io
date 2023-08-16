@@ -12,7 +12,7 @@
     in ''<figure><img src="${src}">${caption'}</figure>'';
   };
 
-  assetExts = ["css" "gif" "jpg" "pdf" "png" "svg"];
+  assetExts = ["css" "gif" "jpg" "pdf" "png" "svg" "webm"];
 
   md2html = nixss.pandoc.process {
     # TODO: +implicit_figures, which makes [caption](image.png) into a figure
@@ -95,12 +95,6 @@
       url = "https://codeberg.org/xlambein/huemility";
       pubdate = "2023-04-13";
       tags = ["program" "rust" "nix"];
-    }
-    {
-      title = "`swaylead`: a Leader Key-Style Tool for Running Commands in the `sway` Window Manager";
-      url = "https://codeberg.org/xlambein/swaylead";
-      pubdate = "2023-04-17";
-      tags = ["program" "rust" "sway"];
     }
   ];
 

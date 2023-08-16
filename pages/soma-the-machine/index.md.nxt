@@ -25,7 +25,9 @@ The front of the Machine.  You can see the coin slot in the top-left corner, the
 
 To better demonstrate how it works, here's a short video of me using the Machine.  After I insert a coin and I press the "poetry" button, the reels immediately start turning.  Eventually, they stop on three random phrases of the "poetry" type (written in black), and the LED eyes blink.
 
-<div class="resp-container"><iframe class="resp-iframe" src="https://www.youtube.com/embed/32Yoz-d0ac8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+<p>
+<iframe class="resp-iframe" src="https://www.youtube.com/embed/32Yoz-d0ac8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</p>
 
 ## Making Of
 

@@ -194,7 +194,7 @@ pre {
 
 article a {
   color: #b00000;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 article a:hover {
@@ -266,6 +266,7 @@ article a[href^='http']:not([href*='lambein.xyz']):after {
 
 .page-ref>.page-url {
   font-weight: bold;
+  text-decoration: none;
 }
 
 .page-ref>.page-info {

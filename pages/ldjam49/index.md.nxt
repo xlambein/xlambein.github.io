@@ -31,7 +31,7 @@ In the past I've almost always made games with "code-oriented" frameworks, and m
 
 ## Porting to the Web
 
-I developed the game without thinking about WASM support at all, but when I was done, I found myself regretting that the game could not be played in the browser.  Bevy has a great [cheet book][cheetbook] with a section on how to compile to WASM, using a drop-in replacement for the rendering pipeline.  Everything worked mostly as expected, but for some reason I could not control the size of the `canvas` element.
+I developed the game without thinking about WASM support at all, but when I was done, I found myself regretting that the game could not be played in the browser.  Bevy has a great [cheat book][cheatbook] with a section on how to compile to WASM, using a drop-in replacement for the rendering pipeline.  Everything worked mostly as expected, but for some reason I could not control the size of the `canvas` element.
 
 After some internet digging, I found a game that managed to fix this issue, ["Some Tank Game" by Søren Alsbjerg Hørup][some-tank-game].  Essentially, they have a custom ECS system that checks the window size and adapts it if it's wrong.  Their system is a bit more complex than what I ended up going for, as it also handles adapting the canvas size when the user resizes the window.  Big thanks to them, without this I wouldn't have been able to port the game to WASM ❤️
 
@@ -55,7 +55,7 @@ Feedback and ideas are welcome!  Don't hesitate to [get in touch][about].
 [godot]: https://godotengine.org
 [temps]: https://github.com/xlambein/temps
 [chevalchemy]: https://xlambein.itch.io/chevalchemy-a-hoof-of-concept
-[cheetbook]: https://bevy-cheatbook.github.io
+[cheatbook]: https://bevy-cheatbook.github.io
 [some-tank-game]: https://github.com/horup/some-tank-game-rs
 [source]: https://github.com/xlambein/ldjam49
 [about]: /about

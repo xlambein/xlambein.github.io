@@ -1,0 +1,13 @@
+# Recipes
+
+Here's a collection of recipes I use in my daily life. Most of them aren't too fancy, they're the kind of meals I don't mind cooking on a regular basis.
+
+Everything is vegan. "Milk" means unspecified plant milk, and "butter" means vegan butter (i.e., some sort of margarine). Pick brands that taste great for the best results.
+
+Salt, pepper and cooking oil are assumed to be on hand, and are not always explicitly specified in the recipes.
+
+${foreach groups ({title, pages}: ''
+## ${title}
+
+${foreach pages ({title, url}: "- [${title}](${escape url})\n")}
+'')}

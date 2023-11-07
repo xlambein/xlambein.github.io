@@ -14,7 +14,7 @@
     <title>${
     if title == null
     then ""
-    else ''${escape title} &mdash; ''
+    else ''${title} &mdash; ''
   }Xavier Lambein's website</title>
     <meta name="description" content="${description}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -34,6 +34,7 @@
       <a href="/">Home</a>
       <a href="/about/">About</a>
       <a href="/music/">Music</a>
+      <a href="/recipes/">Recipes</a>
     </nav>
     ${
     if template != null

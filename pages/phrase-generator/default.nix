@@ -1,5 +1,6 @@
 { callPackage
 , fetchFromGitHub
+, ...
 }:
 
 let phrase-generator = fetchFromGitHub {

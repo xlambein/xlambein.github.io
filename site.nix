@@ -61,7 +61,7 @@
     if lib.pathIsDirectory path
     then
       if builtins.pathExists /${path}/default.nix
-      then callPackage path {}
+      then callPackage path {inherit nixss processFile;}
       else
         nixss.util.directoryWithIndex {
           name = builtins.baseNameOf path;
@@ -106,7 +106,7 @@
       pubdate = drv.metadata.pubdate or "";
       tags = drv.metadata.tags or [];
     })
-    (lib.filter (page: !(builtins.elem page.name ["about" "music"])) pages);
+    (lib.filter (page: !(builtins.elem page.name ["about" "music" "recipes"])) pages);
 
   # Projects sorted by pubdate
   projects =

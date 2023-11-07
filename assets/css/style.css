@@ -118,9 +118,6 @@ article>header>.article-info {
 
 p {
   text-align: left;
-  hyphens: auto;
-  /* This doesn't work yet :( come on browsers! */
-  hanging-punctuation: first allow-end last;
 }
 
 ol,
@@ -274,6 +271,7 @@ article a[href^='http']:not([href*='lambein.xyz']):after {
 .tags {
   display: inline;
   margin: 0;
+  padding: 0;
 }
 
 .tags>li {

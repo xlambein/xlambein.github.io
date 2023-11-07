@@ -117,7 +117,7 @@ article>header>.article-info {
 }
 
 p {
-  text-align: justify;
+  text-align: left;
   hyphens: auto;
   /* This doesn't work yet :( come on browsers! */
   hanging-punctuation: first allow-end last;
@@ -126,7 +126,7 @@ p {
 ol,
 ul,
 li {
-  text-align: justify;
+  text-align: left;
 }
 
 ol,

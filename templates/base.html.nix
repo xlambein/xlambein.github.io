@@ -30,11 +30,13 @@
 
   <body>
     <nav>
-      <a href="/" tabindex="-1" aria-hidden="true"><img src="/assets/img/logo.svg" width="61.2" height="61.2" alt="website logo" id="logo"></a>
-      <a href="/">Home</a>
-      <a href="/about/">About</a>
-      <a href="/music/">Music</a>
-      <a href="/recipes/">Recipes</a>
+      <a href="/" tabindex="-1" aria-hidden="true"><img src="/assets/img/logo.svg" width="61.2" height="61.2" alt="website logo" id="logo" style="float: left;"></a>
+      <div id="links">
+        <a href="/">Home</a>
+        <a href="/about/">About</a>
+        <a href="/music/">Music</a>
+        <a href="/recipes/">Recipes</a>
+      </div>
     </nav>
     ${
     if template != null

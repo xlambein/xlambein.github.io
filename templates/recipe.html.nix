@@ -2,6 +2,7 @@
   title,
   content,
   servings ? null,
+  sources ? [],
   escape,
   foreach,
   ifdef,
@@ -22,5 +23,17 @@
     </header>
 
     ${content}
+
+    ${
+    if sources != []
+    then ''
+      <h2>Sources</h2>
+      <ul>
+        ${foreach sources (source: "<li>${source}</li>")}
+      </ul>
+    ''
+    else ""
+  }
+
   </article>
 ''

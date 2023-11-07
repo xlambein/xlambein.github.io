@@ -15,7 +15,7 @@ sources:
 - 3/4 tbsp lemon juice
 - 1 clove garlic
 - 1/2 tsp salt
-- 5 ounces frozen spinach, thawed
+- 300g frozen spinach, thawed
 - 1/2 onion, chopped
 - 1 tbsp fresh dill, chopped
 - 1 sheet puff pastry
@@ -26,11 +26,9 @@ sources:
 
 2. Drain spinach and squeeze it to remove moisture.
 
-3. Blend spinach, cashews, milk, lemon juice, onion, garlic, dill and salt
-   together until smooth.
+3. Blend spinach, cashews, milk, lemon juice, onion, garlic, dill and salt together until smooth.
 
-4. Spread the mixture onto the puff pastry, then roll it into a sort of bastard
-   sushi.
+4. Spread the mixture onto the puff pastry, then roll it into a sort of bastard sushi. Store the roll in the freezer for 30 minutes, to make it easier to cut.
 
 5. Cut the roll into 1 cm slices, placing each one onto a baking sheet.
 

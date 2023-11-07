@@ -20,7 +20,7 @@ sources:
 
 2. Incorporate the milk progressively, stirring well until smooth.
 
-3. If possible, leave the dough to rest for a few minutes, up to a few hours.
+3. If possible, leave the dough to rest for 1--2 hours.
 
 4. Heat up a pan on medium-high, and grease up when warm.
 

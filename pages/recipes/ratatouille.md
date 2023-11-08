@@ -14,15 +14,15 @@ servings: 3
 - 1 red bell pepper, chopped
 - 1 yellow bell pepper, chopped
 - 1 can tomatoes
-- olive oil
+- provence herbs
 
 ## Steps
 
-1. Cook the aubergine and zucchini separately with a little olive oil.  Once reduced, combine the two in a large pot.
+1. In a large pot, cook the onion in oil on medium heat for about 5 minutes. Add the bell peppers, and cook for 10 more minutes.
 
-2. Fry the bell peppers in a pan until lightly roasted, then incorporate into the pot.
+2. Incorporate the zucchini and aubergine, and cook for 10 more minutes, until they've softened.
 
-3. Pour in the can of tomatoes, turn down the heat and let simmer for ~20 minutes.
+3. Add the can of tomatoes, turn down the heat and let simmer for a while---an hour is a good start. Periodically taste the ratatouille and adjust the seasoning with salt, pepper, and provence herbs.
 
 ## Notes
 

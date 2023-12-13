@@ -13,6 +13,7 @@ description: >-
 
 This is an essay I wrote as a submission to the [LIVE 2023 workshop](https://liveprog.org/), a workshop on live programming. You may also want to [check out the talk I gave at LIVE based on this essay](https://www.youtube.com/live/cBYudbaqHAk?si=Y-vjp5sX_7MvSGQI&t=4816).
 
+I also gave a follow-up presentation at the [5th AIST Creative HCI Seminar](https://chci.pages.dev/aist-seminar/en/5) hosted by Jun Kato, alongside Tomoya Matsuura and Baku Hashimoto. I highly recommend Tomoya and Baku's presentations.
 
 ## Introduction
 

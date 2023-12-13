@@ -19,7 +19,7 @@ servings: 2
 
 ## Directions
 
-1. In a bowl, rince the rice with the water until it turns white. Pour the water into a pot with the veggie broth, the bay leaf and the thyme.
+1. In a bowl, rince the rice with the water until it turns white. Pour the water into a pot on high heat, along with the veggie broth, the bay leaf and the thyme. When the broth starts boiling, reduce the heat.
 
 2. In a large pan, heat up some oil and cook the zucchini for about 15 minutes, stirring regularly.
 

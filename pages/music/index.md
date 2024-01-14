@@ -5,7 +5,7 @@ description: >-
 
 # Music
 
-I make music under my own name, you can buy it on [Bandcamp](https://xavierlambein.bandcamp.com/):
+I make music under my own name, you can buy it on [Mirlo](https://mirlo.space/xavier-lambein/releases) or on [Bandcamp](https://xavierlambein.bandcamp.com/):
 
 <div class="music-list">
   <iframe class="music-item" style="border: 0;" src="https://bandcamp.com/EmbeddedPlayer/track=3867658800/size=large/bgcol=ffffff/linkcol=b00000/minimal=true/transparent=true/" seamless><a href="https://xavierlambein.bandcamp.com/track/plastic-white-pearls">Plastic White Pearls by Xavier Lambein</a></iframe>

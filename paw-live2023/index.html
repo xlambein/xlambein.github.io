@@ -643,10 +643,11 @@ end</code></pre>
     "doc-noteref"><sup>5</sup></a>. This means a track could have
     fully-functioning nested tracks as its clips. Whether this is actually
     useful is left as an exercise to the reader.</p>
-    <section class="footnotes footnotes-end-of-document" role="doc-endnotes">
+    <aside id="footnotes" class="footnotes footnotes-end-of-document" role=
+    "doc-endnotes">
       <hr>
       <ol>
-        <li id="fn1" role="doc-endnote">
+        <li id="fn1">
           <p>To be fair, a properly written GUI application will accurately
           represent its inner state and never surprise the user. However, as
           I’m sure most users of complex GUI programs have experienced, this is
@@ -662,7 +663,7 @@ end</code></pre>
           stability and transparency of the hidden state.<a href="#fnref1"
           class="footnote-back" role="doc-backlink">↩︎</a></p>
         </li>
-        <li id="fn2" role="doc-endnote">
+        <li id="fn2">
           <p>In practice, recompiling each time a value changes is needlessly
           slow and computationally intensive. Instead, the PAW compiler
           actually produces a shared library with symbols corresponding to each
@@ -670,12 +671,12 @@ end</code></pre>
           in the shared library.<a href="#fnref2" class="footnote-back" role=
           "doc-backlink">↩︎</a></p>
         </li>
-        <li id="fn3" role="doc-endnote">
+        <li id="fn3">
           <p>Among other things, this is where the <code>$</code>-notation for
           interactive values was stolen.<a href="#fnref3" class="footnote-back"
           role="doc-backlink">↩︎</a></p>
         </li>
-        <li id="fn4" role="doc-endnote">
+        <li id="fn4">
           <p>In an earlier prototype of PAW, I did have an embedded text area
           which served as an editor. However, the experience of writing code
           with it was so unpleasant that I always ended up opening files in Vim
@@ -683,14 +684,14 @@ end</code></pre>
           it, in favour of using the LSP with an external editor.<a href=
           "#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p>
         </li>
-        <li id="fn5" role="doc-endnote">
+        <li id="fn5">
           <p>And in fact, we could implement <code>Clip&lt;t&gt;</code> and
           <code>Interactive</code> for <code>Fn(Sample) -&gt; t</code>, making
           any fitting function be a clip.<a href="#fnref5" class=
           "footnote-back" role="doc-backlink">↩︎</a></p>
         </li>
       </ol>
-    </section>
+    </aside>
   </article>
 </body>
 </html>

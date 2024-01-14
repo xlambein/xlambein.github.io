@@ -9,7 +9,7 @@
     (builtins.map (filename: ./${filename}) (builtins.attrNames (builtins.readDir ./.)));
   pageToDirectory = page:
     nixss.util.directoryWithIndex {
-      name = nixss.util.removeExt "html" page.name;
+      filename = nixss.util.removeExt "html" page.name;
       src = [(page.rename "index.html")];
     };
   recipes =
@@ -44,7 +44,7 @@
   });
 in
   nixss.util.directory {
-    name = "recipes";
+    filename = "recipes";
     src = recipes ++ [index];
     metadata.title = "Recipes";
   }

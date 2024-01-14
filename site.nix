@@ -64,7 +64,7 @@
       then callPackage path {inherit nixss processFile;}
       else
         nixss.util.directoryWithIndex {
-          name = builtins.baseNameOf path;
+          filename = builtins.baseNameOf path;
           src = nixss.util.mapDirectory processFile path;
         }
     else null;
@@ -122,14 +122,13 @@
     processFile src;
 in
   nixss.util.directoryWithIndex {
-    name = "www";
+    filename = "www";
     src =
       [
         ./assets
-        ./.well-known
         index
         (nixss.util.text {
-          name = ".nojekyll";
+          filename = ".nojekyll";
           text = "";
         })
       ]

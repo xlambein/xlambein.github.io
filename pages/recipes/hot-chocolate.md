@@ -9,7 +9,7 @@ servings: 1
 ## Ingredients
 
 - 1 cup oat milk (Oatly barista works well)
-- 3 tbsp cocoa powder
+- 12g (~3 tsp) cocoa powder
 - 1 pinch hot pepper flakes
 - 1 dash cinnamon
 - 1 tbsp sugar

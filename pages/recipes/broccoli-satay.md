@@ -19,7 +19,7 @@ servings: 2
 - sesame seeds, to serve
 - sesame oil, to serve
 
-## Steps
+## Directions
 
 1. Heat up some oil in a wok. Cook the broccoli for a few minutes, stirring regularly, until they start browning.
 

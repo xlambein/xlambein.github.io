@@ -13,7 +13,7 @@ servings: 8
 - 400g gingerbread, in ~1cm slices
 - dried thyme
 
-## Steps
+## Directions
 
 1. Preheat the oven to 180C. Put the butternut slices on an oiled baking rack, season with thyme and salt, then cook in the oven for about 25 minutes.
 

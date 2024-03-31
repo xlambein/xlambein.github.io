@@ -16,7 +16,7 @@ servings: 2
 - milk
 - nutmeg
 
-## Steps
+## Directions
 
 1. Heat up some oil and cook the onion with half a tsp of salt on medium heat. Your goal is to get reduced, caramelized onions. Stir regularly to avoid burning.
 

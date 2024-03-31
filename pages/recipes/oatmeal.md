@@ -16,7 +16,7 @@ servings: 1
 - 8 halves (18 g) walnuts, broken into chunks
 - a handful (100 g) strawberries
 
-## Steps
+## Directions
 
 1. In a pot, mix together the rolled oats, brown sugar, and plant milk, then cook on low heat until the consistency is thick.
 

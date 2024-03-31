@@ -14,7 +14,7 @@ servings: 1
 - hummus
 - provencal herbs
 
-## Steps
+## Directions
 
 1. In a hot pan, fry the zucchini slices in vegetable oil, seasoned with salt and provencal herbs. Cook until soft.
 

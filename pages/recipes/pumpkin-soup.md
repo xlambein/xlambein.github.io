@@ -14,7 +14,7 @@ servings: 4
 - 4 carrots, roughly chunked
 - 1L vegetable stock
 
-## Steps
+## Directions
 
 1. Preheat the oven to 180 C.
 

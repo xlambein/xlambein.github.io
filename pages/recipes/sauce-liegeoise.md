@@ -25,7 +25,7 @@ For ~10 boulets ("meat"balls).
 - 300ml brown beer
 - flour, to thicken the sauce
 
-## Steps
+## Directions
 
 1. Let the raisins sit in a bowl of warm water.
 

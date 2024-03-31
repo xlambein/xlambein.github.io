@@ -16,7 +16,7 @@ servings: 4
 - 1/4 tsp salt
 - water
 
-## Steps
+## Directions
 
 1. Blend all the ingredients together, adding more or less water to adjust the consistency.
 

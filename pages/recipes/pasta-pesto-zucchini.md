@@ -15,7 +15,7 @@ servings: 1
 - 5-6 cherry tomatoes, halved
 - 2 tbsp pesto, adjust to taste
 
-## Steps
+## Directions
 
 1. Cook the pasta with salt, reserving ~1/2 cup of pasta water.
 

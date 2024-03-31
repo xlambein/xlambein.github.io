@@ -20,7 +20,7 @@ sources:
 - 1 tbsp fresh dill, chopped
 - 1 sheet puff pastry
 
-## Steps
+## Directions
 
 1. Preheat oven to 200 C.
 

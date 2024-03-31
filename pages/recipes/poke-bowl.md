@@ -19,7 +19,7 @@ servings: 2
 - soy sauce
 - sesame seeds (optional)
 
-## Steps
+## Directions
 
 1. Rince the rice a few times, then soak it in water for at least half an hour. Add about 1 cup of water and cook until the water has evaporated. If the rice is still too raw, add more water.
   

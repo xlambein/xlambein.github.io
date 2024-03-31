@@ -16,7 +16,7 @@ servings: 3
 - 1 can tomatoes
 - provence herbs
 
-## Steps
+## Directions
 
 1. In a large pot, cook the onion in oil on medium heat for about 5 minutes. Add the bell peppers, and cook for 10 more minutes.
 

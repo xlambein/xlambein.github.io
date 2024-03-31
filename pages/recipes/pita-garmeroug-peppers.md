@@ -19,7 +19,7 @@ sources:
 - 1 tsp cumin
 - 1 tbsp lemon juice
 
-## Steps
+## Directions
 
 1. Stir-fry the bell peppers on high heat for ~5 minutes. Reduce to medium heat, then cook until soft and golden.
 

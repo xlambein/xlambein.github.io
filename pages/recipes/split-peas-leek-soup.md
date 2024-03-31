@@ -14,7 +14,7 @@ servings: 4
 - 1L vegetable stock
 - milk
 
-## Steps
+## Directions
 
 1. Heat half the vegetable stock in a large pot, then cook the peas for about 20 minutes.
 

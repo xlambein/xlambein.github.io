@@ -17,6 +17,8 @@
           overlays = [inputs.nixss.overlays.default];
         };
 
+        jampack = pkgs.callPackage ./jampack {};
+
         publish = pkgs.writeShellScriptBin "publish" ''
           set -euo pipefail
 
@@ -31,6 +33,9 @@
           rm -r *
 
           cp -r --dereference --no-preserve=mode,ownership $path/* .
+          ${jampack}/bin/jampack .
+          rmdir _jampack
+          rm -rf .jampack
 
           git add .
           git commit -vem "$message"

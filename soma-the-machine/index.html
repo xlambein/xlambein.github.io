@@ -1,33 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><style>:where(img){height:auto}</style>
+  
   <title>“The Machine”: A Conversation With a Slot Machine — Xavier Lambein's
   website</title>
-  <meta name="description" content=
-  "The final project Anna Brynskov, Mayram Aghajani and I made for the course “Winners and Losers” at the School of Machines, Making and Make-believe. This includes a description of the machine we built, along with a walk-through of its electronics and programming.">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The final project Anna Brynskov, Mayram Aghajani and I made for the course “Winners and Losers” at the School of Machines, Making and Make-believe. This includes a description of the machine we built, along with a walk-through of its electronics and programming.">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="icon" type="image/png" href="/assets/img/favicon.png">
   <link rel="stylesheet" href="/assets/css/style.css">
-  <link rel="preload" href=
-  "https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
-  integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin=
-  "anonymous" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
-  <link rel="stylesheet" href=
-  "https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
-  integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin=
-  "anonymous"></noscript>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous"></noscript>
   <link rel="me" href="https://sunny.garden/@xavier">
 </head>
 <body>
   <nav>
-    <a href="/" tabindex="-1" aria-hidden="true"><img src=
-    "/assets/img/logo.svg" width="61.2" height="61.2" alt="website logo" id=
-    "logo" style="float: left;"></a>
+    <a href="/" tabindex="-1" aria-hidden="true"><img src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3e%3cpath fill='%23ff8080' stroke='black' stroke-width='5.4' d='m112.728 100 76.367-76.368v25.456L138.184 100l25.456 25.456h-25.456ZM100 112.728l76.368 76.367h-25.456L100 138.184 74.544 163.64v-25.456ZM87.272 100l-76.367 76.368v-25.456L61.816 100 36.36 74.544h25.456ZM100 87.272 23.632 10.905h25.456L100 61.816l25.456-25.456v25.456Z'/%3e%3c/svg%3e" width="61.2" height="61.2" alt="website logo" id="logo" style="float:left" fetchpriority="high"></a>
     <div id="links">
-      <a href="/">Home</a> <a href="/about/">About</a> <a href=
-      "/music/">Music</a> <a href="/recipes/">Recipes</a>
+      <a href="/">Home</a> <a href="/about/">About</a> <a href="/music/">Music</a> <a href="/recipes/">Recipes</a>
     </div>
   </nav>
   <article>
@@ -43,34 +31,28 @@
       </div>
     </header>
     <p>Right after my graduation (literally, the day after) I went to Berlin
-    for the entire month of July to participate in a program at the <a href=
-    "http://schoolofma.org/">School of Machines, Making and Make-believe</a>.
+    for the entire month of July to participate in a program at the <a href="http://schoolofma.org/">School of Machines, Making and Make-believe</a>.
     The “School of Ma” is an independent school at the intersection of art and
     technology, run by Rachel Uwa. Every month, a course is organized around a
     specific theme, and multiple instructors are invited to come and teach to a
     dozen or so students.</p>
-    <p>The course I took part in was called <a href=
-    "http://schoolofma.org/winners-and-losers.html">“Winners and Losers”</a>,
-    subtitled “Interactive electronics, play & experimental games”. It started
+    <p>The course I took part in was called <a href="http://schoolofma.org/winners-and-losers.html">“Winners and Losers”</a>,
+    subtitled “Interactive electronics, play &amp; experimental games”. It started
     with a two-weeks primer on electronics and the use of microcontrollers,
     followed by one week on motors and mechatronics in general, and finished
-    with a project in small groups, spanning the fourth week. <a href=
-    "http://alicestew.art/">Alice Stewart</a> was the teacher for the first two
-    weeks, while <a href="http://katihyyppa.com/">Kati Hyyppä</a> and <a href=
-    "https://www.niklasroy.com/">Niklas Roy</a> taught the third week and
+    with a project in small groups, spanning the fourth week. <a href="http://alicestew.art/">Alice Stewart</a> was the teacher for the first two
+    weeks, while <a href="http://katihyyppa.com/">Kati Hyyppä</a> and <a href="https://www.niklasroy.com/">Niklas Roy</a> taught the third week and
     supervised the projects.</p>
     <h1 id="the-machine">“The Machine”</h1>
     <p>Our project—called “The Machine”—is a kind of slot machine generating
     random sentences. The “players” are invited to insert a (fake) coin, select
     the kind of interaction they desire—“poetry”, “question” or “challenge”—and
     then watch the reels turn and stop on three phrases which, when combined,
-    form a sentence. The project is a collaboration between myself, <a href=
-    "https://vimeo.com/annabrynskov">Anna Brynskov</a>, and <a href=
-    "https://www.elementlichtdesign.com/">Maryam Aghajani</a>. Anna is a
+    form a sentence. The project is a collaboration between myself, <a href="https://vimeo.com/annabrynskov">Anna Brynskov</a>, and <a href="https://www.elementlichtdesign.com/">Maryam Aghajani</a>. Anna is a
     student in digital design and a filmmaker from Aarhus, Denmark; Maryam is
     an architectural lighting designer from Canada, working in Berlin.</p>
     <figure>
-      <img src="the-machine-001.jpg">
+      <img src="the-machine-001.jpg.jpg" alt="" fetchpriority="high" decoding="async" width="598" height="1062">
       <figcaption>
         The front of the Machine. You can see the coin slot in the top-left
         corner, the three buttons below corresponding to the three kinds of
@@ -84,10 +66,7 @@
     Machine. After I insert a coin and I press the “poetry” button, the reels
     immediately start turning. Eventually, they stop on three random phrases of
     the “poetry” type (written in black), and the LED eyes blink.</p>
-    <p><iframe class="resp-iframe" src=
-    "https://www.youtube.com/embed/32Yoz-d0ac8" frameborder="0" allow=
-    "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen></iframe></p>
+    <p><iframe class="resp-iframe" src="https://www.youtube.com/embed/32Yoz-d0ac8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></p>
     <h1 id="making-of">Making Of</h1>
     <p>Because we had complementary skills, we tended to gravitate towards what
     we each did best. Being the computer scientist of the group, I took care of
@@ -116,7 +95,7 @@
     presented there. The feedback was very positive, and it was a lot of fun to
     see so many people interact with the installation.</p>
     <figure>
-      <img src="the-machine-002.jpg">
+      <img src="the-machine-002.jpg.jpg" alt="" fetchpriority="high" decoding="async" width="1062" height="598">
       <figcaption>
         Anna (middle) and Maryam (right) showing a visitor how to use the
         Machine during the event at Liebig12.
@@ -145,7 +124,7 @@
       third Arduino Uno</li>
     </ul>
     <figure>
-      <img src="the-machine-003.jpg">
+      <img src="the-machine-003.jpg.jpg" alt="" fetchpriority="high" decoding="async" width="1062" height="598">
       <figcaption>
         The insides of the Machine.
       </figcaption>
@@ -155,7 +134,7 @@
     these aspects.</p>
     <h2 id="the-reels">The Reels</h2>
     <figure>
-      <img src="the-machine-004.jpg">
+      <img src="the-machine-004.jpg.jpg" alt="" fetchpriority="high" decoding="async" width="1062" height="598">
       <figcaption>
         A single reel, removed from its support.
       </figcaption>
@@ -180,7 +159,7 @@
     <p>Finally, a slit (9) on the axis provides an easy way of attaching and
     removing the reel from a screwhead (10) on the support:</p>
     <figure>
-      <img src="the-machine-005.jpg">
+      <img src="the-machine-005.jpg.jpg" alt="" fetchpriority="high" decoding="async" width="1062" height="598">
       <figcaption>
         A screwhead on the wooden frame, to which a reel could be attached.
       </figcaption>
@@ -190,8 +169,7 @@
     split the tasks between two Arduinos that communicate over two pins through
     I2C. <a href="https://en.wikipedia.org/wiki/I%C2%B2C">I2C</a> is a common
     protocol for communication between integrated circuits, and it’s available
-    by default in the <a href=
-    "https://www.arduino.cc/en/Reference/Wire">Arduino “Wire” library</a>. In
+    by default in the <a href="https://www.arduino.cc/en/Reference/Wire">Arduino “Wire” library</a>. In
     I2C, one Arduino is said to be the “master”, while the other is the
     “slave”. The master can either send a message to the slave, or it can ask
     the slave for a message. The slave, in return, can receive messages, and
@@ -229,7 +207,7 @@
     (12), and many additional pins in which to plug the motors (13) and I2C
     wires (14):</p>
     <figure>
-      <img src="the-machine-006.jpg">
+      <img src="the-machine-006.jpg.webp" alt="" loading="lazy" decoding="async" width="1195" height="729" srcset="the-machine-006.jpg.webp 1195w, the-machine-006@895w.webp 895w" sizes="100vw">
       <figcaption>
         The motor driver shield I painstakingly soldered for half a day.
       </figcaption>
@@ -253,14 +231,13 @@
     through the tube, it momentarily blocks the light from the LED as it falls,
     triggering the light sensor.</p>
     <figure>
-      <img src="the-machine-007.jpg">
+      <img src="the-machine-007.jpg.webp" alt="" loading="lazy" decoding="async" width="1195" height="532" srcset="the-machine-007.jpg.webp 1195w, the-machine-007@895w.webp 895w" sizes="100vw">
       <figcaption>
         The coin slot Anna made.
       </figcaption>
     </figure>
     <p>Rather than have people use real money, we provided our original “SoMA”
-    coins, the unofficial School of MA cardboard currency (our <abbr title=
-    "Initial Cardboard Offering">ICO</abbr> will start soon). Fun anecdote:
+    coins, the unofficial School of MA cardboard currency (our <abbr title="Initial Cardboard Offering">ICO</abbr> will start soon). Fun anecdote:
     During the evening, we discovered that the coin slot was sensitive enough
     to be triggered by a mini pretzel. Thankfully this had no effect on the
     exchange rate of SoMA coins.</p>
@@ -279,5 +256,6 @@
     found on the <a href="https://github.com/xlambein/soma-the-machine/">GitHub
     repository</a> for the project.</p>
   </article>
-</body>
-</html>
+
+
+</body></html>

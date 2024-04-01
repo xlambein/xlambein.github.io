@@ -1,33 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><style>:where(img){height:auto}</style>
+  
   <title>PAW: a programmable and visual audio workstation (submission to LIVE
   2023) — Xavier Lambein's website</title>
-  <meta name="description" content=
-  "My submission to the LIVE 2023 workshop, detailing a project I’ve been working on.">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="My submission to the LIVE 2023 workshop, detailing a project I’ve been working on.">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="icon" type="image/png" href="/assets/img/favicon.png">
   <link rel="stylesheet" href="/assets/css/style.css">
-  <link rel="preload" href=
-  "https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
-  integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin=
-  "anonymous" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
-  <link rel="stylesheet" href=
-  "https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
-  integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin=
-  "anonymous"></noscript>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous"></noscript>
   <link rel="me" href="https://sunny.garden/@xavier">
 </head>
 <body>
   <nav>
-    <a href="/" tabindex="-1" aria-hidden="true"><img src=
-    "/assets/img/logo.svg" width="61.2" height="61.2" alt="website logo" id=
-    "logo" style="float: left;"></a>
+    <a href="/" tabindex="-1" aria-hidden="true"><img src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3e%3cpath fill='%23ff8080' stroke='black' stroke-width='5.4' d='m112.728 100 76.367-76.368v25.456L138.184 100l25.456 25.456h-25.456ZM100 112.728l76.368 76.367h-25.456L100 138.184 74.544 163.64v-25.456ZM87.272 100l-76.367 76.368v-25.456L61.816 100 36.36 74.544h25.456ZM100 87.272 23.632 10.905h25.456L100 61.816l25.456-25.456v25.456Z'/%3e%3c/svg%3e" width="61.2" height="61.2" alt="website logo" id="logo" style="float:left" fetchpriority="high"></a>
     <div id="links">
-      <a href="/">Home</a> <a href="/about/">About</a> <a href=
-      "/music/">Music</a> <a href="/recipes/">Recipes</a>
+      <a href="/">Home</a> <a href="/about/">About</a> <a href="/music/">Music</a> <a href="/recipes/">Recipes</a>
     </div>
   </nav>
   <article>
@@ -43,13 +31,10 @@
         </ul>
       </div>
     </header>
-    <p>This is an essay I wrote as a submission to the <a href=
-    "https://liveprog.org/">LIVE 2023 workshop</a>, a workshop on live
-    programming. You may also want to <a href=
-    "https://www.youtube.com/live/cBYudbaqHAk?si=Y-vjp5sX_7MvSGQI&amp;t=4816">check
+    <p>This is an essay I wrote as a submission to the <a href="https://liveprog.org/">LIVE 2023 workshop</a>, a workshop on live
+    programming. You may also want to <a href="https://www.youtube.com/live/cBYudbaqHAk?si=Y-vjp5sX_7MvSGQI&amp;t=4816">check
     out the talk I gave at LIVE based on this essay</a>.</p>
-    <p>I also gave a follow-up presentation at the <a href=
-    "https://chci.pages.dev/aist-seminar/en/5">5th AIST Creative HCI
+    <p>I also gave a follow-up presentation at the <a href="https://chci.pages.dev/aist-seminar/en/5">5th AIST Creative HCI
     Seminar</a> hosted by Jun Kato, alongside Tomoya Matsuura and Baku
     Hashimoto. I highly recommend Tomoya and Baku’s presentations.</p>
     <h1 id="introduction">Introduction</h1>
@@ -69,15 +54,12 @@
     where a user can arrange the position of audio and MIDI clips on the
     timeline of each track, to control when each clip is triggered during
     playback.</p>
-    <p><img src="ardour.png" alt=
-    "Screenshot from Ardour, a FOSS DAW that I’ve used extensively, and a big source of inspiration."></p>
+    <p><img src="ardour.png.jpg" alt="Screenshot from Ardour, a FOSS DAW that I’ve used extensively, and a big source of inspiration." fetchpriority="high" decoding="async" width="960" height="584"></p>
     <p>There’s another angle to making music on the computer, which is highly
-    relevant to this project. Quoting <a href=
-    "https://en.wikipedia.org/wiki/Live_coding">Wikipedia</a>, “live coding” is
+    relevant to this project. Quoting <a href="https://en.wikipedia.org/wiki/Live_coding">Wikipedia</a>, “live coding” is
     the practice of “making programming an integral part of the running
     program”. It’s often used in the context of music, where an artist is on a
-    stage, writing a program (usually with <a href=
-    "https://www.youtube.com/watch?v=YvsoWehBbec">a projector showing their
+    stage, writing a program (usually with <a href="https://www.youtube.com/watch?v=YvsoWehBbec">a projector showing their
     code to the audience</a>), while the program is being executed, producing
     music. This is not limited to audio, and you’ll also find visual artists
     doing the same with e.g. shader programs, to generate and animate graphics.
@@ -134,8 +116,7 @@
     version, conflicts are simple (or, at least, possible) to resolve. Because
     of this, source code is also easier to trust than a GUI’s inner state, and
     the user can have greater confidence that their project won’t change in
-    surprising ways<a href="#fn1" class="footnote-ref" id="fnref1" role=
-    "doc-noteref"><sup>1</sup></a>. Strictly speaking, some traditional DAWs
+    surprising ways<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Strictly speaking, some traditional DAWs
     also benefit from this, since they too store their state as text files on
     disk (e.g., Ardour uses XML files). However, because these formats aren’t
     made with the intent of being read and edited by a human, doing so is
@@ -155,8 +136,7 @@
     “visual gaps” of code with GUI, PAW can begin to provide a solution to the
     respective problems with these two approaches.</p>
     <h1 id="presentation-of-paw">Presentation of PAW</h1>
-    <p>PAW is implemented as a <a href=
-    "https://microsoft.github.io/language-server-protocol/">language server</a>
+    <p>PAW is implemented as a <a href="https://microsoft.github.io/language-server-protocol/">language server</a>
     for a custom DSL. The user starts by opening PAW, which shows a
     mostly-empty GUI window. With their text editor of choice, they open a
     source file, and the editor connects to PAW via the language server
@@ -171,8 +151,7 @@
     widgets.</p>
     <p><video src="demo03.webm" controls=""><a href="demo03.webm">Video where a
     user edits in a new widget.</a></video></p>
-    <p>The user can also manipulate these widgets, which too recompiles<a href=
-    "#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>
+    <p>The user can also manipulate these widgets, which too recompiles<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>
     the program, and updates the source file in the text editor.</p>
     <p><video src="demo04.webm" controls=""><a href="demo04.webm">Video where a
     user interacts with a widget, and it updates the code.</a></video></p>
@@ -241,10 +220,8 @@
     PAW.</p>
     <h1 id="program-synthesis-and-sketch-n-sketch">Program synthesis and
     Sketch-n-Sketch</h1>
-    <p><img src="sns.png" alt=
-    "Screenshot of Sketch-n-Sketch, showing the source code on the left, and the drawing it produces on the right."></p>
-    <p>My initial source of inspiration, <a href=
-    "https://ravichugh.github.io/sketch-n-sketch/">Sketch-n-Sketch</a> is a
+    <p><img src="sns.png.webp" alt="Screenshot of Sketch-n-Sketch, showing the source code on the left, and the drawing it produces on the right." loading="lazy" decoding="async" width="816" height="546"></p>
+    <p>My initial source of inspiration, <a href="https://ravichugh.github.io/sketch-n-sketch/">Sketch-n-Sketch</a> is a
     direct manipulation programming system for creating HTML and SVG documents.
     In Sketch-n-Sketch, the user writes code in a text area on the
     left-hand-side, and the output of their program, an SVG drawing, is
@@ -263,8 +240,7 @@
     <p>This approach does not translate directly to music, because the output,
     an audio signal, cannot (as far as I can imagine) lend itself to direct
     manipulation. Instead, some GUI acts as a proxy for direct manipulation of
-    the output. This idea is explored by Mark Santolucito in <a href=
-    "https://2020.splashcon.org/details/live-2020-papers/5/Exploring-Human-in-the-loop-Program-Synthesis-with-Live-Coding">
+    the output. This idea is explored by Mark Santolucito in <a href="https://2020.splashcon.org/details/live-2020-papers/5/Exploring-Human-in-the-loop-Program-Synthesis-with-Live-Coding">
     “Human-in-the-loop Program Synthesis for Live Coding”</a>, where the user
     can simultaneously interact with a graphical drum sequencer and the
     JavaScript source code it represents.</p>
@@ -279,9 +255,7 @@
     <h1 id="hazels-livelits-and-andersens-visual-syntax">Hazel’s livelits and
     Andersen’s visual syntax</h1>
     <p>Probably the closest project to PAW, and another major source of
-    inspiration<a href="#fn3" class="footnote-ref" id="fnref3" role=
-    "doc-noteref"><sup>3</sup></a>, is Hazel’s <a href=
-    "https://hazel.org/papers/livelits-paper.pdf">livelits</a>. These are
+    inspiration<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>, is Hazel’s <a href="https://hazel.org/papers/livelits-paper.pdf">livelits</a>. These are
     syntactic elements that expand to a literal, and which generate a GUI
     widget inside the Hazel editor for manipulating that literal. Livelits are
     “live”, meaning they generate closures that are re-evaluated as the GUI
@@ -338,9 +312,7 @@ process = no.noise : fi.resonlp(ctFreq,q,gain);</code></pre>
     <h1 id="the-roc-programming-language">The Roc programming language</h1>
     <p>Finally, in terms of both PAW’s structure and its DSL, a major source of
     inspiration has been the novel <a href="https://www.roc-lang.org/">Roc</a>
-    programming language, which is an extension of the model of <a href=
-    "https://elm-lang.org/">Elm</a> and its <a href=
-    "https://guide.elm-lang.org/architecture/">famous architecture</a>. Roc is
+    programming language, which is an extension of the model of <a href="https://elm-lang.org/">Elm</a> and its <a href="https://guide.elm-lang.org/architecture/">famous architecture</a>. Roc is
     a work-in-progress programming language for writing applications in which
     the domain-specific complexity is abstracted away into a “platform”, which
     is written in some other language (Rust, C, etc.), and users of a platform
@@ -348,8 +320,7 @@ process = no.noise : fi.resonlp(ctFreq,q,gain);</code></pre>
     <p>PAW’s architecture is similar to Roc’s: the “platform” is a Rust audio
     processing environment, and the “application logic” is a separate program
     in a specific DSL, authored by the user. Interestingly, the Roc team
-    <a href=
-    "https://github.com/roc-lang/roc/blob/a4500e16bdc7926ce894a0a57ae9c1da664ee26e/design/editor/editor-ideas.md">
+    <a href="https://github.com/roc-lang/roc/blob/a4500e16bdc7926ce894a0a57ae9c1da664ee26e/design/editor/editor-ideas.md">
     has plans</a> for a language-specific editor which could support
     code-generated interactive UI, meaning one day PAW could be implemented as
     a Roc platform.</p>
@@ -378,15 +349,13 @@ process = no.noise : fi.resonlp(ctFreq,q,gain);</code></pre>
     as well as the higher-level structural code connecting parts together.</p>
     <p>So far, this has lead me to making the DSL mostly imperative, but I’m
     hoping to move closer to a functional language in the future. Recent
-    developments, such as automatic memory management with <a href=
-    "https://www.microsoft.com/en-us/research/uploads/prod/2020/11/perceus-tr-v1.pdf">
+    developments, such as automatic memory management with <a href="https://www.microsoft.com/en-us/research/uploads/prod/2020/11/perceus-tr-v1.pdf">
     Perceus</a>, might be helpful to achieve high performance while being safer
     and more declarative.</p>
     <h1 id="embedded-text-editor">Embedded text editor</h1>
     <p>The current setup of using an external editor connected to PAW through
     the LSP was mainly chosen so I wouldn’t have to make a whole text editor,
-    which would further blow up the scope of this project<a href="#fn4" class=
-    "footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. While it
+    which would further blow up the scope of this project<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. While it
     does have the advantage of letting users choose their text editor, I don’t
     love this split between the code and the GUI it induces. In the future, it
     might be worth looking into embedding an editor directly into PAW, which
@@ -432,8 +401,7 @@ end</code></pre>
     <p>Code for these widgets is not relevant to the actual audio runtime of
     PAW, and conversely audio processing code is not needed for the GUI.
     Therefore, the two should ideally be separated in both their scoping and
-    their compilation targets. Racket’s <a href=
-    "https://docs.racket-lang.org/guide/phases.html">phase system</a> looks to
+    their compilation targets. Racket’s <a href="https://docs.racket-lang.org/guide/phases.html">phase system</a> looks to
     be a good solution to this problem—it’s indeed the one used by Andersen in
     her “visual syntax”, mentioned above.</p>
     <h1 id="improve-the-syntax-for-interactive-expressions">Improve the syntax
@@ -491,8 +459,7 @@ let sample = lp_apply(lp_state, params, sample)</code></pre>
     multiple instances/implementations of a class/trait for the same type, and
     choose the one to use for each scope. There are issues with this, which is
     why Haskell and Rust don’t support it. However, it can be done in a sound
-    way, see for example <a href=
-    "https://www.researchgate.net/publication/303170128_Controlling_the_scope_of_instances_in_Haskell">
+    way, see for example <a href="https://www.researchgate.net/publication/303170128_Controlling_the_scope_of_instances_in_Haskell">
     <em>Controlling the scope of instances in Haskell</em></a> by Gontijo and
     Camarão.</p>
     <p>Building on this idea, let’s envision a trait syntax for PAW’s DSL, and
@@ -592,7 +559,7 @@ data TrackClip&lt;t&gt; = forall c: Clip&lt;t&gt;. {
     one returns a result for the given sample:</p>
     <pre><code>fn sample_track_at(track: Track&lt;t&gt;, s: Sample) -&gt; Option&lt;t&gt;
     for clip in track do
-        if clip.location &lt;= s &amp;& s &lt; clip.location + clip.end - clip.start then
+        if clip.location &lt;= s &amp;&amp; s &lt; clip.location + clip.end - clip.start then
             -- If the sample is in bound, read data from it
             let out = sample_at(clip, s - clip.location + clip.start)
             if is_some(out) then return out end
@@ -639,12 +606,10 @@ end</code></pre>
     <p>It’s interesting to note that, since <code>sample_track_at</code> has
     the same signature as <code>Clip</code>’s <code>sample_at</code>,
     <code>Track</code> itself could be made to implement
-    <code>Clip</code><a href="#fn5" class="footnote-ref" id="fnref5" role=
-    "doc-noteref"><sup>5</sup></a>. This means a track could have
+    <code>Clip</code><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. This means a track could have
     fully-functioning nested tracks as its clips. Whether this is actually
     useful is left as an exercise to the reader.</p>
-    <aside id="footnotes" class="footnotes footnotes-end-of-document" role=
-    "doc-endnotes">
+    <aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
       <hr>
       <ol>
         <li id="fn1">
@@ -654,44 +619,39 @@ end</code></pre>
           not always the case. For example, most WYSIWYG word processors I’ve
           used lack transparency in terms of their inner representation of
           formatting and structure. Consequently, it’s common to start typing
-          text somewhere, only to find the font’s <span style=
-          "font-family: sans-serif">mysteriously changed</span>, or the text is
+          text somewhere, only to find the font’s <span style="font-family:sans-serif">mysteriously changed</span>, or the text is
           now <em>emphasized</em>, because previous formatting was left there
           in an invisible way. Again, this is not impossible to fix, but as
           I’ve argued above, I believe the complex nature of GUIs means they
           require a greater effort on the application authors’ part to ensure
-          stability and transparency of the hidden state.<a href="#fnref1"
-          class="footnote-back" role="doc-backlink">↩︎</a></p>
+          stability and transparency of the hidden state.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p>
         </li>
         <li id="fn2">
           <p>In practice, recompiling each time a value changes is needlessly
           slow and computationally intensive. Instead, the PAW compiler
           actually produces a shared library with symbols corresponding to each
           interactive value, and manipulating the widgets updates these symbols
-          in the shared library.<a href="#fnref2" class="footnote-back" role=
-          "doc-backlink">↩︎</a></p>
+          in the shared library.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p>
         </li>
         <li id="fn3">
           <p>Among other things, this is where the <code>$</code>-notation for
-          interactive values was stolen.<a href="#fnref3" class="footnote-back"
-          role="doc-backlink">↩︎</a></p>
+          interactive values was stolen.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p>
         </li>
         <li id="fn4">
           <p>In an earlier prototype of PAW, I did have an embedded text area
           which served as an editor. However, the experience of writing code
           with it was so unpleasant that I always ended up opening files in Vim
           for anything non-trivial. For that reason, I eventually got rid of
-          it, in favour of using the LSP with an external editor.<a href=
-          "#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p>
+          it, in favour of using the LSP with an external editor.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p>
         </li>
         <li id="fn5">
           <p>And in fact, we could implement <code>Clip&lt;t&gt;</code> and
           <code>Interactive</code> for <code>Fn(Sample) -&gt; t</code>, making
-          any fitting function be a clip.<a href="#fnref5" class=
-          "footnote-back" role="doc-backlink">↩︎</a></p>
+          any fitting function be a clip.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p>
         </li>
       </ol>
     </aside>
   </article>
-</body>
-</html>
+
+
+</body></html>

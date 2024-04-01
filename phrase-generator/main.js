@@ -1,7103 +1,3094 @@
-(function(scope){
-'use strict';
-
-function F(arity, fun, wrapper) {
-  wrapper.a = arity;
-  wrapper.f = fun;
-  return wrapper;
-}
-
-function F2(fun) {
-  return F(2, fun, function(a) { return function(b) { return fun(a,b); }; })
-}
-function F3(fun) {
-  return F(3, fun, function(a) {
-    return function(b) { return function(c) { return fun(a, b, c); }; };
-  });
-}
-function F4(fun) {
-  return F(4, fun, function(a) { return function(b) { return function(c) {
-    return function(d) { return fun(a, b, c, d); }; }; };
-  });
-}
-function F5(fun) {
-  return F(5, fun, function(a) { return function(b) { return function(c) {
-    return function(d) { return function(e) { return fun(a, b, c, d, e); }; }; }; };
-  });
-}
-function F6(fun) {
-  return F(6, fun, function(a) { return function(b) { return function(c) {
-    return function(d) { return function(e) { return function(f) {
-    return fun(a, b, c, d, e, f); }; }; }; }; };
-  });
-}
-function F7(fun) {
-  return F(7, fun, function(a) { return function(b) { return function(c) {
-    return function(d) { return function(e) { return function(f) {
-    return function(g) { return fun(a, b, c, d, e, f, g); }; }; }; }; }; };
-  });
-}
-function F8(fun) {
-  return F(8, fun, function(a) { return function(b) { return function(c) {
-    return function(d) { return function(e) { return function(f) {
-    return function(g) { return function(h) {
-    return fun(a, b, c, d, e, f, g, h); }; }; }; }; }; }; };
-  });
-}
-function F9(fun) {
-  return F(9, fun, function(a) { return function(b) { return function(c) {
-    return function(d) { return function(e) { return function(f) {
-    return function(g) { return function(h) { return function(i) {
-    return fun(a, b, c, d, e, f, g, h, i); }; }; }; }; }; }; }; };
-  });
-}
-
-function A2(fun, a, b) {
-  return fun.a === 2 ? fun.f(a, b) : fun(a)(b);
-}
-function A3(fun, a, b, c) {
-  return fun.a === 3 ? fun.f(a, b, c) : fun(a)(b)(c);
-}
-function A4(fun, a, b, c, d) {
-  return fun.a === 4 ? fun.f(a, b, c, d) : fun(a)(b)(c)(d);
-}
-function A5(fun, a, b, c, d, e) {
-  return fun.a === 5 ? fun.f(a, b, c, d, e) : fun(a)(b)(c)(d)(e);
-}
-function A6(fun, a, b, c, d, e, f) {
-  return fun.a === 6 ? fun.f(a, b, c, d, e, f) : fun(a)(b)(c)(d)(e)(f);
-}
-function A7(fun, a, b, c, d, e, f, g) {
-  return fun.a === 7 ? fun.f(a, b, c, d, e, f, g) : fun(a)(b)(c)(d)(e)(f)(g);
-}
-function A8(fun, a, b, c, d, e, f, g, h) {
-  return fun.a === 8 ? fun.f(a, b, c, d, e, f, g, h) : fun(a)(b)(c)(d)(e)(f)(g)(h);
-}
-function A9(fun, a, b, c, d, e, f, g, h, i) {
-  return fun.a === 9 ? fun.f(a, b, c, d, e, f, g, h, i) : fun(a)(b)(c)(d)(e)(f)(g)(h)(i);
-}
-
-
-
-
-// EQUALITY
-
-function _Utils_eq(x, y)
-{
-	for (
-		var pair, stack = [], isEqual = _Utils_eqHelp(x, y, 0, stack);
-		isEqual && (pair = stack.pop());
-		isEqual = _Utils_eqHelp(pair.a, pair.b, 0, stack)
-		)
-	{}
-
-	return isEqual;
-}
-
-function _Utils_eqHelp(x, y, depth, stack)
-{
-	if (x === y)
-	{
-		return true;
-	}
-
-	if (typeof x !== 'object' || x === null || y === null)
-	{
-		typeof x === 'function' && _Debug_crash(5);
-		return false;
-	}
-
-	if (depth > 100)
-	{
-		stack.push(_Utils_Tuple2(x,y));
-		return true;
-	}
-
-	/**_UNUSED/
-	if (x.$ === 'Set_elm_builtin')
-	{
-		x = $elm$core$Set$toList(x);
-		y = $elm$core$Set$toList(y);
-	}
-	if (x.$ === 'RBNode_elm_builtin' || x.$ === 'RBEmpty_elm_builtin')
-	{
-		x = $elm$core$Dict$toList(x);
-		y = $elm$core$Dict$toList(y);
-	}
-	//*/
-
-	/**/
-	if (x.$ < 0)
-	{
-		x = $elm$core$Dict$toList(x);
-		y = $elm$core$Dict$toList(y);
-	}
-	//*/
-
-	for (var key in x)
-	{
-		if (!_Utils_eqHelp(x[key], y[key], depth + 1, stack))
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
-var _Utils_equal = F2(_Utils_eq);
-var _Utils_notEqual = F2(function(a, b) { return !_Utils_eq(a,b); });
-
-
-
-// COMPARISONS
-
-// Code in Generate/JavaScript.hs, Basics.js, and List.js depends on
-// the particular integer values assigned to LT, EQ, and GT.
-
-function _Utils_cmp(x, y, ord)
-{
-	if (typeof x !== 'object')
-	{
-		return x === y ? /*EQ*/ 0 : x < y ? /*LT*/ -1 : /*GT*/ 1;
-	}
-
-	/**_UNUSED/
-	if (x instanceof String)
-	{
-		var a = x.valueOf();
-		var b = y.valueOf();
-		return a === b ? 0 : a < b ? -1 : 1;
-	}
-	//*/
-
-	/**/
-	if (typeof x.$ === 'undefined')
-	//*/
-	/**_UNUSED/
-	if (x.$[0] === '#')
-	//*/
-	{
-		return (ord = _Utils_cmp(x.a, y.a))
-			? ord
-			: (ord = _Utils_cmp(x.b, y.b))
-				? ord
-				: _Utils_cmp(x.c, y.c);
-	}
-
-	// traverse conses until end of a list or a mismatch
-	for (; x.b && y.b && !(ord = _Utils_cmp(x.a, y.a)); x = x.b, y = y.b) {} // WHILE_CONSES
-	return ord || (x.b ? /*GT*/ 1 : y.b ? /*LT*/ -1 : /*EQ*/ 0);
-}
-
-var _Utils_lt = F2(function(a, b) { return _Utils_cmp(a, b) < 0; });
-var _Utils_le = F2(function(a, b) { return _Utils_cmp(a, b) < 1; });
-var _Utils_gt = F2(function(a, b) { return _Utils_cmp(a, b) > 0; });
-var _Utils_ge = F2(function(a, b) { return _Utils_cmp(a, b) >= 0; });
-
-var _Utils_compare = F2(function(x, y)
-{
-	var n = _Utils_cmp(x, y);
-	return n < 0 ? $elm$core$Basics$LT : n ? $elm$core$Basics$GT : $elm$core$Basics$EQ;
-});
-
-
-// COMMON VALUES
-
-var _Utils_Tuple0 = 0;
-var _Utils_Tuple0_UNUSED = { $: '#0' };
-
-function _Utils_Tuple2(a, b) { return { a: a, b: b }; }
-function _Utils_Tuple2_UNUSED(a, b) { return { $: '#2', a: a, b: b }; }
-
-function _Utils_Tuple3(a, b, c) { return { a: a, b: b, c: c }; }
-function _Utils_Tuple3_UNUSED(a, b, c) { return { $: '#3', a: a, b: b, c: c }; }
-
-function _Utils_chr(c) { return c; }
-function _Utils_chr_UNUSED(c) { return new String(c); }
-
-
-// RECORDS
-
-function _Utils_update(oldRecord, updatedFields)
-{
-	var newRecord = {};
-
-	for (var key in oldRecord)
-	{
-		newRecord[key] = oldRecord[key];
-	}
-
-	for (var key in updatedFields)
-	{
-		newRecord[key] = updatedFields[key];
-	}
-
-	return newRecord;
-}
-
-
-// APPEND
-
-var _Utils_append = F2(_Utils_ap);
-
-function _Utils_ap(xs, ys)
-{
-	// append Strings
-	if (typeof xs === 'string')
-	{
-		return xs + ys;
-	}
-
-	// append Lists
-	if (!xs.b)
-	{
-		return ys;
-	}
-	var root = _List_Cons(xs.a, ys);
-	xs = xs.b
-	for (var curr = root; xs.b; xs = xs.b) // WHILE_CONS
-	{
-		curr = curr.b = _List_Cons(xs.a, ys);
-	}
-	return root;
-}
-
-
-
-var _List_Nil = { $: 0 };
-var _List_Nil_UNUSED = { $: '[]' };
-
-function _List_Cons(hd, tl) { return { $: 1, a: hd, b: tl }; }
-function _List_Cons_UNUSED(hd, tl) { return { $: '::', a: hd, b: tl }; }
-
-
-var _List_cons = F2(_List_Cons);
-
-function _List_fromArray(arr)
-{
-	var out = _List_Nil;
-	for (var i = arr.length; i--; )
-	{
-		out = _List_Cons(arr[i], out);
-	}
-	return out;
-}
-
-function _List_toArray(xs)
-{
-	for (var out = []; xs.b; xs = xs.b) // WHILE_CONS
-	{
-		out.push(xs.a);
-	}
-	return out;
-}
-
-var _List_map2 = F3(function(f, xs, ys)
-{
-	for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) // WHILE_CONSES
-	{
-		arr.push(A2(f, xs.a, ys.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map3 = F4(function(f, xs, ys, zs)
-{
-	for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A3(f, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map4 = F5(function(f, ws, xs, ys, zs)
-{
-	for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A4(f, ws.a, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map5 = F6(function(f, vs, ws, xs, ys, zs)
-{
-	for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A5(f, vs.a, ws.a, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_sortBy = F2(function(f, xs)
-{
-	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
-		return _Utils_cmp(f(a), f(b));
-	}));
-});
-
-var _List_sortWith = F2(function(f, xs)
-{
-	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
-		var ord = A2(f, a, b);
-		return ord === $elm$core$Basics$EQ ? 0 : ord === $elm$core$Basics$LT ? -1 : 1;
-	}));
-});
-
-
-
-var _JsArray_empty = [];
-
-function _JsArray_singleton(value)
-{
-    return [value];
-}
-
-function _JsArray_length(array)
-{
-    return array.length;
-}
-
-var _JsArray_initialize = F3(function(size, offset, func)
-{
-    var result = new Array(size);
-
-    for (var i = 0; i < size; i++)
-    {
-        result[i] = func(offset + i);
-    }
-
-    return result;
-});
-
-var _JsArray_initializeFromList = F2(function (max, ls)
-{
-    var result = new Array(max);
-
-    for (var i = 0; i < max && ls.b; i++)
-    {
-        result[i] = ls.a;
-        ls = ls.b;
-    }
-
-    result.length = i;
-    return _Utils_Tuple2(result, ls);
-});
-
-var _JsArray_unsafeGet = F2(function(index, array)
-{
-    return array[index];
-});
-
-var _JsArray_unsafeSet = F3(function(index, value, array)
-{
-    var length = array.length;
-    var result = new Array(length);
-
-    for (var i = 0; i < length; i++)
-    {
-        result[i] = array[i];
-    }
-
-    result[index] = value;
-    return result;
-});
-
-var _JsArray_push = F2(function(value, array)
-{
-    var length = array.length;
-    var result = new Array(length + 1);
-
-    for (var i = 0; i < length; i++)
-    {
-        result[i] = array[i];
-    }
-
-    result[length] = value;
-    return result;
-});
-
-var _JsArray_foldl = F3(function(func, acc, array)
-{
-    var length = array.length;
-
-    for (var i = 0; i < length; i++)
-    {
-        acc = A2(func, array[i], acc);
-    }
-
-    return acc;
-});
-
-var _JsArray_foldr = F3(function(func, acc, array)
-{
-    for (var i = array.length - 1; i >= 0; i--)
-    {
-        acc = A2(func, array[i], acc);
-    }
-
-    return acc;
-});
-
-var _JsArray_map = F2(function(func, array)
-{
-    var length = array.length;
-    var result = new Array(length);
-
-    for (var i = 0; i < length; i++)
-    {
-        result[i] = func(array[i]);
-    }
-
-    return result;
-});
-
-var _JsArray_indexedMap = F3(function(func, offset, array)
-{
-    var length = array.length;
-    var result = new Array(length);
-
-    for (var i = 0; i < length; i++)
-    {
-        result[i] = A2(func, offset + i, array[i]);
-    }
-
-    return result;
-});
-
-var _JsArray_slice = F3(function(from, to, array)
-{
-    return array.slice(from, to);
-});
-
-var _JsArray_appendN = F3(function(n, dest, source)
-{
-    var destLen = dest.length;
-    var itemsToCopy = n - destLen;
-
-    if (itemsToCopy > source.length)
-    {
-        itemsToCopy = source.length;
-    }
-
-    var size = destLen + itemsToCopy;
-    var result = new Array(size);
-
-    for (var i = 0; i < destLen; i++)
-    {
-        result[i] = dest[i];
-    }
-
-    for (var i = 0; i < itemsToCopy; i++)
-    {
-        result[i + destLen] = source[i];
-    }
-
-    return result;
-});
-
-
-
-// LOG
-
-var _Debug_log = F2(function(tag, value)
-{
-	return value;
-});
-
-var _Debug_log_UNUSED = F2(function(tag, value)
-{
-	console.log(tag + ': ' + _Debug_toString(value));
-	return value;
-});
-
-
-// TODOS
-
-function _Debug_todo(moduleName, region)
-{
-	return function(message) {
-		_Debug_crash(8, moduleName, region, message);
-	};
-}
-
-function _Debug_todoCase(moduleName, region, value)
-{
-	return function(message) {
-		_Debug_crash(9, moduleName, region, value, message);
-	};
-}
-
-
-// TO STRING
-
-function _Debug_toString(value)
-{
-	return '<internals>';
-}
-
-function _Debug_toString_UNUSED(value)
-{
-	return _Debug_toAnsiString(false, value);
-}
-
-function _Debug_toAnsiString(ansi, value)
-{
-	if (typeof value === 'function')
-	{
-		return _Debug_internalColor(ansi, '<function>');
-	}
-
-	if (typeof value === 'boolean')
-	{
-		return _Debug_ctorColor(ansi, value ? 'True' : 'False');
-	}
-
-	if (typeof value === 'number')
-	{
-		return _Debug_numberColor(ansi, value + '');
-	}
-
-	if (value instanceof String)
-	{
-		return _Debug_charColor(ansi, "'" + _Debug_addSlashes(value, true) + "'");
-	}
-
-	if (typeof value === 'string')
-	{
-		return _Debug_stringColor(ansi, '"' + _Debug_addSlashes(value, false) + '"');
-	}
-
-	if (typeof value === 'object' && '$' in value)
-	{
-		var tag = value.$;
-
-		if (typeof tag === 'number')
-		{
-			return _Debug_internalColor(ansi, '<internals>');
-		}
-
-		if (tag[0] === '#')
-		{
-			var output = [];
-			for (var k in value)
-			{
-				if (k === '$') continue;
-				output.push(_Debug_toAnsiString(ansi, value[k]));
-			}
-			return '(' + output.join(',') + ')';
-		}
-
-		if (tag === 'Set_elm_builtin')
-		{
-			return _Debug_ctorColor(ansi, 'Set')
-				+ _Debug_fadeColor(ansi, '.fromList') + ' '
-				+ _Debug_toAnsiString(ansi, $elm$core$Set$toList(value));
-		}
-
-		if (tag === 'RBNode_elm_builtin' || tag === 'RBEmpty_elm_builtin')
-		{
-			return _Debug_ctorColor(ansi, 'Dict')
-				+ _Debug_fadeColor(ansi, '.fromList') + ' '
-				+ _Debug_toAnsiString(ansi, $elm$core$Dict$toList(value));
-		}
-
-		if (tag === 'Array_elm_builtin')
-		{
-			return _Debug_ctorColor(ansi, 'Array')
-				+ _Debug_fadeColor(ansi, '.fromList') + ' '
-				+ _Debug_toAnsiString(ansi, $elm$core$Array$toList(value));
-		}
-
-		if (tag === '::' || tag === '[]')
-		{
-			var output = '[';
-
-			value.b && (output += _Debug_toAnsiString(ansi, value.a), value = value.b)
-
-			for (; value.b; value = value.b) // WHILE_CONS
-			{
-				output += ',' + _Debug_toAnsiString(ansi, value.a);
-			}
-			return output + ']';
-		}
-
-		var output = '';
-		for (var i in value)
-		{
-			if (i === '$') continue;
-			var str = _Debug_toAnsiString(ansi, value[i]);
-			var c0 = str[0];
-			var parenless = c0 === '{' || c0 === '(' || c0 === '[' || c0 === '<' || c0 === '"' || str.indexOf(' ') < 0;
-			output += ' ' + (parenless ? str : '(' + str + ')');
-		}
-		return _Debug_ctorColor(ansi, tag) + output;
-	}
-
-	if (typeof DataView === 'function' && value instanceof DataView)
-	{
-		return _Debug_stringColor(ansi, '<' + value.byteLength + ' bytes>');
-	}
-
-	if (typeof File !== 'undefined' && value instanceof File)
-	{
-		return _Debug_internalColor(ansi, '<' + value.name + '>');
-	}
-
-	if (typeof value === 'object')
-	{
-		var output = [];
-		for (var key in value)
-		{
-			var field = key[0] === '_' ? key.slice(1) : key;
-			output.push(_Debug_fadeColor(ansi, field) + ' = ' + _Debug_toAnsiString(ansi, value[key]));
-		}
-		if (output.length === 0)
-		{
-			return '{}';
-		}
-		return '{ ' + output.join(', ') + ' }';
-	}
-
-	return _Debug_internalColor(ansi, '<internals>');
-}
-
-function _Debug_addSlashes(str, isChar)
-{
-	var s = str
-		.replace(/\\/g, '\\\\')
-		.replace(/\n/g, '\\n')
-		.replace(/\t/g, '\\t')
-		.replace(/\r/g, '\\r')
-		.replace(/\v/g, '\\v')
-		.replace(/\0/g, '\\0');
-
-	if (isChar)
-	{
-		return s.replace(/\'/g, '\\\'');
-	}
-	else
-	{
-		return s.replace(/\"/g, '\\"');
-	}
-}
-
-function _Debug_ctorColor(ansi, string)
-{
-	return ansi ? '\x1b[96m' + string + '\x1b[0m' : string;
-}
-
-function _Debug_numberColor(ansi, string)
-{
-	return ansi ? '\x1b[95m' + string + '\x1b[0m' : string;
-}
-
-function _Debug_stringColor(ansi, string)
-{
-	return ansi ? '\x1b[93m' + string + '\x1b[0m' : string;
-}
-
-function _Debug_charColor(ansi, string)
-{
-	return ansi ? '\x1b[92m' + string + '\x1b[0m' : string;
-}
-
-function _Debug_fadeColor(ansi, string)
-{
-	return ansi ? '\x1b[37m' + string + '\x1b[0m' : string;
-}
-
-function _Debug_internalColor(ansi, string)
-{
-	return ansi ? '\x1b[36m' + string + '\x1b[0m' : string;
-}
-
-function _Debug_toHexDigit(n)
-{
-	return String.fromCharCode(n < 10 ? 48 + n : 55 + n);
-}
-
-
-// CRASH
-
-
-function _Debug_crash(identifier)
-{
-	throw new Error('https://github.com/elm/core/blob/1.0.0/hints/' + identifier + '.md');
-}
-
-
-function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
-{
-	switch(identifier)
-	{
-		case 0:
-			throw new Error('What node should I take over? In JavaScript I need something like:\n\n    Elm.Main.init({\n        node: document.getElementById("elm-node")\n    })\n\nYou need to do this with any Browser.sandbox or Browser.element program.');
-
-		case 1:
-			throw new Error('Browser.application programs cannot handle URLs like this:\n\n    ' + document.location.href + '\n\nWhat is the root? The root of your file system? Try looking at this program with `elm reactor` or some other server.');
-
-		case 2:
-			var jsonErrorString = fact1;
-			throw new Error('Problem with the flags given to your Elm program on initialization.\n\n' + jsonErrorString);
-
-		case 3:
-			var portName = fact1;
-			throw new Error('There can only be one port named `' + portName + '`, but your program has multiple.');
-
-		case 4:
-			var portName = fact1;
-			var problem = fact2;
-			throw new Error('Trying to send an unexpected type of value through port `' + portName + '`:\n' + problem);
-
-		case 5:
-			throw new Error('Trying to use `(==)` on functions.\nThere is no way to know if functions are "the same" in the Elm sense.\nRead more about this at https://package.elm-lang.org/packages/elm/core/latest/Basics#== which describes why it is this way and what the better version will look like.');
-
-		case 6:
-			var moduleName = fact1;
-			throw new Error('Your page is loading multiple Elm scripts with a module named ' + moduleName + '. Maybe a duplicate script is getting loaded accidentally? If not, rename one of them so I know which is which!');
-
-		case 8:
-			var moduleName = fact1;
-			var region = fact2;
-			var message = fact3;
-			throw new Error('TODO in module `' + moduleName + '` ' + _Debug_regionToString(region) + '\n\n' + message);
-
-		case 9:
-			var moduleName = fact1;
-			var region = fact2;
-			var value = fact3;
-			var message = fact4;
-			throw new Error(
-				'TODO in module `' + moduleName + '` from the `case` expression '
-				+ _Debug_regionToString(region) + '\n\nIt received the following value:\n\n    '
-				+ _Debug_toString(value).replace('\n', '\n    ')
-				+ '\n\nBut the branch that handles it says:\n\n    ' + message.replace('\n', '\n    ')
-			);
-
-		case 10:
-			throw new Error('Bug in https://github.com/elm/virtual-dom/issues');
-
-		case 11:
-			throw new Error('Cannot perform mod 0. Division by zero error.');
-	}
-}
-
-function _Debug_regionToString(region)
-{
-	if (region.aI.ai === region.aW.ai)
-	{
-		return 'on line ' + region.aI.ai;
-	}
-	return 'on lines ' + region.aI.ai + ' through ' + region.aW.ai;
-}
-
-
-
-// MATH
-
-var _Basics_add = F2(function(a, b) { return a + b; });
-var _Basics_sub = F2(function(a, b) { return a - b; });
-var _Basics_mul = F2(function(a, b) { return a * b; });
-var _Basics_fdiv = F2(function(a, b) { return a / b; });
-var _Basics_idiv = F2(function(a, b) { return (a / b) | 0; });
-var _Basics_pow = F2(Math.pow);
-
-var _Basics_remainderBy = F2(function(b, a) { return a % b; });
-
-// https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/divmodnote-letter.pdf
-var _Basics_modBy = F2(function(modulus, x)
-{
-	var answer = x % modulus;
-	return modulus === 0
-		? _Debug_crash(11)
-		:
-	((answer > 0 && modulus < 0) || (answer < 0 && modulus > 0))
-		? answer + modulus
-		: answer;
-});
-
-
-// TRIGONOMETRY
-
-var _Basics_pi = Math.PI;
-var _Basics_e = Math.E;
-var _Basics_cos = Math.cos;
-var _Basics_sin = Math.sin;
-var _Basics_tan = Math.tan;
-var _Basics_acos = Math.acos;
-var _Basics_asin = Math.asin;
-var _Basics_atan = Math.atan;
-var _Basics_atan2 = F2(Math.atan2);
-
-
-// MORE MATH
-
-function _Basics_toFloat(x) { return x; }
-function _Basics_truncate(n) { return n | 0; }
-function _Basics_isInfinite(n) { return n === Infinity || n === -Infinity; }
-
-var _Basics_ceiling = Math.ceil;
-var _Basics_floor = Math.floor;
-var _Basics_round = Math.round;
-var _Basics_sqrt = Math.sqrt;
-var _Basics_log = Math.log;
-var _Basics_isNaN = isNaN;
-
-
-// BOOLEANS
-
-function _Basics_not(bool) { return !bool; }
-var _Basics_and = F2(function(a, b) { return a && b; });
-var _Basics_or  = F2(function(a, b) { return a || b; });
-var _Basics_xor = F2(function(a, b) { return a !== b; });
-
-
-
-var _String_cons = F2(function(chr, str)
-{
-	return chr + str;
-});
-
-function _String_uncons(string)
-{
-	var word = string.charCodeAt(0);
-	return !isNaN(word)
-		? $elm$core$Maybe$Just(
-			0xD800 <= word && word <= 0xDBFF
-				? _Utils_Tuple2(_Utils_chr(string[0] + string[1]), string.slice(2))
-				: _Utils_Tuple2(_Utils_chr(string[0]), string.slice(1))
-		)
-		: $elm$core$Maybe$Nothing;
-}
-
-var _String_append = F2(function(a, b)
-{
-	return a + b;
-});
-
-function _String_length(str)
-{
-	return str.length;
-}
-
-var _String_map = F2(function(func, string)
-{
-	var len = string.length;
-	var array = new Array(len);
-	var i = 0;
-	while (i < len)
-	{
-		var word = string.charCodeAt(i);
-		if (0xD800 <= word && word <= 0xDBFF)
-		{
-			array[i] = func(_Utils_chr(string[i] + string[i+1]));
-			i += 2;
-			continue;
-		}
-		array[i] = func(_Utils_chr(string[i]));
-		i++;
-	}
-	return array.join('');
-});
-
-var _String_filter = F2(function(isGood, str)
-{
-	var arr = [];
-	var len = str.length;
-	var i = 0;
-	while (i < len)
-	{
-		var char = str[i];
-		var word = str.charCodeAt(i);
-		i++;
-		if (0xD800 <= word && word <= 0xDBFF)
-		{
-			char += str[i];
-			i++;
-		}
-
-		if (isGood(_Utils_chr(char)))
-		{
-			arr.push(char);
-		}
-	}
-	return arr.join('');
-});
-
-function _String_reverse(str)
-{
-	var len = str.length;
-	var arr = new Array(len);
-	var i = 0;
-	while (i < len)
-	{
-		var word = str.charCodeAt(i);
-		if (0xD800 <= word && word <= 0xDBFF)
-		{
-			arr[len - i] = str[i + 1];
-			i++;
-			arr[len - i] = str[i - 1];
-			i++;
-		}
-		else
-		{
-			arr[len - i] = str[i];
-			i++;
-		}
-	}
-	return arr.join('');
-}
-
-var _String_foldl = F3(function(func, state, string)
-{
-	var len = string.length;
-	var i = 0;
-	while (i < len)
-	{
-		var char = string[i];
-		var word = string.charCodeAt(i);
-		i++;
-		if (0xD800 <= word && word <= 0xDBFF)
-		{
-			char += string[i];
-			i++;
-		}
-		state = A2(func, _Utils_chr(char), state);
-	}
-	return state;
-});
-
-var _String_foldr = F3(function(func, state, string)
-{
-	var i = string.length;
-	while (i--)
-	{
-		var char = string[i];
-		var word = string.charCodeAt(i);
-		if (0xDC00 <= word && word <= 0xDFFF)
-		{
-			i--;
-			char = string[i] + char;
-		}
-		state = A2(func, _Utils_chr(char), state);
-	}
-	return state;
-});
-
-var _String_split = F2(function(sep, str)
-{
-	return str.split(sep);
-});
-
-var _String_join = F2(function(sep, strs)
-{
-	return strs.join(sep);
-});
-
-var _String_slice = F3(function(start, end, str) {
-	return str.slice(start, end);
-});
-
-function _String_trim(str)
-{
-	return str.trim();
-}
-
-function _String_trimLeft(str)
-{
-	return str.replace(/^\s+/, '');
-}
-
-function _String_trimRight(str)
-{
-	return str.replace(/\s+$/, '');
-}
-
-function _String_words(str)
-{
-	return _List_fromArray(str.trim().split(/\s+/g));
-}
-
-function _String_lines(str)
-{
-	return _List_fromArray(str.split(/\r\n|\r|\n/g));
-}
-
-function _String_toUpper(str)
-{
-	return str.toUpperCase();
-}
-
-function _String_toLower(str)
-{
-	return str.toLowerCase();
-}
-
-var _String_any = F2(function(isGood, string)
-{
-	var i = string.length;
-	while (i--)
-	{
-		var char = string[i];
-		var word = string.charCodeAt(i);
-		if (0xDC00 <= word && word <= 0xDFFF)
-		{
-			i--;
-			char = string[i] + char;
-		}
-		if (isGood(_Utils_chr(char)))
-		{
-			return true;
-		}
-	}
-	return false;
-});
-
-var _String_all = F2(function(isGood, string)
-{
-	var i = string.length;
-	while (i--)
-	{
-		var char = string[i];
-		var word = string.charCodeAt(i);
-		if (0xDC00 <= word && word <= 0xDFFF)
-		{
-			i--;
-			char = string[i] + char;
-		}
-		if (!isGood(_Utils_chr(char)))
-		{
-			return false;
-		}
-	}
-	return true;
-});
-
-var _String_contains = F2(function(sub, str)
-{
-	return str.indexOf(sub) > -1;
-});
-
-var _String_startsWith = F2(function(sub, str)
-{
-	return str.indexOf(sub) === 0;
-});
-
-var _String_endsWith = F2(function(sub, str)
-{
-	return str.length >= sub.length &&
-		str.lastIndexOf(sub) === str.length - sub.length;
-});
-
-var _String_indexes = F2(function(sub, str)
-{
-	var subLen = sub.length;
-
-	if (subLen < 1)
-	{
-		return _List_Nil;
-	}
-
-	var i = 0;
-	var is = [];
-
-	while ((i = str.indexOf(sub, i)) > -1)
-	{
-		is.push(i);
-		i = i + subLen;
-	}
-
-	return _List_fromArray(is);
-});
-
-
-// TO STRING
-
-function _String_fromNumber(number)
-{
-	return number + '';
-}
-
-
-// INT CONVERSIONS
-
-function _String_toInt(str)
-{
-	var total = 0;
-	var code0 = str.charCodeAt(0);
-	var start = code0 == 0x2B /* + */ || code0 == 0x2D /* - */ ? 1 : 0;
-
-	for (var i = start; i < str.length; ++i)
-	{
-		var code = str.charCodeAt(i);
-		if (code < 0x30 || 0x39 < code)
-		{
-			return $elm$core$Maybe$Nothing;
-		}
-		total = 10 * total + code - 0x30;
-	}
-
-	return i == start
-		? $elm$core$Maybe$Nothing
-		: $elm$core$Maybe$Just(code0 == 0x2D ? -total : total);
-}
-
-
-// FLOAT CONVERSIONS
-
-function _String_toFloat(s)
-{
-	// check if it is a hex, octal, or binary number
-	if (s.length === 0 || /[\sxbo]/.test(s))
-	{
-		return $elm$core$Maybe$Nothing;
-	}
-	var n = +s;
-	// faster isNaN check
-	return n === n ? $elm$core$Maybe$Just(n) : $elm$core$Maybe$Nothing;
-}
-
-function _String_fromList(chars)
-{
-	return _List_toArray(chars).join('');
-}
-
-
-
-
-function _Char_toCode(char)
-{
-	var code = char.charCodeAt(0);
-	if (0xD800 <= code && code <= 0xDBFF)
-	{
-		return (code - 0xD800) * 0x400 + char.charCodeAt(1) - 0xDC00 + 0x10000
-	}
-	return code;
-}
-
-function _Char_fromCode(code)
-{
-	return _Utils_chr(
-		(code < 0 || 0x10FFFF < code)
-			? '\uFFFD'
-			:
-		(code <= 0xFFFF)
-			? String.fromCharCode(code)
-			:
-		(code -= 0x10000,
-			String.fromCharCode(Math.floor(code / 0x400) + 0xD800, code % 0x400 + 0xDC00)
-		)
-	);
-}
-
-function _Char_toUpper(char)
-{
-	return _Utils_chr(char.toUpperCase());
-}
-
-function _Char_toLower(char)
-{
-	return _Utils_chr(char.toLowerCase());
-}
-
-function _Char_toLocaleUpper(char)
-{
-	return _Utils_chr(char.toLocaleUpperCase());
-}
-
-function _Char_toLocaleLower(char)
-{
-	return _Utils_chr(char.toLocaleLowerCase());
-}
-
-
-
-/**_UNUSED/
-function _Json_errorToString(error)
-{
-	return $elm$json$Json$Decode$errorToString(error);
-}
-//*/
-
-
-// CORE DECODERS
-
-function _Json_succeed(msg)
-{
-	return {
-		$: 0,
-		a: msg
-	};
-}
-
-function _Json_fail(msg)
-{
-	return {
-		$: 1,
-		a: msg
-	};
-}
-
-function _Json_decodePrim(decoder)
-{
-	return { $: 2, b: decoder };
-}
-
-var _Json_decodeInt = _Json_decodePrim(function(value) {
-	return (typeof value !== 'number')
-		? _Json_expecting('an INT', value)
-		:
-	(-2147483647 < value && value < 2147483647 && (value | 0) === value)
-		? $elm$core$Result$Ok(value)
-		:
-	(isFinite(value) && !(value % 1))
-		? $elm$core$Result$Ok(value)
-		: _Json_expecting('an INT', value);
-});
-
-var _Json_decodeBool = _Json_decodePrim(function(value) {
-	return (typeof value === 'boolean')
-		? $elm$core$Result$Ok(value)
-		: _Json_expecting('a BOOL', value);
-});
-
-var _Json_decodeFloat = _Json_decodePrim(function(value) {
-	return (typeof value === 'number')
-		? $elm$core$Result$Ok(value)
-		: _Json_expecting('a FLOAT', value);
-});
-
-var _Json_decodeValue = _Json_decodePrim(function(value) {
-	return $elm$core$Result$Ok(_Json_wrap(value));
-});
-
-var _Json_decodeString = _Json_decodePrim(function(value) {
-	return (typeof value === 'string')
-		? $elm$core$Result$Ok(value)
-		: (value instanceof String)
-			? $elm$core$Result$Ok(value + '')
-			: _Json_expecting('a STRING', value);
-});
-
-function _Json_decodeList(decoder) { return { $: 3, b: decoder }; }
-function _Json_decodeArray(decoder) { return { $: 4, b: decoder }; }
-
-function _Json_decodeNull(value) { return { $: 5, c: value }; }
-
-var _Json_decodeField = F2(function(field, decoder)
-{
-	return {
-		$: 6,
-		d: field,
-		b: decoder
-	};
-});
-
-var _Json_decodeIndex = F2(function(index, decoder)
-{
-	return {
-		$: 7,
-		e: index,
-		b: decoder
-	};
-});
-
-function _Json_decodeKeyValuePairs(decoder)
-{
-	return {
-		$: 8,
-		b: decoder
-	};
-}
-
-function _Json_mapMany(f, decoders)
-{
-	return {
-		$: 9,
-		f: f,
-		g: decoders
-	};
-}
-
-var _Json_andThen = F2(function(callback, decoder)
-{
-	return {
-		$: 10,
-		b: decoder,
-		h: callback
-	};
-});
-
-function _Json_oneOf(decoders)
-{
-	return {
-		$: 11,
-		g: decoders
-	};
-}
-
-
-// DECODING OBJECTS
-
-var _Json_map1 = F2(function(f, d1)
-{
-	return _Json_mapMany(f, [d1]);
-});
-
-var _Json_map2 = F3(function(f, d1, d2)
-{
-	return _Json_mapMany(f, [d1, d2]);
-});
-
-var _Json_map3 = F4(function(f, d1, d2, d3)
-{
-	return _Json_mapMany(f, [d1, d2, d3]);
-});
-
-var _Json_map4 = F5(function(f, d1, d2, d3, d4)
-{
-	return _Json_mapMany(f, [d1, d2, d3, d4]);
-});
-
-var _Json_map5 = F6(function(f, d1, d2, d3, d4, d5)
-{
-	return _Json_mapMany(f, [d1, d2, d3, d4, d5]);
-});
-
-var _Json_map6 = F7(function(f, d1, d2, d3, d4, d5, d6)
-{
-	return _Json_mapMany(f, [d1, d2, d3, d4, d5, d6]);
-});
-
-var _Json_map7 = F8(function(f, d1, d2, d3, d4, d5, d6, d7)
-{
-	return _Json_mapMany(f, [d1, d2, d3, d4, d5, d6, d7]);
-});
-
-var _Json_map8 = F9(function(f, d1, d2, d3, d4, d5, d6, d7, d8)
-{
-	return _Json_mapMany(f, [d1, d2, d3, d4, d5, d6, d7, d8]);
-});
-
-
-// DECODE
-
-var _Json_runOnString = F2(function(decoder, string)
-{
-	try
-	{
-		var value = JSON.parse(string);
-		return _Json_runHelp(decoder, value);
-	}
-	catch (e)
-	{
-		return $elm$core$Result$Err(A2($elm$json$Json$Decode$Failure, 'This is not valid JSON! ' + e.message, _Json_wrap(string)));
-	}
-});
-
-var _Json_run = F2(function(decoder, value)
-{
-	return _Json_runHelp(decoder, _Json_unwrap(value));
-});
-
-function _Json_runHelp(decoder, value)
-{
-	switch (decoder.$)
-	{
-		case 2:
-			return decoder.b(value);
-
-		case 5:
-			return (value === null)
-				? $elm$core$Result$Ok(decoder.c)
-				: _Json_expecting('null', value);
-
-		case 3:
-			if (!_Json_isArray(value))
-			{
-				return _Json_expecting('a LIST', value);
-			}
-			return _Json_runArrayDecoder(decoder.b, value, _List_fromArray);
-
-		case 4:
-			if (!_Json_isArray(value))
-			{
-				return _Json_expecting('an ARRAY', value);
-			}
-			return _Json_runArrayDecoder(decoder.b, value, _Json_toElmArray);
-
-		case 6:
-			var field = decoder.d;
-			if (typeof value !== 'object' || value === null || !(field in value))
-			{
-				return _Json_expecting('an OBJECT with a field named `' + field + '`', value);
-			}
-			var result = _Json_runHelp(decoder.b, value[field]);
-			return ($elm$core$Result$isOk(result)) ? result : $elm$core$Result$Err(A2($elm$json$Json$Decode$Field, field, result.a));
-
-		case 7:
-			var index = decoder.e;
-			if (!_Json_isArray(value))
-			{
-				return _Json_expecting('an ARRAY', value);
-			}
-			if (index >= value.length)
-			{
-				return _Json_expecting('a LONGER array. Need index ' + index + ' but only see ' + value.length + ' entries', value);
-			}
-			var result = _Json_runHelp(decoder.b, value[index]);
-			return ($elm$core$Result$isOk(result)) ? result : $elm$core$Result$Err(A2($elm$json$Json$Decode$Index, index, result.a));
-
-		case 8:
-			if (typeof value !== 'object' || value === null || _Json_isArray(value))
-			{
-				return _Json_expecting('an OBJECT', value);
-			}
-
-			var keyValuePairs = _List_Nil;
-			// TODO test perf of Object.keys and switch when support is good enough
-			for (var key in value)
-			{
-				if (value.hasOwnProperty(key))
-				{
-					var result = _Json_runHelp(decoder.b, value[key]);
-					if (!$elm$core$Result$isOk(result))
-					{
-						return $elm$core$Result$Err(A2($elm$json$Json$Decode$Field, key, result.a));
-					}
-					keyValuePairs = _List_Cons(_Utils_Tuple2(key, result.a), keyValuePairs);
-				}
-			}
-			return $elm$core$Result$Ok($elm$core$List$reverse(keyValuePairs));
-
-		case 9:
-			var answer = decoder.f;
-			var decoders = decoder.g;
-			for (var i = 0; i < decoders.length; i++)
-			{
-				var result = _Json_runHelp(decoders[i], value);
-				if (!$elm$core$Result$isOk(result))
-				{
-					return result;
-				}
-				answer = answer(result.a);
-			}
-			return $elm$core$Result$Ok(answer);
-
-		case 10:
-			var result = _Json_runHelp(decoder.b, value);
-			return (!$elm$core$Result$isOk(result))
-				? result
-				: _Json_runHelp(decoder.h(result.a), value);
-
-		case 11:
-			var errors = _List_Nil;
-			for (var temp = decoder.g; temp.b; temp = temp.b) // WHILE_CONS
-			{
-				var result = _Json_runHelp(temp.a, value);
-				if ($elm$core$Result$isOk(result))
-				{
-					return result;
-				}
-				errors = _List_Cons(result.a, errors);
-			}
-			return $elm$core$Result$Err($elm$json$Json$Decode$OneOf($elm$core$List$reverse(errors)));
-
-		case 1:
-			return $elm$core$Result$Err(A2($elm$json$Json$Decode$Failure, decoder.a, _Json_wrap(value)));
-
-		case 0:
-			return $elm$core$Result$Ok(decoder.a);
-	}
-}
-
-function _Json_runArrayDecoder(decoder, value, toElmValue)
-{
-	var len = value.length;
-	var array = new Array(len);
-	for (var i = 0; i < len; i++)
-	{
-		var result = _Json_runHelp(decoder, value[i]);
-		if (!$elm$core$Result$isOk(result))
-		{
-			return $elm$core$Result$Err(A2($elm$json$Json$Decode$Index, i, result.a));
-		}
-		array[i] = result.a;
-	}
-	return $elm$core$Result$Ok(toElmValue(array));
-}
-
-function _Json_isArray(value)
-{
-	return Array.isArray(value) || (typeof FileList !== 'undefined' && value instanceof FileList);
-}
-
-function _Json_toElmArray(array)
-{
-	return A2($elm$core$Array$initialize, array.length, function(i) { return array[i]; });
-}
-
-function _Json_expecting(type, value)
-{
-	return $elm$core$Result$Err(A2($elm$json$Json$Decode$Failure, 'Expecting ' + type, _Json_wrap(value)));
-}
-
-
-// EQUALITY
-
-function _Json_equality(x, y)
-{
-	if (x === y)
-	{
-		return true;
-	}
-
-	if (x.$ !== y.$)
-	{
-		return false;
-	}
-
-	switch (x.$)
-	{
-		case 0:
-		case 1:
-			return x.a === y.a;
-
-		case 2:
-			return x.b === y.b;
-
-		case 5:
-			return x.c === y.c;
-
-		case 3:
-		case 4:
-		case 8:
-			return _Json_equality(x.b, y.b);
-
-		case 6:
-			return x.d === y.d && _Json_equality(x.b, y.b);
-
-		case 7:
-			return x.e === y.e && _Json_equality(x.b, y.b);
-
-		case 9:
-			return x.f === y.f && _Json_listEquality(x.g, y.g);
-
-		case 10:
-			return x.h === y.h && _Json_equality(x.b, y.b);
-
-		case 11:
-			return _Json_listEquality(x.g, y.g);
-	}
-}
-
-function _Json_listEquality(aDecoders, bDecoders)
-{
-	var len = aDecoders.length;
-	if (len !== bDecoders.length)
-	{
-		return false;
-	}
-	for (var i = 0; i < len; i++)
-	{
-		if (!_Json_equality(aDecoders[i], bDecoders[i]))
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
-
-// ENCODE
-
-var _Json_encode = F2(function(indentLevel, value)
-{
-	return JSON.stringify(_Json_unwrap(value), null, indentLevel) + '';
-});
-
-function _Json_wrap_UNUSED(value) { return { $: 0, a: value }; }
-function _Json_unwrap_UNUSED(value) { return value.a; }
-
-function _Json_wrap(value) { return value; }
-function _Json_unwrap(value) { return value; }
-
-function _Json_emptyArray() { return []; }
-function _Json_emptyObject() { return {}; }
-
-var _Json_addField = F3(function(key, value, object)
-{
-	object[key] = _Json_unwrap(value);
-	return object;
-});
-
-function _Json_addEntry(func)
-{
-	return F2(function(entry, array)
-	{
-		array.push(_Json_unwrap(func(entry)));
-		return array;
-	});
-}
-
-var _Json_encodeNull = _Json_wrap(null);
-
-
-
-// TASKS
-
-function _Scheduler_succeed(value)
-{
-	return {
-		$: 0,
-		a: value
-	};
-}
-
-function _Scheduler_fail(error)
-{
-	return {
-		$: 1,
-		a: error
-	};
-}
-
-function _Scheduler_binding(callback)
-{
-	return {
-		$: 2,
-		b: callback,
-		c: null
-	};
-}
-
-var _Scheduler_andThen = F2(function(callback, task)
-{
-	return {
-		$: 3,
-		b: callback,
-		d: task
-	};
-});
-
-var _Scheduler_onError = F2(function(callback, task)
-{
-	return {
-		$: 4,
-		b: callback,
-		d: task
-	};
-});
-
-function _Scheduler_receive(callback)
-{
-	return {
-		$: 5,
-		b: callback
-	};
-}
-
-
-// PROCESSES
-
-var _Scheduler_guid = 0;
-
-function _Scheduler_rawSpawn(task)
-{
-	var proc = {
-		$: 0,
-		e: _Scheduler_guid++,
-		f: task,
-		g: null,
-		h: []
-	};
-
-	_Scheduler_enqueue(proc);
-
-	return proc;
-}
-
-function _Scheduler_spawn(task)
-{
-	return _Scheduler_binding(function(callback) {
-		callback(_Scheduler_succeed(_Scheduler_rawSpawn(task)));
-	});
-}
-
-function _Scheduler_rawSend(proc, msg)
-{
-	proc.h.push(msg);
-	_Scheduler_enqueue(proc);
-}
-
-var _Scheduler_send = F2(function(proc, msg)
-{
-	return _Scheduler_binding(function(callback) {
-		_Scheduler_rawSend(proc, msg);
-		callback(_Scheduler_succeed(_Utils_Tuple0));
-	});
-});
-
-function _Scheduler_kill(proc)
-{
-	return _Scheduler_binding(function(callback) {
-		var task = proc.f;
-		if (task.$ === 2 && task.c)
-		{
-			task.c();
-		}
-
-		proc.f = null;
-
-		callback(_Scheduler_succeed(_Utils_Tuple0));
-	});
-}
-
-
-/* STEP PROCESSES
-
-type alias Process =
-  { $ : tag
-  , id : unique_id
-  , root : Task
-  , stack : null | { $: SUCCEED | FAIL, a: callback, b: stack }
-  , mailbox : [msg]
-  }
-
-*/
-
-
-var _Scheduler_working = false;
-var _Scheduler_queue = [];
-
-
-function _Scheduler_enqueue(proc)
-{
-	_Scheduler_queue.push(proc);
-	if (_Scheduler_working)
-	{
-		return;
-	}
-	_Scheduler_working = true;
-	while (proc = _Scheduler_queue.shift())
-	{
-		_Scheduler_step(proc);
-	}
-	_Scheduler_working = false;
-}
-
-
-function _Scheduler_step(proc)
-{
-	while (proc.f)
-	{
-		var rootTag = proc.f.$;
-		if (rootTag === 0 || rootTag === 1)
-		{
-			while (proc.g && proc.g.$ !== rootTag)
-			{
-				proc.g = proc.g.i;
-			}
-			if (!proc.g)
-			{
-				return;
-			}
-			proc.f = proc.g.b(proc.f.a);
-			proc.g = proc.g.i;
-		}
-		else if (rootTag === 2)
-		{
-			proc.f.c = proc.f.b(function(newRoot) {
-				proc.f = newRoot;
-				_Scheduler_enqueue(proc);
-			});
-			return;
-		}
-		else if (rootTag === 5)
-		{
-			if (proc.h.length === 0)
-			{
-				return;
-			}
-			proc.f = proc.f.b(proc.h.shift());
-		}
-		else // if (rootTag === 3 || rootTag === 4)
-		{
-			proc.g = {
-				$: rootTag === 3 ? 0 : 1,
-				b: proc.f.b,
-				i: proc.g
-			};
-			proc.f = proc.f.d;
-		}
-	}
-}
-
-
-
-function _Process_sleep(time)
-{
-	return _Scheduler_binding(function(callback) {
-		var id = setTimeout(function() {
-			callback(_Scheduler_succeed(_Utils_Tuple0));
-		}, time);
-
-		return function() { clearTimeout(id); };
-	});
-}
-
-
-
-
-// PROGRAMS
-
-
-var _Platform_worker = F4(function(impl, flagDecoder, debugMetadata, args)
-{
-	return _Platform_initialize(
-		flagDecoder,
-		args,
-		impl.bV,
-		impl.cm,
-		impl.ch,
-		function() { return function() {} }
-	);
-});
-
-
-
-// INITIALIZE A PROGRAM
-
-
-function _Platform_initialize(flagDecoder, args, init, update, subscriptions, stepperBuilder)
-{
-	var result = A2(_Json_run, flagDecoder, _Json_wrap(args ? args['flags'] : undefined));
-	$elm$core$Result$isOk(result) || _Debug_crash(2 /**_UNUSED/, _Json_errorToString(result.a) /**/);
-	var managers = {};
-	var initPair = init(result.a);
-	var model = initPair.a;
-	var stepper = stepperBuilder(sendToApp, model);
-	var ports = _Platform_setupEffects(managers, sendToApp);
-
-	function sendToApp(msg, viewMetadata)
-	{
-		var pair = A2(update, msg, model);
-		stepper(model = pair.a, viewMetadata);
-		_Platform_enqueueEffects(managers, pair.b, subscriptions(model));
-	}
-
-	_Platform_enqueueEffects(managers, initPair.b, subscriptions(model));
-
-	return ports ? { ports: ports } : {};
-}
-
-
-
-// TRACK PRELOADS
-//
-// This is used by code in elm/browser and elm/http
-// to register any HTTP requests that are triggered by init.
-//
-
-
-var _Platform_preload;
-
-
-function _Platform_registerPreload(url)
-{
-	_Platform_preload.add(url);
-}
-
-
-
-// EFFECT MANAGERS
-
-
-var _Platform_effectManagers = {};
-
-
-function _Platform_setupEffects(managers, sendToApp)
-{
-	var ports;
-
-	// setup all necessary effect managers
-	for (var key in _Platform_effectManagers)
-	{
-		var manager = _Platform_effectManagers[key];
-
-		if (manager.a)
-		{
-			ports = ports || {};
-			ports[key] = manager.a(key, sendToApp);
-		}
-
-		managers[key] = _Platform_instantiateManager(manager, sendToApp);
-	}
-
-	return ports;
-}
-
-
-function _Platform_createManager(init, onEffects, onSelfMsg, cmdMap, subMap)
-{
-	return {
-		b: init,
-		c: onEffects,
-		d: onSelfMsg,
-		e: cmdMap,
-		f: subMap
-	};
-}
-
-
-function _Platform_instantiateManager(info, sendToApp)
-{
-	var router = {
-		g: sendToApp,
-		h: undefined
-	};
-
-	var onEffects = info.c;
-	var onSelfMsg = info.d;
-	var cmdMap = info.e;
-	var subMap = info.f;
-
-	function loop(state)
-	{
-		return A2(_Scheduler_andThen, loop, _Scheduler_receive(function(msg)
-		{
-			var value = msg.a;
-
-			if (msg.$ === 0)
-			{
-				return A3(onSelfMsg, router, value, state);
-			}
-
-			return cmdMap && subMap
-				? A4(onEffects, router, value.i, value.j, state)
-				: A3(onEffects, router, cmdMap ? value.i : value.j, state);
-		}));
-	}
-
-	return router.h = _Scheduler_rawSpawn(A2(_Scheduler_andThen, loop, info.b));
-}
-
-
-
-// ROUTING
-
-
-var _Platform_sendToApp = F2(function(router, msg)
-{
-	return _Scheduler_binding(function(callback)
-	{
-		router.g(msg);
-		callback(_Scheduler_succeed(_Utils_Tuple0));
-	});
-});
-
-
-var _Platform_sendToSelf = F2(function(router, msg)
-{
-	return A2(_Scheduler_send, router.h, {
-		$: 0,
-		a: msg
-	});
-});
-
-
-
-// BAGS
-
-
-function _Platform_leaf(home)
-{
-	return function(value)
-	{
-		return {
-			$: 1,
-			k: home,
-			l: value
-		};
-	};
-}
-
-
-function _Platform_batch(list)
-{
-	return {
-		$: 2,
-		m: list
-	};
-}
-
-
-var _Platform_map = F2(function(tagger, bag)
-{
-	return {
-		$: 3,
-		n: tagger,
-		o: bag
-	}
-});
-
-
-
-// PIPE BAGS INTO EFFECT MANAGERS
-//
-// Effects must be queued!
-//
-// Say your init contains a synchronous command, like Time.now or Time.here
-//
-//   - This will produce a batch of effects (FX_1)
-//   - The synchronous task triggers the subsequent `update` call
-//   - This will produce a batch of effects (FX_2)
-//
-// If we just start dispatching FX_2, subscriptions from FX_2 can be processed
-// before subscriptions from FX_1. No good! Earlier versions of this code had
-// this problem, leading to these reports:
-//
-//   https://github.com/elm/core/issues/980
-//   https://github.com/elm/core/pull/981
-//   https://github.com/elm/compiler/issues/1776
-//
-// The queue is necessary to avoid ordering issues for synchronous commands.
-
-
-// Why use true/false here? Why not just check the length of the queue?
-// The goal is to detect "are we currently dispatching effects?" If we
-// are, we need to bail and let the ongoing while loop handle things.
-//
-// Now say the queue has 1 element. When we dequeue the final element,
-// the queue will be empty, but we are still actively dispatching effects.
-// So you could get queue jumping in a really tricky category of cases.
-//
-var _Platform_effectsQueue = [];
-var _Platform_effectsActive = false;
-
-
-function _Platform_enqueueEffects(managers, cmdBag, subBag)
-{
-	_Platform_effectsQueue.push({ p: managers, q: cmdBag, r: subBag });
-
-	if (_Platform_effectsActive) return;
-
-	_Platform_effectsActive = true;
-	for (var fx; fx = _Platform_effectsQueue.shift(); )
-	{
-		_Platform_dispatchEffects(fx.p, fx.q, fx.r);
-	}
-	_Platform_effectsActive = false;
-}
-
-
-function _Platform_dispatchEffects(managers, cmdBag, subBag)
-{
-	var effectsDict = {};
-	_Platform_gatherEffects(true, cmdBag, effectsDict, null);
-	_Platform_gatherEffects(false, subBag, effectsDict, null);
-
-	for (var home in managers)
-	{
-		_Scheduler_rawSend(managers[home], {
-			$: 'fx',
-			a: effectsDict[home] || { i: _List_Nil, j: _List_Nil }
-		});
-	}
-}
-
-
-function _Platform_gatherEffects(isCmd, bag, effectsDict, taggers)
-{
-	switch (bag.$)
-	{
-		case 1:
-			var home = bag.k;
-			var effect = _Platform_toEffect(isCmd, home, taggers, bag.l);
-			effectsDict[home] = _Platform_insert(isCmd, effect, effectsDict[home]);
-			return;
-
-		case 2:
-			for (var list = bag.m; list.b; list = list.b) // WHILE_CONS
-			{
-				_Platform_gatherEffects(isCmd, list.a, effectsDict, taggers);
-			}
-			return;
-
-		case 3:
-			_Platform_gatherEffects(isCmd, bag.o, effectsDict, {
-				s: bag.n,
-				t: taggers
-			});
-			return;
-	}
-}
-
-
-function _Platform_toEffect(isCmd, home, taggers, value)
-{
-	function applyTaggers(x)
-	{
-		for (var temp = taggers; temp; temp = temp.t)
-		{
-			x = temp.s(x);
-		}
-		return x;
-	}
-
-	var map = isCmd
-		? _Platform_effectManagers[home].e
-		: _Platform_effectManagers[home].f;
-
-	return A2(map, applyTaggers, value)
-}
-
-
-function _Platform_insert(isCmd, newEffect, effects)
-{
-	effects = effects || { i: _List_Nil, j: _List_Nil };
-
-	isCmd
-		? (effects.i = _List_Cons(newEffect, effects.i))
-		: (effects.j = _List_Cons(newEffect, effects.j));
-
-	return effects;
-}
-
-
-
-// PORTS
-
-
-function _Platform_checkPortName(name)
-{
-	if (_Platform_effectManagers[name])
-	{
-		_Debug_crash(3, name)
-	}
-}
-
-
-
-// OUTGOING PORTS
-
-
-function _Platform_outgoingPort(name, converter)
-{
-	_Platform_checkPortName(name);
-	_Platform_effectManagers[name] = {
-		e: _Platform_outgoingPortMap,
-		u: converter,
-		a: _Platform_setupOutgoingPort
-	};
-	return _Platform_leaf(name);
-}
-
-
-var _Platform_outgoingPortMap = F2(function(tagger, value) { return value; });
-
-
-function _Platform_setupOutgoingPort(name)
-{
-	var subs = [];
-	var converter = _Platform_effectManagers[name].u;
-
-	// CREATE MANAGER
-
-	var init = _Process_sleep(0);
-
-	_Platform_effectManagers[name].b = init;
-	_Platform_effectManagers[name].c = F3(function(router, cmdList, state)
-	{
-		for ( ; cmdList.b; cmdList = cmdList.b) // WHILE_CONS
-		{
-			// grab a separate reference to subs in case unsubscribe is called
-			var currentSubs = subs;
-			var value = _Json_unwrap(converter(cmdList.a));
-			for (var i = 0; i < currentSubs.length; i++)
-			{
-				currentSubs[i](value);
-			}
-		}
-		return init;
-	});
-
-	// PUBLIC API
-
-	function subscribe(callback)
-	{
-		subs.push(callback);
-	}
-
-	function unsubscribe(callback)
-	{
-		// copy subs into a new array in case unsubscribe is called within a
-		// subscribed callback
-		subs = subs.slice();
-		var index = subs.indexOf(callback);
-		if (index >= 0)
-		{
-			subs.splice(index, 1);
-		}
-	}
-
-	return {
-		subscribe: subscribe,
-		unsubscribe: unsubscribe
-	};
-}
-
-
-
-// INCOMING PORTS
-
-
-function _Platform_incomingPort(name, converter)
-{
-	_Platform_checkPortName(name);
-	_Platform_effectManagers[name] = {
-		f: _Platform_incomingPortMap,
-		u: converter,
-		a: _Platform_setupIncomingPort
-	};
-	return _Platform_leaf(name);
-}
-
-
-var _Platform_incomingPortMap = F2(function(tagger, finalTagger)
-{
-	return function(value)
-	{
-		return tagger(finalTagger(value));
-	};
-});
-
-
-function _Platform_setupIncomingPort(name, sendToApp)
-{
-	var subs = _List_Nil;
-	var converter = _Platform_effectManagers[name].u;
-
-	// CREATE MANAGER
-
-	var init = _Scheduler_succeed(null);
-
-	_Platform_effectManagers[name].b = init;
-	_Platform_effectManagers[name].c = F3(function(router, subList, state)
-	{
-		subs = subList;
-		return init;
-	});
-
-	// PUBLIC API
-
-	function send(incomingValue)
-	{
-		var result = A2(_Json_run, converter, _Json_wrap(incomingValue));
-
-		$elm$core$Result$isOk(result) || _Debug_crash(4, name, result.a);
-
-		var value = result.a;
-		for (var temp = subs; temp.b; temp = temp.b) // WHILE_CONS
-		{
-			sendToApp(temp.a(value));
-		}
-	}
-
-	return { send: send };
-}
-
-
-
-// EXPORT ELM MODULES
-//
-// Have DEBUG and PROD versions so that we can (1) give nicer errors in
-// debug mode and (2) not pay for the bits needed for that in prod mode.
-//
-
-
-function _Platform_export(exports)
-{
-	scope['Elm']
-		? _Platform_mergeExportsProd(scope['Elm'], exports)
-		: scope['Elm'] = exports;
-}
-
-
-function _Platform_mergeExportsProd(obj, exports)
-{
-	for (var name in exports)
-	{
-		(name in obj)
-			? (name == 'init')
-				? _Debug_crash(6)
-				: _Platform_mergeExportsProd(obj[name], exports[name])
-			: (obj[name] = exports[name]);
-	}
-}
-
-
-function _Platform_export_UNUSED(exports)
-{
-	scope['Elm']
-		? _Platform_mergeExportsDebug('Elm', scope['Elm'], exports)
-		: scope['Elm'] = exports;
-}
-
-
-function _Platform_mergeExportsDebug(moduleName, obj, exports)
-{
-	for (var name in exports)
-	{
-		(name in obj)
-			? (name == 'init')
-				? _Debug_crash(6, moduleName)
-				: _Platform_mergeExportsDebug(moduleName + '.' + name, obj[name], exports[name])
-			: (obj[name] = exports[name]);
-	}
-}
-
-
-
-
-// HELPERS
-
-
-var _VirtualDom_divertHrefToApp;
-
-var _VirtualDom_doc = typeof document !== 'undefined' ? document : {};
-
-
-function _VirtualDom_appendChild(parent, child)
-{
-	parent.appendChild(child);
-}
-
-var _VirtualDom_init = F4(function(virtualNode, flagDecoder, debugMetadata, args)
-{
-	// NOTE: this function needs _Platform_export available to work
-
-	/**/
-	var node = args['node'];
-	//*/
-	/**_UNUSED/
-	var node = args && args['node'] ? args['node'] : _Debug_crash(0);
-	//*/
-
-	node.parentNode.replaceChild(
-		_VirtualDom_render(virtualNode, function() {}),
-		node
-	);
-
-	return {};
-});
-
-
-
-// TEXT
-
-
-function _VirtualDom_text(string)
-{
-	return {
-		$: 0,
-		a: string
-	};
-}
-
-
-
-// NODE
-
-
-var _VirtualDom_nodeNS = F2(function(namespace, tag)
-{
-	return F2(function(factList, kidList)
-	{
-		for (var kids = [], descendantsCount = 0; kidList.b; kidList = kidList.b) // WHILE_CONS
-		{
-			var kid = kidList.a;
-			descendantsCount += (kid.b || 0);
-			kids.push(kid);
-		}
-		descendantsCount += kids.length;
-
-		return {
-			$: 1,
-			c: tag,
-			d: _VirtualDom_organizeFacts(factList),
-			e: kids,
-			f: namespace,
-			b: descendantsCount
-		};
-	});
-});
-
-
-var _VirtualDom_node = _VirtualDom_nodeNS(undefined);
-
-
-
-// KEYED NODE
-
-
-var _VirtualDom_keyedNodeNS = F2(function(namespace, tag)
-{
-	return F2(function(factList, kidList)
-	{
-		for (var kids = [], descendantsCount = 0; kidList.b; kidList = kidList.b) // WHILE_CONS
-		{
-			var kid = kidList.a;
-			descendantsCount += (kid.b.b || 0);
-			kids.push(kid);
-		}
-		descendantsCount += kids.length;
-
-		return {
-			$: 2,
-			c: tag,
-			d: _VirtualDom_organizeFacts(factList),
-			e: kids,
-			f: namespace,
-			b: descendantsCount
-		};
-	});
-});
-
-
-var _VirtualDom_keyedNode = _VirtualDom_keyedNodeNS(undefined);
-
-
-
-// CUSTOM
-
-
-function _VirtualDom_custom(factList, model, render, diff)
-{
-	return {
-		$: 3,
-		d: _VirtualDom_organizeFacts(factList),
-		g: model,
-		h: render,
-		i: diff
-	};
-}
-
-
-
-// MAP
-
-
-var _VirtualDom_map = F2(function(tagger, node)
-{
-	return {
-		$: 4,
-		j: tagger,
-		k: node,
-		b: 1 + (node.b || 0)
-	};
-});
-
-
-
-// LAZY
-
-
-function _VirtualDom_thunk(refs, thunk)
-{
-	return {
-		$: 5,
-		l: refs,
-		m: thunk,
-		k: undefined
-	};
-}
-
-var _VirtualDom_lazy = F2(function(func, a)
-{
-	return _VirtualDom_thunk([func, a], function() {
-		return func(a);
-	});
-});
-
-var _VirtualDom_lazy2 = F3(function(func, a, b)
-{
-	return _VirtualDom_thunk([func, a, b], function() {
-		return A2(func, a, b);
-	});
-});
-
-var _VirtualDom_lazy3 = F4(function(func, a, b, c)
-{
-	return _VirtualDom_thunk([func, a, b, c], function() {
-		return A3(func, a, b, c);
-	});
-});
-
-var _VirtualDom_lazy4 = F5(function(func, a, b, c, d)
-{
-	return _VirtualDom_thunk([func, a, b, c, d], function() {
-		return A4(func, a, b, c, d);
-	});
-});
-
-var _VirtualDom_lazy5 = F6(function(func, a, b, c, d, e)
-{
-	return _VirtualDom_thunk([func, a, b, c, d, e], function() {
-		return A5(func, a, b, c, d, e);
-	});
-});
-
-var _VirtualDom_lazy6 = F7(function(func, a, b, c, d, e, f)
-{
-	return _VirtualDom_thunk([func, a, b, c, d, e, f], function() {
-		return A6(func, a, b, c, d, e, f);
-	});
-});
-
-var _VirtualDom_lazy7 = F8(function(func, a, b, c, d, e, f, g)
-{
-	return _VirtualDom_thunk([func, a, b, c, d, e, f, g], function() {
-		return A7(func, a, b, c, d, e, f, g);
-	});
-});
-
-var _VirtualDom_lazy8 = F9(function(func, a, b, c, d, e, f, g, h)
-{
-	return _VirtualDom_thunk([func, a, b, c, d, e, f, g, h], function() {
-		return A8(func, a, b, c, d, e, f, g, h);
-	});
-});
-
-
-
-// FACTS
-
-
-var _VirtualDom_on = F2(function(key, handler)
-{
-	return {
-		$: 'a0',
-		n: key,
-		o: handler
-	};
-});
-var _VirtualDom_style = F2(function(key, value)
-{
-	return {
-		$: 'a1',
-		n: key,
-		o: value
-	};
-});
-var _VirtualDom_property = F2(function(key, value)
-{
-	return {
-		$: 'a2',
-		n: key,
-		o: value
-	};
-});
-var _VirtualDom_attribute = F2(function(key, value)
-{
-	return {
-		$: 'a3',
-		n: key,
-		o: value
-	};
-});
-var _VirtualDom_attributeNS = F3(function(namespace, key, value)
-{
-	return {
-		$: 'a4',
-		n: key,
-		o: { f: namespace, o: value }
-	};
-});
-
-
-
-// XSS ATTACK VECTOR CHECKS
-
-
-function _VirtualDom_noScript(tag)
-{
-	return tag == 'script' ? 'p' : tag;
-}
-
-function _VirtualDom_noOnOrFormAction(key)
-{
-	return /^(on|formAction$)/i.test(key) ? 'data-' + key : key;
-}
-
-function _VirtualDom_noInnerHtmlOrFormAction(key)
-{
-	return key == 'innerHTML' || key == 'formAction' ? 'data-' + key : key;
-}
-
-function _VirtualDom_noJavaScriptUri(value)
-{
-	return /^javascript:/i.test(value.replace(/\s/g,'')) ? '' : value;
-}
-
-function _VirtualDom_noJavaScriptUri_UNUSED(value)
-{
-	return /^javascript:/i.test(value.replace(/\s/g,''))
-		? 'javascript:alert("This is an XSS vector. Please use ports or web components instead.")'
-		: value;
-}
-
-function _VirtualDom_noJavaScriptOrHtmlUri(value)
-{
-	return /^\s*(javascript:|data:text\/html)/i.test(value) ? '' : value;
-}
-
-function _VirtualDom_noJavaScriptOrHtmlUri_UNUSED(value)
-{
-	return /^\s*(javascript:|data:text\/html)/i.test(value)
-		? 'javascript:alert("This is an XSS vector. Please use ports or web components instead.")'
-		: value;
-}
-
-
-
-// MAP FACTS
-
-
-var _VirtualDom_mapAttribute = F2(function(func, attr)
-{
-	return (attr.$ === 'a0')
-		? A2(_VirtualDom_on, attr.n, _VirtualDom_mapHandler(func, attr.o))
-		: attr;
-});
-
-function _VirtualDom_mapHandler(func, handler)
-{
-	var tag = $elm$virtual_dom$VirtualDom$toHandlerInt(handler);
-
-	// 0 = Normal
-	// 1 = MayStopPropagation
-	// 2 = MayPreventDefault
-	// 3 = Custom
-
-	return {
-		$: handler.$,
-		a:
-			!tag
-				? A2($elm$json$Json$Decode$map, func, handler.a)
-				:
-			A3($elm$json$Json$Decode$map2,
-				tag < 3
-					? _VirtualDom_mapEventTuple
-					: _VirtualDom_mapEventRecord,
-				$elm$json$Json$Decode$succeed(func),
-				handler.a
-			)
-	};
-}
-
-var _VirtualDom_mapEventTuple = F2(function(func, tuple)
-{
-	return _Utils_Tuple2(func(tuple.a), tuple.b);
-});
-
-var _VirtualDom_mapEventRecord = F2(function(func, record)
-{
-	return {
-		H: func(record.H),
-		aJ: record.aJ,
-		aG: record.aG
-	}
-});
-
-
-
-// ORGANIZE FACTS
-
-
-function _VirtualDom_organizeFacts(factList)
-{
-	for (var facts = {}; factList.b; factList = factList.b) // WHILE_CONS
-	{
-		var entry = factList.a;
-
-		var tag = entry.$;
-		var key = entry.n;
-		var value = entry.o;
-
-		if (tag === 'a2')
-		{
-			(key === 'className')
-				? _VirtualDom_addClass(facts, key, _Json_unwrap(value))
-				: facts[key] = _Json_unwrap(value);
-
-			continue;
-		}
-
-		var subFacts = facts[tag] || (facts[tag] = {});
-		(tag === 'a3' && key === 'class')
-			? _VirtualDom_addClass(subFacts, key, value)
-			: subFacts[key] = value;
-	}
-
-	return facts;
-}
-
-function _VirtualDom_addClass(object, key, newClass)
-{
-	var classes = object[key];
-	object[key] = classes ? classes + ' ' + newClass : newClass;
-}
-
-
-
-// RENDER
-
-
-function _VirtualDom_render(vNode, eventNode)
-{
-	var tag = vNode.$;
-
-	if (tag === 5)
-	{
-		return _VirtualDom_render(vNode.k || (vNode.k = vNode.m()), eventNode);
-	}
-
-	if (tag === 0)
-	{
-		return _VirtualDom_doc.createTextNode(vNode.a);
-	}
-
-	if (tag === 4)
-	{
-		var subNode = vNode.k;
-		var tagger = vNode.j;
-
-		while (subNode.$ === 4)
-		{
-			typeof tagger !== 'object'
-				? tagger = [tagger, subNode.j]
-				: tagger.push(subNode.j);
-
-			subNode = subNode.k;
-		}
-
-		var subEventRoot = { j: tagger, p: eventNode };
-		var domNode = _VirtualDom_render(subNode, subEventRoot);
-		domNode.elm_event_node_ref = subEventRoot;
-		return domNode;
-	}
-
-	if (tag === 3)
-	{
-		var domNode = vNode.h(vNode.g);
-		_VirtualDom_applyFacts(domNode, eventNode, vNode.d);
-		return domNode;
-	}
-
-	// at this point `tag` must be 1 or 2
-
-	var domNode = vNode.f
-		? _VirtualDom_doc.createElementNS(vNode.f, vNode.c)
-		: _VirtualDom_doc.createElement(vNode.c);
-
-	if (_VirtualDom_divertHrefToApp && vNode.c == 'a')
-	{
-		domNode.addEventListener('click', _VirtualDom_divertHrefToApp(domNode));
-	}
-
-	_VirtualDom_applyFacts(domNode, eventNode, vNode.d);
-
-	for (var kids = vNode.e, i = 0; i < kids.length; i++)
-	{
-		_VirtualDom_appendChild(domNode, _VirtualDom_render(tag === 1 ? kids[i] : kids[i].b, eventNode));
-	}
-
-	return domNode;
-}
-
-
-
-// APPLY FACTS
-
-
-function _VirtualDom_applyFacts(domNode, eventNode, facts)
-{
-	for (var key in facts)
-	{
-		var value = facts[key];
-
-		key === 'a1'
-			? _VirtualDom_applyStyles(domNode, value)
-			:
-		key === 'a0'
-			? _VirtualDom_applyEvents(domNode, eventNode, value)
-			:
-		key === 'a3'
-			? _VirtualDom_applyAttrs(domNode, value)
-			:
-		key === 'a4'
-			? _VirtualDom_applyAttrsNS(domNode, value)
-			:
-		((key !== 'value' && key !== 'checked') || domNode[key] !== value) && (domNode[key] = value);
-	}
-}
-
-
-
-// APPLY STYLES
-
-
-function _VirtualDom_applyStyles(domNode, styles)
-{
-	var domNodeStyle = domNode.style;
-
-	for (var key in styles)
-	{
-		domNodeStyle[key] = styles[key];
-	}
-}
-
-
-
-// APPLY ATTRS
-
-
-function _VirtualDom_applyAttrs(domNode, attrs)
-{
-	for (var key in attrs)
-	{
-		var value = attrs[key];
-		typeof value !== 'undefined'
-			? domNode.setAttribute(key, value)
-			: domNode.removeAttribute(key);
-	}
-}
-
-
-
-// APPLY NAMESPACED ATTRS
-
-
-function _VirtualDom_applyAttrsNS(domNode, nsAttrs)
-{
-	for (var key in nsAttrs)
-	{
-		var pair = nsAttrs[key];
-		var namespace = pair.f;
-		var value = pair.o;
-
-		typeof value !== 'undefined'
-			? domNode.setAttributeNS(namespace, key, value)
-			: domNode.removeAttributeNS(namespace, key);
-	}
-}
-
-
-
-// APPLY EVENTS
-
-
-function _VirtualDom_applyEvents(domNode, eventNode, events)
-{
-	var allCallbacks = domNode.elmFs || (domNode.elmFs = {});
-
-	for (var key in events)
-	{
-		var newHandler = events[key];
-		var oldCallback = allCallbacks[key];
-
-		if (!newHandler)
-		{
-			domNode.removeEventListener(key, oldCallback);
-			allCallbacks[key] = undefined;
-			continue;
-		}
-
-		if (oldCallback)
-		{
-			var oldHandler = oldCallback.q;
-			if (oldHandler.$ === newHandler.$)
-			{
-				oldCallback.q = newHandler;
-				continue;
-			}
-			domNode.removeEventListener(key, oldCallback);
-		}
-
-		oldCallback = _VirtualDom_makeCallback(eventNode, newHandler);
-		domNode.addEventListener(key, oldCallback,
-			_VirtualDom_passiveSupported
-			&& { passive: $elm$virtual_dom$VirtualDom$toHandlerInt(newHandler) < 2 }
-		);
-		allCallbacks[key] = oldCallback;
-	}
-}
-
-
-
-// PASSIVE EVENTS
-
-
-var _VirtualDom_passiveSupported;
-
-try
-{
-	window.addEventListener('t', null, Object.defineProperty({}, 'passive', {
-		get: function() { _VirtualDom_passiveSupported = true; }
-	}));
-}
-catch(e) {}
-
-
-
-// EVENT HANDLERS
-
-
-function _VirtualDom_makeCallback(eventNode, initialHandler)
-{
-	function callback(event)
-	{
-		var handler = callback.q;
-		var result = _Json_runHelp(handler.a, event);
-
-		if (!$elm$core$Result$isOk(result))
-		{
-			return;
-		}
-
-		var tag = $elm$virtual_dom$VirtualDom$toHandlerInt(handler);
-
-		// 0 = Normal
-		// 1 = MayStopPropagation
-		// 2 = MayPreventDefault
-		// 3 = Custom
-
-		var value = result.a;
-		var message = !tag ? value : tag < 3 ? value.a : value.H;
-		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.aJ;
-		var currentEventNode = (
-			stopPropagation && event.stopPropagation(),
-			(tag == 2 ? value.b : tag == 3 && value.aG) && event.preventDefault(),
-			eventNode
-		);
-		var tagger;
-		var i;
-		while (tagger = currentEventNode.j)
-		{
-			if (typeof tagger == 'function')
-			{
-				message = tagger(message);
-			}
-			else
-			{
-				for (var i = tagger.length; i--; )
-				{
-					message = tagger[i](message);
-				}
-			}
-			currentEventNode = currentEventNode.p;
-		}
-		currentEventNode(message, stopPropagation); // stopPropagation implies isSync
-	}
-
-	callback.q = initialHandler;
-
-	return callback;
-}
-
-function _VirtualDom_equalEvents(x, y)
-{
-	return x.$ == y.$ && _Json_equality(x.a, y.a);
-}
-
-
-
-// DIFF
-
-
-// TODO: Should we do patches like in iOS?
-//
-// type Patch
-//   = At Int Patch
-//   | Batch (List Patch)
-//   | Change ...
-//
-// How could it not be better?
-//
-function _VirtualDom_diff(x, y)
-{
-	var patches = [];
-	_VirtualDom_diffHelp(x, y, patches, 0);
-	return patches;
-}
-
-
-function _VirtualDom_pushPatch(patches, type, index, data)
-{
-	var patch = {
-		$: type,
-		r: index,
-		s: data,
-		t: undefined,
-		u: undefined
-	};
-	patches.push(patch);
-	return patch;
-}
-
-
-function _VirtualDom_diffHelp(x, y, patches, index)
-{
-	if (x === y)
-	{
-		return;
-	}
-
-	var xType = x.$;
-	var yType = y.$;
-
-	// Bail if you run into different types of nodes. Implies that the
-	// structure has changed significantly and it's not worth a diff.
-	if (xType !== yType)
-	{
-		if (xType === 1 && yType === 2)
-		{
-			y = _VirtualDom_dekey(y);
-			yType = 1;
-		}
-		else
-		{
-			_VirtualDom_pushPatch(patches, 0, index, y);
-			return;
-		}
-	}
-
-	// Now we know that both nodes are the same $.
-	switch (yType)
-	{
-		case 5:
-			var xRefs = x.l;
-			var yRefs = y.l;
-			var i = xRefs.length;
-			var same = i === yRefs.length;
-			while (same && i--)
-			{
-				same = xRefs[i] === yRefs[i];
-			}
-			if (same)
-			{
-				y.k = x.k;
-				return;
-			}
-			y.k = y.m();
-			var subPatches = [];
-			_VirtualDom_diffHelp(x.k, y.k, subPatches, 0);
-			subPatches.length > 0 && _VirtualDom_pushPatch(patches, 1, index, subPatches);
-			return;
-
-		case 4:
-			// gather nested taggers
-			var xTaggers = x.j;
-			var yTaggers = y.j;
-			var nesting = false;
-
-			var xSubNode = x.k;
-			while (xSubNode.$ === 4)
-			{
-				nesting = true;
-
-				typeof xTaggers !== 'object'
-					? xTaggers = [xTaggers, xSubNode.j]
-					: xTaggers.push(xSubNode.j);
-
-				xSubNode = xSubNode.k;
-			}
-
-			var ySubNode = y.k;
-			while (ySubNode.$ === 4)
-			{
-				nesting = true;
-
-				typeof yTaggers !== 'object'
-					? yTaggers = [yTaggers, ySubNode.j]
-					: yTaggers.push(ySubNode.j);
-
-				ySubNode = ySubNode.k;
-			}
-
-			// Just bail if different numbers of taggers. This implies the
-			// structure of the virtual DOM has changed.
-			if (nesting && xTaggers.length !== yTaggers.length)
-			{
-				_VirtualDom_pushPatch(patches, 0, index, y);
-				return;
-			}
-
-			// check if taggers are "the same"
-			if (nesting ? !_VirtualDom_pairwiseRefEqual(xTaggers, yTaggers) : xTaggers !== yTaggers)
-			{
-				_VirtualDom_pushPatch(patches, 2, index, yTaggers);
-			}
-
-			// diff everything below the taggers
-			_VirtualDom_diffHelp(xSubNode, ySubNode, patches, index + 1);
-			return;
-
-		case 0:
-			if (x.a !== y.a)
-			{
-				_VirtualDom_pushPatch(patches, 3, index, y.a);
-			}
-			return;
-
-		case 1:
-			_VirtualDom_diffNodes(x, y, patches, index, _VirtualDom_diffKids);
-			return;
-
-		case 2:
-			_VirtualDom_diffNodes(x, y, patches, index, _VirtualDom_diffKeyedKids);
-			return;
-
-		case 3:
-			if (x.h !== y.h)
-			{
-				_VirtualDom_pushPatch(patches, 0, index, y);
-				return;
-			}
-
-			var factsDiff = _VirtualDom_diffFacts(x.d, y.d);
-			factsDiff && _VirtualDom_pushPatch(patches, 4, index, factsDiff);
-
-			var patch = y.i(x.g, y.g);
-			patch && _VirtualDom_pushPatch(patches, 5, index, patch);
-
-			return;
-	}
-}
-
-// assumes the incoming arrays are the same length
-function _VirtualDom_pairwiseRefEqual(as, bs)
-{
-	for (var i = 0; i < as.length; i++)
-	{
-		if (as[i] !== bs[i])
-		{
-			return false;
-		}
-	}
-
-	return true;
-}
-
-function _VirtualDom_diffNodes(x, y, patches, index, diffKids)
-{
-	// Bail if obvious indicators have changed. Implies more serious
-	// structural changes such that it's not worth it to diff.
-	if (x.c !== y.c || x.f !== y.f)
-	{
-		_VirtualDom_pushPatch(patches, 0, index, y);
-		return;
-	}
-
-	var factsDiff = _VirtualDom_diffFacts(x.d, y.d);
-	factsDiff && _VirtualDom_pushPatch(patches, 4, index, factsDiff);
-
-	diffKids(x, y, patches, index);
-}
-
-
-
-// DIFF FACTS
-
-
-// TODO Instead of creating a new diff object, it's possible to just test if
-// there *is* a diff. During the actual patch, do the diff again and make the
-// modifications directly. This way, there's no new allocations. Worth it?
-function _VirtualDom_diffFacts(x, y, category)
-{
-	var diff;
-
-	// look for changes and removals
-	for (var xKey in x)
-	{
-		if (xKey === 'a1' || xKey === 'a0' || xKey === 'a3' || xKey === 'a4')
-		{
-			var subDiff = _VirtualDom_diffFacts(x[xKey], y[xKey] || {}, xKey);
-			if (subDiff)
-			{
-				diff = diff || {};
-				diff[xKey] = subDiff;
-			}
-			continue;
-		}
-
-		// remove if not in the new facts
-		if (!(xKey in y))
-		{
-			diff = diff || {};
-			diff[xKey] =
-				!category
-					? (typeof x[xKey] === 'string' ? '' : null)
-					:
-				(category === 'a1')
-					? ''
-					:
-				(category === 'a0' || category === 'a3')
-					? undefined
-					:
-				{ f: x[xKey].f, o: undefined };
-
-			continue;
-		}
-
-		var xValue = x[xKey];
-		var yValue = y[xKey];
-
-		// reference equal, so don't worry about it
-		if (xValue === yValue && xKey !== 'value' && xKey !== 'checked'
-			|| category === 'a0' && _VirtualDom_equalEvents(xValue, yValue))
-		{
-			continue;
-		}
-
-		diff = diff || {};
-		diff[xKey] = yValue;
-	}
-
-	// add new stuff
-	for (var yKey in y)
-	{
-		if (!(yKey in x))
-		{
-			diff = diff || {};
-			diff[yKey] = y[yKey];
-		}
-	}
-
-	return diff;
-}
-
-
-
-// DIFF KIDS
-
-
-function _VirtualDom_diffKids(xParent, yParent, patches, index)
-{
-	var xKids = xParent.e;
-	var yKids = yParent.e;
-
-	var xLen = xKids.length;
-	var yLen = yKids.length;
-
-	// FIGURE OUT IF THERE ARE INSERTS OR REMOVALS
-
-	if (xLen > yLen)
-	{
-		_VirtualDom_pushPatch(patches, 6, index, {
-			v: yLen,
-			i: xLen - yLen
-		});
-	}
-	else if (xLen < yLen)
-	{
-		_VirtualDom_pushPatch(patches, 7, index, {
-			v: xLen,
-			e: yKids
-		});
-	}
-
-	// PAIRWISE DIFF EVERYTHING ELSE
-
-	for (var minLen = xLen < yLen ? xLen : yLen, i = 0; i < minLen; i++)
-	{
-		var xKid = xKids[i];
-		_VirtualDom_diffHelp(xKid, yKids[i], patches, ++index);
-		index += xKid.b || 0;
-	}
-}
-
-
-
-// KEYED DIFF
-
-
-function _VirtualDom_diffKeyedKids(xParent, yParent, patches, rootIndex)
-{
-	var localPatches = [];
-
-	var changes = {}; // Dict String Entry
-	var inserts = []; // Array { index : Int, entry : Entry }
-	// type Entry = { tag : String, vnode : VNode, index : Int, data : _ }
-
-	var xKids = xParent.e;
-	var yKids = yParent.e;
-	var xLen = xKids.length;
-	var yLen = yKids.length;
-	var xIndex = 0;
-	var yIndex = 0;
-
-	var index = rootIndex;
-
-	while (xIndex < xLen && yIndex < yLen)
-	{
-		var x = xKids[xIndex];
-		var y = yKids[yIndex];
-
-		var xKey = x.a;
-		var yKey = y.a;
-		var xNode = x.b;
-		var yNode = y.b;
-
-		var newMatch = undefined;
-		var oldMatch = undefined;
-
-		// check if keys match
-
-		if (xKey === yKey)
-		{
-			index++;
-			_VirtualDom_diffHelp(xNode, yNode, localPatches, index);
-			index += xNode.b || 0;
-
-			xIndex++;
-			yIndex++;
-			continue;
-		}
-
-		// look ahead 1 to detect insertions and removals.
-
-		var xNext = xKids[xIndex + 1];
-		var yNext = yKids[yIndex + 1];
-
-		if (xNext)
-		{
-			var xNextKey = xNext.a;
-			var xNextNode = xNext.b;
-			oldMatch = yKey === xNextKey;
-		}
-
-		if (yNext)
-		{
-			var yNextKey = yNext.a;
-			var yNextNode = yNext.b;
-			newMatch = xKey === yNextKey;
-		}
-
-
-		// swap x and y
-		if (newMatch && oldMatch)
-		{
-			index++;
-			_VirtualDom_diffHelp(xNode, yNextNode, localPatches, index);
-			_VirtualDom_insertNode(changes, localPatches, xKey, yNode, yIndex, inserts);
-			index += xNode.b || 0;
-
-			index++;
-			_VirtualDom_removeNode(changes, localPatches, xKey, xNextNode, index);
-			index += xNextNode.b || 0;
-
-			xIndex += 2;
-			yIndex += 2;
-			continue;
-		}
-
-		// insert y
-		if (newMatch)
-		{
-			index++;
-			_VirtualDom_insertNode(changes, localPatches, yKey, yNode, yIndex, inserts);
-			_VirtualDom_diffHelp(xNode, yNextNode, localPatches, index);
-			index += xNode.b || 0;
-
-			xIndex += 1;
-			yIndex += 2;
-			continue;
-		}
-
-		// remove x
-		if (oldMatch)
-		{
-			index++;
-			_VirtualDom_removeNode(changes, localPatches, xKey, xNode, index);
-			index += xNode.b || 0;
-
-			index++;
-			_VirtualDom_diffHelp(xNextNode, yNode, localPatches, index);
-			index += xNextNode.b || 0;
-
-			xIndex += 2;
-			yIndex += 1;
-			continue;
-		}
-
-		// remove x, insert y
-		if (xNext && xNextKey === yNextKey)
-		{
-			index++;
-			_VirtualDom_removeNode(changes, localPatches, xKey, xNode, index);
-			_VirtualDom_insertNode(changes, localPatches, yKey, yNode, yIndex, inserts);
-			index += xNode.b || 0;
-
-			index++;
-			_VirtualDom_diffHelp(xNextNode, yNextNode, localPatches, index);
-			index += xNextNode.b || 0;
-
-			xIndex += 2;
-			yIndex += 2;
-			continue;
-		}
-
-		break;
-	}
-
-	// eat up any remaining nodes with removeNode and insertNode
-
-	while (xIndex < xLen)
-	{
-		index++;
-		var x = xKids[xIndex];
-		var xNode = x.b;
-		_VirtualDom_removeNode(changes, localPatches, x.a, xNode, index);
-		index += xNode.b || 0;
-		xIndex++;
-	}
-
-	while (yIndex < yLen)
-	{
-		var endInserts = endInserts || [];
-		var y = yKids[yIndex];
-		_VirtualDom_insertNode(changes, localPatches, y.a, y.b, undefined, endInserts);
-		yIndex++;
-	}
-
-	if (localPatches.length > 0 || inserts.length > 0 || endInserts)
-	{
-		_VirtualDom_pushPatch(patches, 8, rootIndex, {
-			w: localPatches,
-			x: inserts,
-			y: endInserts
-		});
-	}
-}
-
-
-
-// CHANGES FROM KEYED DIFF
-
-
-var _VirtualDom_POSTFIX = '_elmW6BL';
-
-
-function _VirtualDom_insertNode(changes, localPatches, key, vnode, yIndex, inserts)
-{
-	var entry = changes[key];
-
-	// never seen this key before
-	if (!entry)
-	{
-		entry = {
-			c: 0,
-			z: vnode,
-			r: yIndex,
-			s: undefined
-		};
-
-		inserts.push({ r: yIndex, A: entry });
-		changes[key] = entry;
-
-		return;
-	}
-
-	// this key was removed earlier, a match!
-	if (entry.c === 1)
-	{
-		inserts.push({ r: yIndex, A: entry });
-
-		entry.c = 2;
-		var subPatches = [];
-		_VirtualDom_diffHelp(entry.z, vnode, subPatches, entry.r);
-		entry.r = yIndex;
-		entry.s.s = {
-			w: subPatches,
-			A: entry
-		};
-
-		return;
-	}
-
-	// this key has already been inserted or moved, a duplicate!
-	_VirtualDom_insertNode(changes, localPatches, key + _VirtualDom_POSTFIX, vnode, yIndex, inserts);
-}
-
-
-function _VirtualDom_removeNode(changes, localPatches, key, vnode, index)
-{
-	var entry = changes[key];
-
-	// never seen this key before
-	if (!entry)
-	{
-		var patch = _VirtualDom_pushPatch(localPatches, 9, index, undefined);
-
-		changes[key] = {
-			c: 1,
-			z: vnode,
-			r: index,
-			s: patch
-		};
-
-		return;
-	}
-
-	// this key was inserted earlier, a match!
-	if (entry.c === 0)
-	{
-		entry.c = 2;
-		var subPatches = [];
-		_VirtualDom_diffHelp(vnode, entry.z, subPatches, index);
-
-		_VirtualDom_pushPatch(localPatches, 9, index, {
-			w: subPatches,
-			A: entry
-		});
-
-		return;
-	}
-
-	// this key has already been removed or moved, a duplicate!
-	_VirtualDom_removeNode(changes, localPatches, key + _VirtualDom_POSTFIX, vnode, index);
-}
-
-
-
-// ADD DOM NODES
-//
-// Each DOM node has an "index" assigned in order of traversal. It is important
-// to minimize our crawl over the actual DOM, so these indexes (along with the
-// descendantsCount of virtual nodes) let us skip touching entire subtrees of
-// the DOM if we know there are no patches there.
-
-
-function _VirtualDom_addDomNodes(domNode, vNode, patches, eventNode)
-{
-	_VirtualDom_addDomNodesHelp(domNode, vNode, patches, 0, 0, vNode.b, eventNode);
-}
-
-
-// assumes `patches` is non-empty and indexes increase monotonically.
-function _VirtualDom_addDomNodesHelp(domNode, vNode, patches, i, low, high, eventNode)
-{
-	var patch = patches[i];
-	var index = patch.r;
-
-	while (index === low)
-	{
-		var patchType = patch.$;
-
-		if (patchType === 1)
-		{
-			_VirtualDom_addDomNodes(domNode, vNode.k, patch.s, eventNode);
-		}
-		else if (patchType === 8)
-		{
-			patch.t = domNode;
-			patch.u = eventNode;
-
-			var subPatches = patch.s.w;
-			if (subPatches.length > 0)
-			{
-				_VirtualDom_addDomNodesHelp(domNode, vNode, subPatches, 0, low, high, eventNode);
-			}
-		}
-		else if (patchType === 9)
-		{
-			patch.t = domNode;
-			patch.u = eventNode;
-
-			var data = patch.s;
-			if (data)
-			{
-				data.A.s = domNode;
-				var subPatches = data.w;
-				if (subPatches.length > 0)
-				{
-					_VirtualDom_addDomNodesHelp(domNode, vNode, subPatches, 0, low, high, eventNode);
-				}
-			}
-		}
-		else
-		{
-			patch.t = domNode;
-			patch.u = eventNode;
-		}
-
-		i++;
-
-		if (!(patch = patches[i]) || (index = patch.r) > high)
-		{
-			return i;
-		}
-	}
-
-	var tag = vNode.$;
-
-	if (tag === 4)
-	{
-		var subNode = vNode.k;
-
-		while (subNode.$ === 4)
-		{
-			subNode = subNode.k;
-		}
-
-		return _VirtualDom_addDomNodesHelp(domNode, subNode, patches, i, low + 1, high, domNode.elm_event_node_ref);
-	}
-
-	// tag must be 1 or 2 at this point
-
-	var vKids = vNode.e;
-	var childNodes = domNode.childNodes;
-	for (var j = 0; j < vKids.length; j++)
-	{
-		low++;
-		var vKid = tag === 1 ? vKids[j] : vKids[j].b;
-		var nextLow = low + (vKid.b || 0);
-		if (low <= index && index <= nextLow)
-		{
-			i = _VirtualDom_addDomNodesHelp(childNodes[j], vKid, patches, i, low, nextLow, eventNode);
-			if (!(patch = patches[i]) || (index = patch.r) > high)
-			{
-				return i;
-			}
-		}
-		low = nextLow;
-	}
-	return i;
-}
-
-
-
-// APPLY PATCHES
-
-
-function _VirtualDom_applyPatches(rootDomNode, oldVirtualNode, patches, eventNode)
-{
-	if (patches.length === 0)
-	{
-		return rootDomNode;
-	}
-
-	_VirtualDom_addDomNodes(rootDomNode, oldVirtualNode, patches, eventNode);
-	return _VirtualDom_applyPatchesHelp(rootDomNode, patches);
-}
-
-function _VirtualDom_applyPatchesHelp(rootDomNode, patches)
-{
-	for (var i = 0; i < patches.length; i++)
-	{
-		var patch = patches[i];
-		var localDomNode = patch.t
-		var newNode = _VirtualDom_applyPatch(localDomNode, patch);
-		if (localDomNode === rootDomNode)
-		{
-			rootDomNode = newNode;
-		}
-	}
-	return rootDomNode;
-}
-
-function _VirtualDom_applyPatch(domNode, patch)
-{
-	switch (patch.$)
-	{
-		case 0:
-			return _VirtualDom_applyPatchRedraw(domNode, patch.s, patch.u);
-
-		case 4:
-			_VirtualDom_applyFacts(domNode, patch.u, patch.s);
-			return domNode;
-
-		case 3:
-			domNode.replaceData(0, domNode.length, patch.s);
-			return domNode;
-
-		case 1:
-			return _VirtualDom_applyPatchesHelp(domNode, patch.s);
-
-		case 2:
-			if (domNode.elm_event_node_ref)
-			{
-				domNode.elm_event_node_ref.j = patch.s;
-			}
-			else
-			{
-				domNode.elm_event_node_ref = { j: patch.s, p: patch.u };
-			}
-			return domNode;
-
-		case 6:
-			var data = patch.s;
-			for (var i = 0; i < data.i; i++)
-			{
-				domNode.removeChild(domNode.childNodes[data.v]);
-			}
-			return domNode;
-
-		case 7:
-			var data = patch.s;
-			var kids = data.e;
-			var i = data.v;
-			var theEnd = domNode.childNodes[i];
-			for (; i < kids.length; i++)
-			{
-				domNode.insertBefore(_VirtualDom_render(kids[i], patch.u), theEnd);
-			}
-			return domNode;
-
-		case 9:
-			var data = patch.s;
-			if (!data)
-			{
-				domNode.parentNode.removeChild(domNode);
-				return domNode;
-			}
-			var entry = data.A;
-			if (typeof entry.r !== 'undefined')
-			{
-				domNode.parentNode.removeChild(domNode);
-			}
-			entry.s = _VirtualDom_applyPatchesHelp(domNode, data.w);
-			return domNode;
-
-		case 8:
-			return _VirtualDom_applyPatchReorder(domNode, patch);
-
-		case 5:
-			return patch.s(domNode);
-
-		default:
-			_Debug_crash(10); // 'Ran into an unknown patch!'
-	}
-}
-
-
-function _VirtualDom_applyPatchRedraw(domNode, vNode, eventNode)
-{
-	var parentNode = domNode.parentNode;
-	var newNode = _VirtualDom_render(vNode, eventNode);
-
-	if (!newNode.elm_event_node_ref)
-	{
-		newNode.elm_event_node_ref = domNode.elm_event_node_ref;
-	}
-
-	if (parentNode && newNode !== domNode)
-	{
-		parentNode.replaceChild(newNode, domNode);
-	}
-	return newNode;
-}
-
-
-function _VirtualDom_applyPatchReorder(domNode, patch)
-{
-	var data = patch.s;
-
-	// remove end inserts
-	var frag = _VirtualDom_applyPatchReorderEndInsertsHelp(data.y, patch);
-
-	// removals
-	domNode = _VirtualDom_applyPatchesHelp(domNode, data.w);
-
-	// inserts
-	var inserts = data.x;
-	for (var i = 0; i < inserts.length; i++)
-	{
-		var insert = inserts[i];
-		var entry = insert.A;
-		var node = entry.c === 2
-			? entry.s
-			: _VirtualDom_render(entry.z, patch.u);
-		domNode.insertBefore(node, domNode.childNodes[insert.r]);
-	}
-
-	// add end inserts
-	if (frag)
-	{
-		_VirtualDom_appendChild(domNode, frag);
-	}
-
-	return domNode;
-}
-
-
-function _VirtualDom_applyPatchReorderEndInsertsHelp(endInserts, patch)
-{
-	if (!endInserts)
-	{
-		return;
-	}
-
-	var frag = _VirtualDom_doc.createDocumentFragment();
-	for (var i = 0; i < endInserts.length; i++)
-	{
-		var insert = endInserts[i];
-		var entry = insert.A;
-		_VirtualDom_appendChild(frag, entry.c === 2
-			? entry.s
-			: _VirtualDom_render(entry.z, patch.u)
-		);
-	}
-	return frag;
-}
-
-
-function _VirtualDom_virtualize(node)
-{
-	// TEXT NODES
-
-	if (node.nodeType === 3)
-	{
-		return _VirtualDom_text(node.textContent);
-	}
-
-
-	// WEIRD NODES
-
-	if (node.nodeType !== 1)
-	{
-		return _VirtualDom_text('');
-	}
-
-
-	// ELEMENT NODES
-
-	var attrList = _List_Nil;
-	var attrs = node.attributes;
-	for (var i = attrs.length; i--; )
-	{
-		var attr = attrs[i];
-		var name = attr.name;
-		var value = attr.value;
-		attrList = _List_Cons( A2(_VirtualDom_attribute, name, value), attrList );
-	}
-
-	var tag = node.tagName.toLowerCase();
-	var kidList = _List_Nil;
-	var kids = node.childNodes;
-
-	for (var i = kids.length; i--; )
-	{
-		kidList = _List_Cons(_VirtualDom_virtualize(kids[i]), kidList);
-	}
-	return A3(_VirtualDom_node, tag, attrList, kidList);
-}
-
-function _VirtualDom_dekey(keyedNode)
-{
-	var keyedKids = keyedNode.e;
-	var len = keyedKids.length;
-	var kids = new Array(len);
-	for (var i = 0; i < len; i++)
-	{
-		kids[i] = keyedKids[i].b;
-	}
-
-	return {
-		$: 1,
-		c: keyedNode.c,
-		d: keyedNode.d,
-		e: kids,
-		f: keyedNode.f,
-		b: keyedNode.b
-	};
-}
-
-
-
-
-// ELEMENT
-
-
-var _Debugger_element;
-
-var _Browser_element = _Debugger_element || F4(function(impl, flagDecoder, debugMetadata, args)
-{
-	return _Platform_initialize(
-		flagDecoder,
-		args,
-		impl.bV,
-		impl.cm,
-		impl.ch,
-		function(sendToApp, initialModel) {
-			var view = impl.cn;
-			/**/
-			var domNode = args['node'];
-			//*/
-			/**_UNUSED/
-			var domNode = args && args['node'] ? args['node'] : _Debug_crash(0);
-			//*/
-			var currNode = _VirtualDom_virtualize(domNode);
-
-			return _Browser_makeAnimator(initialModel, function(model)
-			{
-				var nextNode = view(model);
-				var patches = _VirtualDom_diff(currNode, nextNode);
-				domNode = _VirtualDom_applyPatches(domNode, currNode, patches, sendToApp);
-				currNode = nextNode;
-			});
-		}
-	);
-});
-
-
-
-// DOCUMENT
-
-
-var _Debugger_document;
-
-var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, debugMetadata, args)
-{
-	return _Platform_initialize(
-		flagDecoder,
-		args,
-		impl.bV,
-		impl.cm,
-		impl.ch,
-		function(sendToApp, initialModel) {
-			var divertHrefToApp = impl.aH && impl.aH(sendToApp)
-			var view = impl.cn;
-			var title = _VirtualDom_doc.title;
-			var bodyNode = _VirtualDom_doc.body;
-			var currNode = _VirtualDom_virtualize(bodyNode);
-			return _Browser_makeAnimator(initialModel, function(model)
-			{
-				_VirtualDom_divertHrefToApp = divertHrefToApp;
-				var doc = view(model);
-				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.bE);
-				var patches = _VirtualDom_diff(currNode, nextNode);
-				bodyNode = _VirtualDom_applyPatches(bodyNode, currNode, patches, sendToApp);
-				currNode = nextNode;
-				_VirtualDom_divertHrefToApp = 0;
-				(title !== doc.ck) && (_VirtualDom_doc.title = title = doc.ck);
-			});
-		}
-	);
-});
-
-
-
-// ANIMATION
-
-
-var _Browser_cancelAnimationFrame =
-	typeof cancelAnimationFrame !== 'undefined'
-		? cancelAnimationFrame
-		: function(id) { clearTimeout(id); };
-
-var _Browser_requestAnimationFrame =
-	typeof requestAnimationFrame !== 'undefined'
-		? requestAnimationFrame
-		: function(callback) { return setTimeout(callback, 1000 / 60); };
-
-
-function _Browser_makeAnimator(model, draw)
-{
-	draw(model);
-
-	var state = 0;
-
-	function updateIfNeeded()
-	{
-		state = state === 1
-			? 0
-			: ( _Browser_requestAnimationFrame(updateIfNeeded), draw(model), 1 );
-	}
-
-	return function(nextModel, isSync)
-	{
-		model = nextModel;
-
-		isSync
-			? ( draw(model),
-				state === 2 && (state = 1)
-				)
-			: ( state === 0 && _Browser_requestAnimationFrame(updateIfNeeded),
-				state = 2
-				);
-	};
-}
-
-
-
-// APPLICATION
-
-
-function _Browser_application(impl)
-{
-	var onUrlChange = impl.b8;
-	var onUrlRequest = impl.b9;
-	var key = function() { key.a(onUrlChange(_Browser_getUrl())); };
-
-	return _Browser_document({
-		aH: function(sendToApp)
-		{
-			key.a = sendToApp;
-			_Browser_window.addEventListener('popstate', key);
-			_Browser_window.navigator.userAgent.indexOf('Trident') < 0 || _Browser_window.addEventListener('hashchange', key);
-
-			return F2(function(domNode, event)
-			{
-				if (!event.ctrlKey && !event.metaKey && !event.shiftKey && event.button < 1 && !domNode.target && !domNode.hasAttribute('download'))
-				{
-					event.preventDefault();
-					var href = domNode.href;
-					var curr = _Browser_getUrl();
-					var next = $elm$url$Url$fromString(href).a;
-					sendToApp(onUrlRequest(
-						(next
-							&& curr.bh === next.bh
-							&& curr.a1 === next.a1
-							&& curr.be.a === next.be.a
-						)
-							? $elm$browser$Browser$Internal(next)
-							: $elm$browser$Browser$External(href)
-					));
-				}
-			});
-		},
-		bV: function(flags)
-		{
-			return A3(impl.bV, flags, _Browser_getUrl(), key);
-		},
-		cn: impl.cn,
-		cm: impl.cm,
-		ch: impl.ch
-	});
-}
-
-function _Browser_getUrl()
-{
-	return $elm$url$Url$fromString(_VirtualDom_doc.location.href).a || _Debug_crash(1);
-}
-
-var _Browser_go = F2(function(key, n)
-{
-	return A2($elm$core$Task$perform, $elm$core$Basics$never, _Scheduler_binding(function() {
-		n && history.go(n);
-		key();
-	}));
-});
-
-var _Browser_pushUrl = F2(function(key, url)
-{
-	return A2($elm$core$Task$perform, $elm$core$Basics$never, _Scheduler_binding(function() {
-		history.pushState({}, '', url);
-		key();
-	}));
-});
-
-var _Browser_replaceUrl = F2(function(key, url)
-{
-	return A2($elm$core$Task$perform, $elm$core$Basics$never, _Scheduler_binding(function() {
-		history.replaceState({}, '', url);
-		key();
-	}));
-});
-
-
-
-// GLOBAL EVENTS
-
-
-var _Browser_fakeNode = { addEventListener: function() {}, removeEventListener: function() {} };
-var _Browser_doc = typeof document !== 'undefined' ? document : _Browser_fakeNode;
-var _Browser_window = typeof window !== 'undefined' ? window : _Browser_fakeNode;
-
-var _Browser_on = F3(function(node, eventName, sendToSelf)
-{
-	return _Scheduler_spawn(_Scheduler_binding(function(callback)
-	{
-		function handler(event)	{ _Scheduler_rawSpawn(sendToSelf(event)); }
-		node.addEventListener(eventName, handler, _VirtualDom_passiveSupported && { passive: true });
-		return function() { node.removeEventListener(eventName, handler); };
-	}));
-});
-
-var _Browser_decodeEvent = F2(function(decoder, event)
-{
-	var result = _Json_runHelp(decoder, event);
-	return $elm$core$Result$isOk(result) ? $elm$core$Maybe$Just(result.a) : $elm$core$Maybe$Nothing;
-});
-
-
-
-// PAGE VISIBILITY
-
-
-function _Browser_visibilityInfo()
-{
-	return (typeof _VirtualDom_doc.hidden !== 'undefined')
-		? { bS: 'hidden', bH: 'visibilitychange' }
-		:
-	(typeof _VirtualDom_doc.mozHidden !== 'undefined')
-		? { bS: 'mozHidden', bH: 'mozvisibilitychange' }
-		:
-	(typeof _VirtualDom_doc.msHidden !== 'undefined')
-		? { bS: 'msHidden', bH: 'msvisibilitychange' }
-		:
-	(typeof _VirtualDom_doc.webkitHidden !== 'undefined')
-		? { bS: 'webkitHidden', bH: 'webkitvisibilitychange' }
-		: { bS: 'hidden', bH: 'visibilitychange' };
-}
-
-
-
-// ANIMATION FRAMES
-
-
-function _Browser_rAF()
-{
-	return _Scheduler_binding(function(callback)
-	{
-		var id = _Browser_requestAnimationFrame(function() {
-			callback(_Scheduler_succeed(Date.now()));
-		});
-
-		return function() {
-			_Browser_cancelAnimationFrame(id);
-		};
-	});
-}
-
-
-function _Browser_now()
-{
-	return _Scheduler_binding(function(callback)
-	{
-		callback(_Scheduler_succeed(Date.now()));
-	});
-}
-
-
-
-// DOM STUFF
-
-
-function _Browser_withNode(id, doStuff)
-{
-	return _Scheduler_binding(function(callback)
-	{
-		_Browser_requestAnimationFrame(function() {
-			var node = document.getElementById(id);
-			callback(node
-				? _Scheduler_succeed(doStuff(node))
-				: _Scheduler_fail($elm$browser$Browser$Dom$NotFound(id))
-			);
-		});
-	});
-}
-
-
-function _Browser_withWindow(doStuff)
-{
-	return _Scheduler_binding(function(callback)
-	{
-		_Browser_requestAnimationFrame(function() {
-			callback(_Scheduler_succeed(doStuff()));
-		});
-	});
-}
-
-
-// FOCUS and BLUR
-
-
-var _Browser_call = F2(function(functionName, id)
-{
-	return _Browser_withNode(id, function(node) {
-		node[functionName]();
-		return _Utils_Tuple0;
-	});
-});
-
-
-
-// WINDOW VIEWPORT
-
-
-function _Browser_getViewport()
-{
-	return {
-		bm: _Browser_getScene(),
-		bu: {
-			bx: _Browser_window.pageXOffset,
-			by: _Browser_window.pageYOffset,
-			bw: _Browser_doc.documentElement.clientWidth,
-			a0: _Browser_doc.documentElement.clientHeight
-		}
-	};
-}
-
-function _Browser_getScene()
-{
-	var body = _Browser_doc.body;
-	var elem = _Browser_doc.documentElement;
-	return {
-		bw: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
-		a0: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
-	};
-}
-
-var _Browser_setViewport = F2(function(x, y)
-{
-	return _Browser_withWindow(function()
-	{
-		_Browser_window.scroll(x, y);
-		return _Utils_Tuple0;
-	});
-});
-
-
-
-// ELEMENT VIEWPORT
-
-
-function _Browser_getViewportOf(id)
-{
-	return _Browser_withNode(id, function(node)
-	{
-		return {
-			bm: {
-				bw: node.scrollWidth,
-				a0: node.scrollHeight
-			},
-			bu: {
-				bx: node.scrollLeft,
-				by: node.scrollTop,
-				bw: node.clientWidth,
-				a0: node.clientHeight
-			}
-		};
-	});
-}
-
-
-var _Browser_setViewportOf = F3(function(id, x, y)
-{
-	return _Browser_withNode(id, function(node)
-	{
-		node.scrollLeft = x;
-		node.scrollTop = y;
-		return _Utils_Tuple0;
-	});
-});
-
-
-
-// ELEMENT
-
-
-function _Browser_getElement(id)
-{
-	return _Browser_withNode(id, function(node)
-	{
-		var rect = node.getBoundingClientRect();
-		var x = _Browser_window.pageXOffset;
-		var y = _Browser_window.pageYOffset;
-		return {
-			bm: _Browser_getScene(),
-			bu: {
-				bx: x,
-				by: y,
-				bw: _Browser_doc.documentElement.clientWidth,
-				a0: _Browser_doc.documentElement.clientHeight
-			},
-			bM: {
-				bx: x + rect.left,
-				by: y + rect.top,
-				bw: rect.width,
-				a0: rect.height
-			}
-		};
-	});
-}
-
-
-
-// LOAD and RELOAD
-
-
-function _Browser_reload(skipCache)
-{
-	return A2($elm$core$Task$perform, $elm$core$Basics$never, _Scheduler_binding(function(callback)
-	{
-		_VirtualDom_doc.location.reload(skipCache);
-	}));
-}
-
-function _Browser_load(url)
-{
-	return A2($elm$core$Task$perform, $elm$core$Basics$never, _Scheduler_binding(function(callback)
-	{
-		try
-		{
-			_Browser_window.location = url;
-		}
-		catch(err)
-		{
-			// Only Firefox can throw a NS_ERROR_MALFORMED_URI exception here.
-			// Other browsers reload the page, so let's be consistent about that.
-			_VirtualDom_doc.location.reload(false);
-		}
-	}));
-}
-
-
-
-// DECODER
-
-var _File_decoder = _Json_decodePrim(function(value) {
-	// NOTE: checks if `File` exists in case this is run on node
-	return (typeof File !== 'undefined' && value instanceof File)
-		? $elm$core$Result$Ok(value)
-		: _Json_expecting('a FILE', value);
-});
-
-
-// METADATA
-
-function _File_name(file) { return file.name; }
-function _File_mime(file) { return file.type; }
-function _File_size(file) { return file.size; }
-
-function _File_lastModified(file)
-{
-	return $elm$time$Time$millisToPosix(file.lastModified);
-}
-
-
-// DOWNLOAD
-
-var _File_downloadNode;
-
-function _File_getDownloadNode()
-{
-	return _File_downloadNode || (_File_downloadNode = document.createElement('a'));
-}
-
-var _File_download = F3(function(name, mime, content)
-{
-	return _Scheduler_binding(function(callback)
-	{
-		var blob = new Blob([content], {type: mime});
-
-		// for IE10+
-		if (navigator.msSaveOrOpenBlob)
-		{
-			navigator.msSaveOrOpenBlob(blob, name);
-			return;
-		}
-
-		// for HTML5
-		var node = _File_getDownloadNode();
-		var objectUrl = URL.createObjectURL(blob);
-		node.href = objectUrl;
-		node.download = name;
-		_File_click(node);
-		URL.revokeObjectURL(objectUrl);
-	});
-});
-
-function _File_downloadUrl(href)
-{
-	return _Scheduler_binding(function(callback)
-	{
-		var node = _File_getDownloadNode();
-		node.href = href;
-		node.download = '';
-		node.origin === location.origin || (node.target = '_blank');
-		_File_click(node);
-	});
-}
-
-
-// IE COMPATIBILITY
-
-function _File_makeBytesSafeForInternetExplorer(bytes)
-{
-	// only needed by IE10 and IE11 to fix https://github.com/elm/file/issues/10
-	// all other browsers can just run `new Blob([bytes])` directly with no problem
-	//
-	return new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-}
-
-function _File_click(node)
-{
-	// only needed by IE10 and IE11 to fix https://github.com/elm/file/issues/11
-	// all other browsers have MouseEvent and do not need this conditional stuff
-	//
-	if (typeof MouseEvent === 'function')
-	{
-		node.dispatchEvent(new MouseEvent('click'));
-	}
-	else
-	{
-		var event = document.createEvent('MouseEvents');
-		event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-		document.body.appendChild(node);
-		node.dispatchEvent(event);
-		document.body.removeChild(node);
-	}
-}
-
-
-// UPLOAD
-
-var _File_node;
-
-function _File_uploadOne(mimes)
-{
-	return _Scheduler_binding(function(callback)
-	{
-		_File_node = document.createElement('input');
-		_File_node.type = 'file';
-		_File_node.accept = A2($elm$core$String$join, ',', mimes);
-		_File_node.addEventListener('change', function(event)
-		{
-			callback(_Scheduler_succeed(event.target.files[0]));
-		});
-		_File_click(_File_node);
-	});
-}
-
-function _File_uploadOneOrMore(mimes)
-{
-	return _Scheduler_binding(function(callback)
-	{
-		_File_node = document.createElement('input');
-		_File_node.type = 'file';
-		_File_node.multiple = true;
-		_File_node.accept = A2($elm$core$String$join, ',', mimes);
-		_File_node.addEventListener('change', function(event)
-		{
-			var elmFiles = _List_fromArray(event.target.files);
-			callback(_Scheduler_succeed(_Utils_Tuple2(elmFiles.a, elmFiles.b)));
-		});
-		_File_click(_File_node);
-	});
-}
-
-
-// CONTENT
-
-function _File_toString(blob)
-{
-	return _Scheduler_binding(function(callback)
-	{
-		var reader = new FileReader();
-		reader.addEventListener('loadend', function() {
-			callback(_Scheduler_succeed(reader.result));
-		});
-		reader.readAsText(blob);
-		return function() { reader.abort(); };
-	});
-}
-
-function _File_toBytes(blob)
-{
-	return _Scheduler_binding(function(callback)
-	{
-		var reader = new FileReader();
-		reader.addEventListener('loadend', function() {
-			callback(_Scheduler_succeed(new DataView(reader.result)));
-		});
-		reader.readAsArrayBuffer(blob);
-		return function() { reader.abort(); };
-	});
-}
-
-function _File_toUrl(blob)
-{
-	return _Scheduler_binding(function(callback)
-	{
-		var reader = new FileReader();
-		reader.addEventListener('loadend', function() {
-			callback(_Scheduler_succeed(reader.result));
-		});
-		reader.readAsDataURL(blob);
-		return function() { reader.abort(); };
-	});
-}
-
-
-
-
-var _Bitwise_and = F2(function(a, b)
-{
-	return a & b;
-});
-
-var _Bitwise_or = F2(function(a, b)
-{
-	return a | b;
-});
-
-var _Bitwise_xor = F2(function(a, b)
-{
-	return a ^ b;
-});
-
-function _Bitwise_complement(a)
-{
-	return ~a;
-};
-
-var _Bitwise_shiftLeftBy = F2(function(offset, a)
-{
-	return a << offset;
-});
-
-var _Bitwise_shiftRightBy = F2(function(offset, a)
-{
-	return a >> offset;
-});
-
-var _Bitwise_shiftRightZfBy = F2(function(offset, a)
-{
-	return a >>> offset;
-});
-
-
-
-function _Time_now(millisToPosix)
-{
-	return _Scheduler_binding(function(callback)
-	{
-		callback(_Scheduler_succeed(millisToPosix(Date.now())));
-	});
-}
-
-var _Time_setInterval = F2(function(interval, task)
-{
-	return _Scheduler_binding(function(callback)
-	{
-		var id = setInterval(function() { _Scheduler_rawSpawn(task); }, interval);
-		return function() { clearInterval(id); };
-	});
-});
-
-function _Time_here()
-{
-	return _Scheduler_binding(function(callback)
-	{
-		callback(_Scheduler_succeed(
-			A2($elm$time$Time$customZone, -(new Date().getTimezoneOffset()), _List_Nil)
-		));
-	});
-}
-
-
-function _Time_getZoneName()
-{
-	return _Scheduler_binding(function(callback)
-	{
-		try
-		{
-			var name = $elm$time$Time$Name(Intl.DateTimeFormat().resolvedOptions().timeZone);
-		}
-		catch (e)
-		{
-			var name = $elm$time$Time$Offset(new Date().getTimezoneOffset());
-		}
-		callback(_Scheduler_succeed(name));
-	});
-}
-var $elm$core$Basics$EQ = 1;
-var $elm$core$Basics$GT = 2;
-var $elm$core$Basics$LT = 0;
-var $elm$core$List$cons = _List_cons;
-var $elm$core$Dict$foldr = F3(
-	function (func, acc, t) {
-		foldr:
-		while (true) {
-			if (t.$ === -2) {
-				return acc;
-			} else {
-				var key = t.b;
-				var value = t.c;
-				var left = t.d;
-				var right = t.e;
-				var $temp$func = func,
-					$temp$acc = A3(
-					func,
-					key,
-					value,
-					A3($elm$core$Dict$foldr, func, acc, right)),
-					$temp$t = left;
-				func = $temp$func;
-				acc = $temp$acc;
-				t = $temp$t;
-				continue foldr;
-			}
-		}
-	});
-var $elm$core$Dict$toList = function (dict) {
-	return A3(
-		$elm$core$Dict$foldr,
-		F3(
-			function (key, value, list) {
-				return A2(
-					$elm$core$List$cons,
-					_Utils_Tuple2(key, value),
-					list);
-			}),
-		_List_Nil,
-		dict);
-};
-var $elm$core$Dict$keys = function (dict) {
-	return A3(
-		$elm$core$Dict$foldr,
-		F3(
-			function (key, value, keyList) {
-				return A2($elm$core$List$cons, key, keyList);
-			}),
-		_List_Nil,
-		dict);
-};
-var $elm$core$Set$toList = function (_v0) {
-	var dict = _v0;
-	return $elm$core$Dict$keys(dict);
-};
-var $elm$core$Elm$JsArray$foldr = _JsArray_foldr;
-var $elm$core$Array$foldr = F3(
-	function (func, baseCase, _v0) {
-		var tree = _v0.c;
-		var tail = _v0.d;
-		var helper = F2(
-			function (node, acc) {
-				if (!node.$) {
-					var subTree = node.a;
-					return A3($elm$core$Elm$JsArray$foldr, helper, acc, subTree);
-				} else {
-					var values = node.a;
-					return A3($elm$core$Elm$JsArray$foldr, func, acc, values);
-				}
-			});
-		return A3(
-			$elm$core$Elm$JsArray$foldr,
-			helper,
-			A3($elm$core$Elm$JsArray$foldr, func, baseCase, tail),
-			tree);
-	});
-var $elm$core$Array$toList = function (array) {
-	return A3($elm$core$Array$foldr, $elm$core$List$cons, _List_Nil, array);
-};
-var $elm$core$Result$Err = function (a) {
-	return {$: 1, a: a};
-};
-var $elm$json$Json$Decode$Failure = F2(
-	function (a, b) {
-		return {$: 3, a: a, b: b};
-	});
-var $elm$json$Json$Decode$Field = F2(
-	function (a, b) {
-		return {$: 0, a: a, b: b};
-	});
-var $elm$json$Json$Decode$Index = F2(
-	function (a, b) {
-		return {$: 1, a: a, b: b};
-	});
-var $elm$core$Result$Ok = function (a) {
-	return {$: 0, a: a};
-};
-var $elm$json$Json$Decode$OneOf = function (a) {
-	return {$: 2, a: a};
-};
-var $elm$core$Basics$False = 1;
-var $elm$core$Basics$add = _Basics_add;
-var $elm$core$Maybe$Just = function (a) {
-	return {$: 0, a: a};
-};
-var $elm$core$Maybe$Nothing = {$: 1};
-var $elm$core$String$all = _String_all;
-var $elm$core$Basics$and = _Basics_and;
-var $elm$core$Basics$append = _Utils_append;
-var $elm$json$Json$Encode$encode = _Json_encode;
-var $elm$core$String$fromInt = _String_fromNumber;
-var $elm$core$String$join = F2(
-	function (sep, chunks) {
-		return A2(
-			_String_join,
-			sep,
-			_List_toArray(chunks));
-	});
-var $elm$core$String$split = F2(
-	function (sep, string) {
-		return _List_fromArray(
-			A2(_String_split, sep, string));
-	});
-var $elm$json$Json$Decode$indent = function (str) {
-	return A2(
-		$elm$core$String$join,
-		'\n    ',
-		A2($elm$core$String$split, '\n', str));
-};
-var $elm$core$List$foldl = F3(
-	function (func, acc, list) {
-		foldl:
-		while (true) {
-			if (!list.b) {
-				return acc;
-			} else {
-				var x = list.a;
-				var xs = list.b;
-				var $temp$func = func,
-					$temp$acc = A2(func, x, acc),
-					$temp$list = xs;
-				func = $temp$func;
-				acc = $temp$acc;
-				list = $temp$list;
-				continue foldl;
-			}
-		}
-	});
-var $elm$core$List$length = function (xs) {
-	return A3(
-		$elm$core$List$foldl,
-		F2(
-			function (_v0, i) {
-				return i + 1;
-			}),
-		0,
-		xs);
-};
-var $elm$core$List$map2 = _List_map2;
-var $elm$core$Basics$le = _Utils_le;
-var $elm$core$Basics$sub = _Basics_sub;
-var $elm$core$List$rangeHelp = F3(
-	function (lo, hi, list) {
-		rangeHelp:
-		while (true) {
-			if (_Utils_cmp(lo, hi) < 1) {
-				var $temp$lo = lo,
-					$temp$hi = hi - 1,
-					$temp$list = A2($elm$core$List$cons, hi, list);
-				lo = $temp$lo;
-				hi = $temp$hi;
-				list = $temp$list;
-				continue rangeHelp;
-			} else {
-				return list;
-			}
-		}
-	});
-var $elm$core$List$range = F2(
-	function (lo, hi) {
-		return A3($elm$core$List$rangeHelp, lo, hi, _List_Nil);
-	});
-var $elm$core$List$indexedMap = F2(
-	function (f, xs) {
-		return A3(
-			$elm$core$List$map2,
-			f,
-			A2(
-				$elm$core$List$range,
-				0,
-				$elm$core$List$length(xs) - 1),
-			xs);
-	});
-var $elm$core$Char$toCode = _Char_toCode;
-var $elm$core$Char$isLower = function (_char) {
-	var code = $elm$core$Char$toCode(_char);
-	return (97 <= code) && (code <= 122);
-};
-var $elm$core$Char$isUpper = function (_char) {
-	var code = $elm$core$Char$toCode(_char);
-	return (code <= 90) && (65 <= code);
-};
-var $elm$core$Basics$or = _Basics_or;
-var $elm$core$Char$isAlpha = function (_char) {
-	return $elm$core$Char$isLower(_char) || $elm$core$Char$isUpper(_char);
-};
-var $elm$core$Char$isDigit = function (_char) {
-	var code = $elm$core$Char$toCode(_char);
-	return (code <= 57) && (48 <= code);
-};
-var $elm$core$Char$isAlphaNum = function (_char) {
-	return $elm$core$Char$isLower(_char) || ($elm$core$Char$isUpper(_char) || $elm$core$Char$isDigit(_char));
-};
-var $elm$core$List$reverse = function (list) {
-	return A3($elm$core$List$foldl, $elm$core$List$cons, _List_Nil, list);
-};
-var $elm$core$String$uncons = _String_uncons;
-var $elm$json$Json$Decode$errorOneOf = F2(
-	function (i, error) {
-		return '\n\n(' + ($elm$core$String$fromInt(i + 1) + (') ' + $elm$json$Json$Decode$indent(
-			$elm$json$Json$Decode$errorToString(error))));
-	});
-var $elm$json$Json$Decode$errorToString = function (error) {
-	return A2($elm$json$Json$Decode$errorToStringHelp, error, _List_Nil);
-};
-var $elm$json$Json$Decode$errorToStringHelp = F2(
-	function (error, context) {
-		errorToStringHelp:
-		while (true) {
-			switch (error.$) {
-				case 0:
-					var f = error.a;
-					var err = error.b;
-					var isSimple = function () {
-						var _v1 = $elm$core$String$uncons(f);
-						if (_v1.$ === 1) {
-							return false;
-						} else {
-							var _v2 = _v1.a;
-							var _char = _v2.a;
-							var rest = _v2.b;
-							return $elm$core$Char$isAlpha(_char) && A2($elm$core$String$all, $elm$core$Char$isAlphaNum, rest);
-						}
-					}();
-					var fieldName = isSimple ? ('.' + f) : ('[\'' + (f + '\']'));
-					var $temp$error = err,
-						$temp$context = A2($elm$core$List$cons, fieldName, context);
-					error = $temp$error;
-					context = $temp$context;
-					continue errorToStringHelp;
-				case 1:
-					var i = error.a;
-					var err = error.b;
-					var indexName = '[' + ($elm$core$String$fromInt(i) + ']');
-					var $temp$error = err,
-						$temp$context = A2($elm$core$List$cons, indexName, context);
-					error = $temp$error;
-					context = $temp$context;
-					continue errorToStringHelp;
-				case 2:
-					var errors = error.a;
-					if (!errors.b) {
-						return 'Ran into a Json.Decode.oneOf with no possibilities' + function () {
-							if (!context.b) {
-								return '!';
-							} else {
-								return ' at json' + A2(
-									$elm$core$String$join,
-									'',
-									$elm$core$List$reverse(context));
-							}
-						}();
-					} else {
-						if (!errors.b.b) {
-							var err = errors.a;
-							var $temp$error = err,
-								$temp$context = context;
-							error = $temp$error;
-							context = $temp$context;
-							continue errorToStringHelp;
-						} else {
-							var starter = function () {
-								if (!context.b) {
-									return 'Json.Decode.oneOf';
-								} else {
-									return 'The Json.Decode.oneOf at json' + A2(
-										$elm$core$String$join,
-										'',
-										$elm$core$List$reverse(context));
-								}
-							}();
-							var introduction = starter + (' failed in the following ' + ($elm$core$String$fromInt(
-								$elm$core$List$length(errors)) + ' ways:'));
-							return A2(
-								$elm$core$String$join,
-								'\n\n',
-								A2(
-									$elm$core$List$cons,
-									introduction,
-									A2($elm$core$List$indexedMap, $elm$json$Json$Decode$errorOneOf, errors)));
-						}
-					}
-				default:
-					var msg = error.a;
-					var json = error.b;
-					var introduction = function () {
-						if (!context.b) {
-							return 'Problem with the given value:\n\n';
-						} else {
-							return 'Problem with the value at json' + (A2(
-								$elm$core$String$join,
-								'',
-								$elm$core$List$reverse(context)) + ':\n\n    ');
-						}
-					}();
-					return introduction + ($elm$json$Json$Decode$indent(
-						A2($elm$json$Json$Encode$encode, 4, json)) + ('\n\n' + msg));
-			}
-		}
-	});
-var $elm$core$Array$branchFactor = 32;
-var $elm$core$Array$Array_elm_builtin = F4(
-	function (a, b, c, d) {
-		return {$: 0, a: a, b: b, c: c, d: d};
-	});
-var $elm$core$Elm$JsArray$empty = _JsArray_empty;
-var $elm$core$Basics$ceiling = _Basics_ceiling;
-var $elm$core$Basics$fdiv = _Basics_fdiv;
-var $elm$core$Basics$logBase = F2(
-	function (base, number) {
-		return _Basics_log(number) / _Basics_log(base);
-	});
-var $elm$core$Basics$toFloat = _Basics_toFloat;
-var $elm$core$Array$shiftStep = $elm$core$Basics$ceiling(
-	A2($elm$core$Basics$logBase, 2, $elm$core$Array$branchFactor));
-var $elm$core$Array$empty = A4($elm$core$Array$Array_elm_builtin, 0, $elm$core$Array$shiftStep, $elm$core$Elm$JsArray$empty, $elm$core$Elm$JsArray$empty);
-var $elm$core$Elm$JsArray$initialize = _JsArray_initialize;
-var $elm$core$Array$Leaf = function (a) {
-	return {$: 1, a: a};
-};
-var $elm$core$Basics$apL = F2(
-	function (f, x) {
-		return f(x);
-	});
-var $elm$core$Basics$apR = F2(
-	function (x, f) {
-		return f(x);
-	});
-var $elm$core$Basics$eq = _Utils_equal;
-var $elm$core$Basics$floor = _Basics_floor;
-var $elm$core$Elm$JsArray$length = _JsArray_length;
-var $elm$core$Basics$gt = _Utils_gt;
-var $elm$core$Basics$max = F2(
-	function (x, y) {
-		return (_Utils_cmp(x, y) > 0) ? x : y;
-	});
-var $elm$core$Basics$mul = _Basics_mul;
-var $elm$core$Array$SubTree = function (a) {
-	return {$: 0, a: a};
-};
-var $elm$core$Elm$JsArray$initializeFromList = _JsArray_initializeFromList;
-var $elm$core$Array$compressNodes = F2(
-	function (nodes, acc) {
-		compressNodes:
-		while (true) {
-			var _v0 = A2($elm$core$Elm$JsArray$initializeFromList, $elm$core$Array$branchFactor, nodes);
-			var node = _v0.a;
-			var remainingNodes = _v0.b;
-			var newAcc = A2(
-				$elm$core$List$cons,
-				$elm$core$Array$SubTree(node),
-				acc);
-			if (!remainingNodes.b) {
-				return $elm$core$List$reverse(newAcc);
-			} else {
-				var $temp$nodes = remainingNodes,
-					$temp$acc = newAcc;
-				nodes = $temp$nodes;
-				acc = $temp$acc;
-				continue compressNodes;
-			}
-		}
-	});
-var $elm$core$Tuple$first = function (_v0) {
-	var x = _v0.a;
-	return x;
-};
-var $elm$core$Array$treeFromBuilder = F2(
-	function (nodeList, nodeListSize) {
-		treeFromBuilder:
-		while (true) {
-			var newNodeSize = $elm$core$Basics$ceiling(nodeListSize / $elm$core$Array$branchFactor);
-			if (newNodeSize === 1) {
-				return A2($elm$core$Elm$JsArray$initializeFromList, $elm$core$Array$branchFactor, nodeList).a;
-			} else {
-				var $temp$nodeList = A2($elm$core$Array$compressNodes, nodeList, _List_Nil),
-					$temp$nodeListSize = newNodeSize;
-				nodeList = $temp$nodeList;
-				nodeListSize = $temp$nodeListSize;
-				continue treeFromBuilder;
-			}
-		}
-	});
-var $elm$core$Array$builderToArray = F2(
-	function (reverseNodeList, builder) {
-		if (!builder.h) {
-			return A4(
-				$elm$core$Array$Array_elm_builtin,
-				$elm$core$Elm$JsArray$length(builder.j),
-				$elm$core$Array$shiftStep,
-				$elm$core$Elm$JsArray$empty,
-				builder.j);
-		} else {
-			var treeLen = builder.h * $elm$core$Array$branchFactor;
-			var depth = $elm$core$Basics$floor(
-				A2($elm$core$Basics$logBase, $elm$core$Array$branchFactor, treeLen - 1));
-			var correctNodeList = reverseNodeList ? $elm$core$List$reverse(builder.k) : builder.k;
-			var tree = A2($elm$core$Array$treeFromBuilder, correctNodeList, builder.h);
-			return A4(
-				$elm$core$Array$Array_elm_builtin,
-				$elm$core$Elm$JsArray$length(builder.j) + treeLen,
-				A2($elm$core$Basics$max, 5, depth * $elm$core$Array$shiftStep),
-				tree,
-				builder.j);
-		}
-	});
-var $elm$core$Basics$idiv = _Basics_idiv;
-var $elm$core$Basics$lt = _Utils_lt;
-var $elm$core$Array$initializeHelp = F5(
-	function (fn, fromIndex, len, nodeList, tail) {
-		initializeHelp:
-		while (true) {
-			if (fromIndex < 0) {
-				return A2(
-					$elm$core$Array$builderToArray,
-					false,
-					{k: nodeList, h: (len / $elm$core$Array$branchFactor) | 0, j: tail});
-			} else {
-				var leaf = $elm$core$Array$Leaf(
-					A3($elm$core$Elm$JsArray$initialize, $elm$core$Array$branchFactor, fromIndex, fn));
-				var $temp$fn = fn,
-					$temp$fromIndex = fromIndex - $elm$core$Array$branchFactor,
-					$temp$len = len,
-					$temp$nodeList = A2($elm$core$List$cons, leaf, nodeList),
-					$temp$tail = tail;
-				fn = $temp$fn;
-				fromIndex = $temp$fromIndex;
-				len = $temp$len;
-				nodeList = $temp$nodeList;
-				tail = $temp$tail;
-				continue initializeHelp;
-			}
-		}
-	});
-var $elm$core$Basics$remainderBy = _Basics_remainderBy;
-var $elm$core$Array$initialize = F2(
-	function (len, fn) {
-		if (len <= 0) {
-			return $elm$core$Array$empty;
-		} else {
-			var tailLen = len % $elm$core$Array$branchFactor;
-			var tail = A3($elm$core$Elm$JsArray$initialize, tailLen, len - tailLen, fn);
-			var initialFromIndex = (len - tailLen) - $elm$core$Array$branchFactor;
-			return A5($elm$core$Array$initializeHelp, fn, initialFromIndex, len, _List_Nil, tail);
-		}
-	});
-var $elm$core$Basics$True = 0;
-var $elm$core$Result$isOk = function (result) {
-	if (!result.$) {
-		return true;
-	} else {
-		return false;
-	}
-};
-var $elm$json$Json$Decode$map = _Json_map1;
-var $elm$json$Json$Decode$map2 = _Json_map2;
-var $elm$json$Json$Decode$succeed = _Json_succeed;
-var $elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
-	switch (handler.$) {
-		case 0:
-			return 0;
-		case 1:
-			return 1;
-		case 2:
-			return 2;
-		default:
-			return 3;
-	}
-};
-var $elm$browser$Browser$External = function (a) {
-	return {$: 1, a: a};
-};
-var $elm$browser$Browser$Internal = function (a) {
-	return {$: 0, a: a};
-};
-var $elm$core$Basics$identity = function (x) {
-	return x;
-};
-var $elm$browser$Browser$Dom$NotFound = $elm$core$Basics$identity;
-var $elm$url$Url$Http = 0;
-var $elm$url$Url$Https = 1;
-var $elm$url$Url$Url = F6(
-	function (protocol, host, port_, path, query, fragment) {
-		return {aY: fragment, a1: host, bc: path, be: port_, bh: protocol, bi: query};
-	});
-var $elm$core$String$contains = _String_contains;
-var $elm$core$String$length = _String_length;
-var $elm$core$String$slice = _String_slice;
-var $elm$core$String$dropLeft = F2(
-	function (n, string) {
-		return (n < 1) ? string : A3(
-			$elm$core$String$slice,
-			n,
-			$elm$core$String$length(string),
-			string);
-	});
-var $elm$core$String$indexes = _String_indexes;
-var $elm$core$String$isEmpty = function (string) {
-	return string === '';
-};
-var $elm$core$String$left = F2(
-	function (n, string) {
-		return (n < 1) ? '' : A3($elm$core$String$slice, 0, n, string);
-	});
-var $elm$core$String$toInt = _String_toInt;
-var $elm$url$Url$chompBeforePath = F5(
-	function (protocol, path, params, frag, str) {
-		if ($elm$core$String$isEmpty(str) || A2($elm$core$String$contains, '@', str)) {
-			return $elm$core$Maybe$Nothing;
-		} else {
-			var _v0 = A2($elm$core$String$indexes, ':', str);
-			if (!_v0.b) {
-				return $elm$core$Maybe$Just(
-					A6($elm$url$Url$Url, protocol, str, $elm$core$Maybe$Nothing, path, params, frag));
-			} else {
-				if (!_v0.b.b) {
-					var i = _v0.a;
-					var _v1 = $elm$core$String$toInt(
-						A2($elm$core$String$dropLeft, i + 1, str));
-					if (_v1.$ === 1) {
-						return $elm$core$Maybe$Nothing;
-					} else {
-						var port_ = _v1;
-						return $elm$core$Maybe$Just(
-							A6(
-								$elm$url$Url$Url,
-								protocol,
-								A2($elm$core$String$left, i, str),
-								port_,
-								path,
-								params,
-								frag));
-					}
-				} else {
-					return $elm$core$Maybe$Nothing;
-				}
-			}
-		}
-	});
-var $elm$url$Url$chompBeforeQuery = F4(
-	function (protocol, params, frag, str) {
-		if ($elm$core$String$isEmpty(str)) {
-			return $elm$core$Maybe$Nothing;
-		} else {
-			var _v0 = A2($elm$core$String$indexes, '/', str);
-			if (!_v0.b) {
-				return A5($elm$url$Url$chompBeforePath, protocol, '/', params, frag, str);
-			} else {
-				var i = _v0.a;
-				return A5(
-					$elm$url$Url$chompBeforePath,
-					protocol,
-					A2($elm$core$String$dropLeft, i, str),
-					params,
-					frag,
-					A2($elm$core$String$left, i, str));
-			}
-		}
-	});
-var $elm$url$Url$chompBeforeFragment = F3(
-	function (protocol, frag, str) {
-		if ($elm$core$String$isEmpty(str)) {
-			return $elm$core$Maybe$Nothing;
-		} else {
-			var _v0 = A2($elm$core$String$indexes, '?', str);
-			if (!_v0.b) {
-				return A4($elm$url$Url$chompBeforeQuery, protocol, $elm$core$Maybe$Nothing, frag, str);
-			} else {
-				var i = _v0.a;
-				return A4(
-					$elm$url$Url$chompBeforeQuery,
-					protocol,
-					$elm$core$Maybe$Just(
-						A2($elm$core$String$dropLeft, i + 1, str)),
-					frag,
-					A2($elm$core$String$left, i, str));
-			}
-		}
-	});
-var $elm$url$Url$chompAfterProtocol = F2(
-	function (protocol, str) {
-		if ($elm$core$String$isEmpty(str)) {
-			return $elm$core$Maybe$Nothing;
-		} else {
-			var _v0 = A2($elm$core$String$indexes, '#', str);
-			if (!_v0.b) {
-				return A3($elm$url$Url$chompBeforeFragment, protocol, $elm$core$Maybe$Nothing, str);
-			} else {
-				var i = _v0.a;
-				return A3(
-					$elm$url$Url$chompBeforeFragment,
-					protocol,
-					$elm$core$Maybe$Just(
-						A2($elm$core$String$dropLeft, i + 1, str)),
-					A2($elm$core$String$left, i, str));
-			}
-		}
-	});
-var $elm$core$String$startsWith = _String_startsWith;
-var $elm$url$Url$fromString = function (str) {
-	return A2($elm$core$String$startsWith, 'http://', str) ? A2(
-		$elm$url$Url$chompAfterProtocol,
-		0,
-		A2($elm$core$String$dropLeft, 7, str)) : (A2($elm$core$String$startsWith, 'https://', str) ? A2(
-		$elm$url$Url$chompAfterProtocol,
-		1,
-		A2($elm$core$String$dropLeft, 8, str)) : $elm$core$Maybe$Nothing);
-};
-var $elm$core$Basics$never = function (_v0) {
-	never:
-	while (true) {
-		var nvr = _v0;
-		var $temp$_v0 = nvr;
-		_v0 = $temp$_v0;
-		continue never;
-	}
-};
-var $elm$core$Task$Perform = $elm$core$Basics$identity;
-var $elm$core$Task$succeed = _Scheduler_succeed;
-var $elm$core$Task$init = $elm$core$Task$succeed(0);
-var $elm$core$List$foldrHelper = F4(
-	function (fn, acc, ctr, ls) {
-		if (!ls.b) {
-			return acc;
-		} else {
-			var a = ls.a;
-			var r1 = ls.b;
-			if (!r1.b) {
-				return A2(fn, a, acc);
-			} else {
-				var b = r1.a;
-				var r2 = r1.b;
-				if (!r2.b) {
-					return A2(
-						fn,
-						a,
-						A2(fn, b, acc));
-				} else {
-					var c = r2.a;
-					var r3 = r2.b;
-					if (!r3.b) {
-						return A2(
-							fn,
-							a,
-							A2(
-								fn,
-								b,
-								A2(fn, c, acc)));
-					} else {
-						var d = r3.a;
-						var r4 = r3.b;
-						var res = (ctr > 500) ? A3(
-							$elm$core$List$foldl,
-							fn,
-							acc,
-							$elm$core$List$reverse(r4)) : A4($elm$core$List$foldrHelper, fn, acc, ctr + 1, r4);
-						return A2(
-							fn,
-							a,
-							A2(
-								fn,
-								b,
-								A2(
-									fn,
-									c,
-									A2(fn, d, res))));
-					}
-				}
-			}
-		}
-	});
-var $elm$core$List$foldr = F3(
-	function (fn, acc, ls) {
-		return A4($elm$core$List$foldrHelper, fn, acc, 0, ls);
-	});
-var $elm$core$List$map = F2(
-	function (f, xs) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, acc) {
-					return A2(
-						$elm$core$List$cons,
-						f(x),
-						acc);
-				}),
-			_List_Nil,
-			xs);
-	});
-var $elm$core$Task$andThen = _Scheduler_andThen;
-var $elm$core$Task$map = F2(
-	function (func, taskA) {
-		return A2(
-			$elm$core$Task$andThen,
-			function (a) {
-				return $elm$core$Task$succeed(
-					func(a));
-			},
-			taskA);
-	});
-var $elm$core$Task$map2 = F3(
-	function (func, taskA, taskB) {
-		return A2(
-			$elm$core$Task$andThen,
-			function (a) {
-				return A2(
-					$elm$core$Task$andThen,
-					function (b) {
-						return $elm$core$Task$succeed(
-							A2(func, a, b));
-					},
-					taskB);
-			},
-			taskA);
-	});
-var $elm$core$Task$sequence = function (tasks) {
-	return A3(
-		$elm$core$List$foldr,
-		$elm$core$Task$map2($elm$core$List$cons),
-		$elm$core$Task$succeed(_List_Nil),
-		tasks);
-};
-var $elm$core$Platform$sendToApp = _Platform_sendToApp;
-var $elm$core$Task$spawnCmd = F2(
-	function (router, _v0) {
-		var task = _v0;
-		return _Scheduler_spawn(
-			A2(
-				$elm$core$Task$andThen,
-				$elm$core$Platform$sendToApp(router),
-				task));
-	});
-var $elm$core$Task$onEffects = F3(
-	function (router, commands, state) {
-		return A2(
-			$elm$core$Task$map,
-			function (_v0) {
-				return 0;
-			},
-			$elm$core$Task$sequence(
-				A2(
-					$elm$core$List$map,
-					$elm$core$Task$spawnCmd(router),
-					commands)));
-	});
-var $elm$core$Task$onSelfMsg = F3(
-	function (_v0, _v1, _v2) {
-		return $elm$core$Task$succeed(0);
-	});
-var $elm$core$Task$cmdMap = F2(
-	function (tagger, _v0) {
-		var task = _v0;
-		return A2($elm$core$Task$map, tagger, task);
-	});
-_Platform_effectManagers['Task'] = _Platform_createManager($elm$core$Task$init, $elm$core$Task$onEffects, $elm$core$Task$onSelfMsg, $elm$core$Task$cmdMap);
-var $elm$core$Task$command = _Platform_leaf('Task');
-var $elm$core$Task$perform = F2(
-	function (toMessage, task) {
-		return $elm$core$Task$command(
-			A2($elm$core$Task$map, toMessage, task));
-	});
-var $elm$browser$Browser$element = _Browser_element;
-var $author$project$Main$SetFieldPreset = function (a) {
-	return {$: 4, a: a};
-};
-var $author$project$Main$CorpusFileSelected = function (a) {
-	return {$: 3, a: a};
-};
-var $author$project$Main$NewSample = function (a) {
-	return {$: 1, a: a};
-};
-var $author$project$Main$SetFieldCorpus = function (a) {
-	return {$: 5, a: a};
-};
-var $elm$core$String$fromList = _String_fromList;
-var $elm_community$list_extra$List$Extra$scanl = F3(
-	function (f, b, xs) {
-		var scan1 = F2(
-			function (x, accAcc) {
-				if (accAcc.b) {
-					var acc = accAcc.a;
-					return A2(
-						$elm$core$List$cons,
-						A2(f, x, acc),
-						accAcc);
-				} else {
-					return _List_Nil;
-				}
-			});
-		return $elm$core$List$reverse(
-			A3(
-				$elm$core$List$foldl,
-				scan1,
-				_List_fromArray(
-					[b]),
-				xs));
-	});
-var $elm$core$String$foldr = _String_foldr;
-var $elm$core$String$toList = function (string) {
-	return A3($elm$core$String$foldr, $elm$core$List$cons, _List_Nil, string);
-};
-var $elm$core$Char$toUpper = _Char_toUpper;
-var $author$project$Main$capitalize = function (str) {
-	return A2(
-		$elm$core$String$dropLeft,
-		1,
-		$elm$core$String$fromList(
-			A3(
-				$elm_community$list_extra$List$Extra$scanl,
-				F2(
-					function (current, prev) {
-						return ((prev === ' ') || (prev === '-')) ? $elm$core$Char$toUpper(current) : current;
-					}),
-				' ',
-				$elm$core$String$toList(str))));
-};
-var $author$project$Corpuses$HarryPotterSpells$corpus = 'Aberto\nAccio\nAguamenti\nAlohomora\nAvada Kedavra\nBat-Bogey Hex\nBubble-Head Charm\nCaterwauling Charm\nCheering Charm\nColloportus\nConfringo\nConfundo\nCrucio\nDescendo\nDiffindo\nDisillusionment Charm\nEngorgio\nEpiskey\nEvanesco\nExpecto Patronum\nExpelliarmus\nFinestra\nHomenum Revelio\nImpedimenta\nImperio\nImpervius\nIncendio\nLevicorpus\nLiberacorpus\nLocomotor\nLumos\nMorsmordre\nMuffliato\nNox\nObliviate\nPermanent Sticking Charm\nPetrificus Totalus\nPortus\nPriori Incantato\nProtego\nReducto\nRennervate\nRelashio\nRennervate\nReparo\nRevelio\nRictusempra\nRiddikulus\nScourgify\nSectumsempra\nSilencio\nSonorus\nStupefy\nTaboo\nTergeo\nUnbreakable Vow\nWingardium Leviosa\nAppare Vestigium\nAvenseguim\nFinite\nNebulus\nProtego Diabolica\nSurgito\nPapyrus Reparo';
-var $author$project$Corpuses$Lotr$corpus = 'Abyss\nAchad Tarlang\nAdorn\nAdurant\nAelin-uial\nAeluin\nAfros\nAgar\nAgathurush\nAglarond\nAglon\nAkallabêth\nAldalómë\nAldburg\nAlmaren\nAlqualondë\nAman\nAmbaróna\nAmon Amarth\nAmon Anwar\nAmon Darthir\nAmon Dîn\nAmon Ereb\nAmon Ethir\nAmon Gwareth\nAmon Hen\nAmon Lanc\nAmon Lhaw\nAmon Obel\nAmon Rûdh\nAmon Sûl\nAmon Uilos\nAnach\nAnadûnê\nAncient West\nAndafalassë\nAndor\nAndram\nAndrast\nAndrath\nAndroth\nAnduin\nAndúne Pelo\nAndúnië\nAndustar\nAnfalas\nAnfauglith\nAngamando\nAngband\nAnghabar\nAngmar\nAngren\nAngrenost\nAnnon-in-Gelydh\nAnnúminas\nAnórien\nAntaro\nAraman\nArandor\nArchet\nArda\nArd-galen\nArgonath\nArmenelos\nArnach\nArnor\nAros\nArossiach\nArthedain\nArthor na Challonnas\nArthor na Forlonnas\nArthórien\nArvernien\nAscar\nAsh Mountains\nAstulat\nAtalantë\nAthrad Angren\nAvallónë\nAvathar\nAzanulbizar\nBag End\nBagshot Row\nBalar\nBamfurlong\nBar-en-Danwedh\nBar-en-Nibin-noeg\nBar-in-Mŷl\u200E\nBar-erib\nBarad-dûr\nBarad Eithel\nBarad Nimras\nBaranduin\nBarazinbar\nBarrow-downs\nBarrowfield\nBattle Pit\nBattle Plain\nBay of Balar\nBay of Belfalas\nBay of Andúnië\nBay of Eldamar\nBay of Eldanna\nBay of Rómenna\nBelegaer\nBelegost\nBeleriand\nBelfalas\nBent Seas\nBeorn\'s House\nBindbale Wood\nBirchwoods of Nimbrethil\nBlack Crack\nBlack Gate\nBlack Land\nBlack Pit\nBlack Pits\nBlackroot\nBlessed Realm\nBlue Mountains\nBombadil\'s House\nBonfire Glade\nBony ridge\nThe Bounds\nBranda-nîn\nBrandywine Bridge\nBree\nBree Hill\nBree-land\nBreredon\nBrethil\nBridge of Esgalduin\nBridge of Mitheithel\nBridge of Khazad-dûm\nBridge of Stonebows\nBridgefields\nBrilthor\nBrithiach\nBrithombar\nBrithon\nBrockenbores\nBrodda\'s hall\nBrown Lands\nBruinen\nBuck Hill\nBuckland\nBuckland Gate\nBuckland Road\nBucklebury\nBucklebury Ferry\nBucklebury Ford\nBudge Ford\nBudgeford\nBundushathûr\nBywater\nBywater Pool\nBywater Road\nCabed-en-Aras\nCair Andros\nCalacirya\nCalacirian\nCalembel\nCalenardhon\nCalenhad\nCalmindon\nCape Balar\nCape of Andrast\nCape of Forochel\nCarach Angren\nCaradhras\nCaragdûr\nCaras Galadhon\nCarchost\nCardolan\nCarn Dûm\nCarnen\nCarrock\nCauseway Forts\nCaverns of Helm\'s Deep\nCaverns of Narog\nCaves of Androth\nCaves of Menegroth\nCelduin\nCelebdil\nCelebrant\nCelebros\nCelon\nCelos\nCentral Highlands\nCerin Amroth\nChamber of Mazarbul\nChambers of Fire\nChetwood\nChill Gulf\nCiril\nCirith Dúath\nCirith Forn en Andrath\nCirith Gorgor\nCirith Ninniach\nCirith Thoronath\nCirith Ungol\nCitadel of Stars\nCity of the Corsairs\nCloudyhead\nCobas Haven\nCôf Belfalas\nColdfells\nCombe\nCormallen\nCorollairë\nCoron Oiolairë\nCourt of the Fountain\nCracks of Doom\nCrickhollow\nCrissaegrim\nCristhorn\nCrossings of Teiglin\nCross-roads\nCuiviénen\nCûl Bîn\nCûl Veleg\nCûm-nan-Arasaith\nDagorlad\nDale\nDark Door\nDark Gate\nDark Land\nDark Lands\nDark Mountains\nDark Tower\nDead Marshes\nDeadmen\'s Dike\nDeath Down\nDeathless Lands\nDeeping\nDeephallow\nDeeping Coomb\nDeeping-road\nDeeping Stream\nDeeping Wall\nDeer\'s Leap\nDeldúwath\nDerndingle\nDesert of Lostladen\nDesolation of Smaug\nDesolation of the Morannon\nDimbar\nDimholt\nDimrill Dale\nDimrill Gate\nDimrill Stair\nDimrost\nDingle\nDol Amroth\nDol Baran\nDol Guldur\nDol Tarlang\nDome of Stars\nDoors of Night\nDoors of Durin\nDor Caranthir\nDor-Cúarthol\nDor Daedeloth\nDor Dínen\nDor-en-Ernil\nDor Firn-i-Guinar\nDor-lómin\nDor-Nu-Fauglith\nDoriath\nDorthonion\nDorwinion\nDownlands\nDrowns\nDrengist\nDrúadan Forest\nDrúwaith Iaur\nDry River\nDuilwen\nDungortheb\nDunharrow\nDúnharg\nDunland\nDurin\'s Bridge\nDurin\'s Tower\nDurthang\nDwaling\nDwarf-Road\nDwarrowdelf\nDwimorberg\nDwimordene\nEagles\' Eyrie\nEast Beleriand\nEast Bight\nEast Emnet\nEastern Eriador\nEast Farthing\nEastfold\nEast-gate\nEast-lands\nEast Lórien\nEast March\nEast Road\nEast Wall of Rohan\nEastwood\nEchad i Sedryn\nEchoing Hills\nEchoriath\nEdge of the Wild\nEdhellond\nEdoras\nEgladil\nEglador\nEglamar\nEglarest\nEilenach\nEilenaer\nEithel Ivrin\nEithel Nínui\nEithel Sirion\nEkkaia\nEldalondë the Green\nEldamar\nElennanórê\nElerrína\nElostirion\nElros\' Tower\nElvenhome\nElwing\'s tower\nEmerië\nEmyn Arnen\nEmyn Beraid\nEmyn Duir\nEmyn Eglain\nEmyn Muil\nEmyn-nu-Fuin\nEmyn Uial\nEnchanted Isles\nEnchanted River\nEncircling Mountains\nEncircling Sea\nEndless Stair\nEndor\nEned\nEnedwaith\nEntwade\nRiver Entwash\nEntwash Vale\nEntwood\nÉothéod\nEphel Brandir\nEphel Dúath\nErebor\nErech\nEred Engrin\nEred Gorgoroth\nEred Lindon\nEred Lithui\nEred Lómin\nEred Mithrin\nEred Nimrais\nEred Wethrin\nEregion\nErelas\nErendis\nEressëa\nEriador\nErui\nEryn Fuir\nEryn Galen\nEryn Vorn\nEsgalduin\nEsgaroth\nEstolad\nEthir Anduin\nEthraid Engrin\nEthring\nEttendales\nEttenmoors\nEvereven\nEverholt\nEvernight\nEzellohar\nFalas\nFalls of Esgalduin\nFalls of Irvin\nFalls of Rauros\nFalls of Sirion\nFangorn Forest\nFanuidhol\nFar Downs\nFar Harad\nFar Shore\nFar West\nFaskalan\nFaskala-númen\nFen Hollen\nFen of Serech\nFenmarch\nFens of Sirion\nFerry Lane\nField of Celebrant\nField of Cormallen\nFingolfin\'s Cairn\nFirienholt\nFirien Wood\nFirst Deep\nFirst Hall\nFirth of Drengist\nFirth of Rómenna\nFoen\nFolde\nFord of Brithiach\nFord of Bruinen\nFord of Stones\nFords of Isen\nForest Gate\nForest of Brethil\nForest of Neldoreth\nForest of Region\nForest River\nForest Road\nForgotten Villages\nForlindon\nForlond\nFormenos\nFornarthan\nFornost Erain\nForochel\nForodwaith\nForostar\nForsaken Inn\nFôs\' Almir\nFountain of Tinúviel\nFox Downs\nFramsburg\nFrogmorton\nFront Gate\nFront Porch\nGabilgathod\nGamwich\nGap of Calenardhon\nGap of Rohan\nGardens of Lórien\nGate of the Dead\nGate of the Noldor\nGate Stream\nGates of Morning\nGates of Sirion\nGelion\nGilrain\nGinglith\nGirdle of Arda\nGirdle of Melian\nGirdley Island\nGladden Fields\nGladden River\nGlanduin\nGlanhír\nGlithui\nGlittering Caves\nGoblin-gate\nGoblin-town\nGolden Gates\nGolden Wood\nGollum\'s Lake\nGondolin\nGondor\nGorbelgod\nGorge of Aglon\nGorgoroth\nGorgoroth\ngreat East Road\nGreat Fens\nGreat Gulf\nGreat Hall of Thráin\nGreat Lakes\nGreat Lands\nGreat Mound\nGreat Plains\nGreat Rift\nGreat River\nGreat Shelf\nGreat Smials\nGreat Southern Forests\nGreat West Road\nGreat Willow\nGreater Gelion\nGreen Dragon\nGreen Hill Country\nGreen Hills\nGreen Hills\nGreenfields\nGreenholm\nGreenway\nGreenwood the Great\nGrey Havens\nGrey Mountains\nGrey Mountains\nGrey Wood\nGreyflood\nGreylin\nGrinding Ice\nGrindwall\nGruir\nGuarded Plain\nGulf of Lhûn\nGundabad\nGwathló\nHadhodrond\nHaeren\nHaerast\nHalifirien\nHall of Brodda\nHall of Fire\nHalls of Aulë\nHalls of Durin\nHalls of Mandos\nHanstovánen\nHarad\nHarad Road\nHardbottle\nHarlindon\nHarlond\nHarnen\nHarondor\nHarrowdale\nHaudh-en-Elleth\nHaudh-en-Ndengin\nHaudh-en-Nirnaeth\nHaudh in Gwanûr\nHaunted Mountain\nHaunted Pass\nHaven of the Eldar\nHaven of the Swans\nHavens of Mithlond\nHavens of Sirion\nHaven of Umbar\nHay Gate\nHaysend\nHeats of the South\nHedge\nHelcar\nHelcaraxë\nHelevorn\nHelm\'s Deep\nHelm\'s Dike\nHelm\'s Gate\nHenneth Annûn\nHidden Ferries\nHidden Way\nHigh Court\nHigh Faroth\nHigh Hay\nHigh Pass\nHildórien\nHill of Awe\nHill of Guard\nHill of Hearing\nHill of Himring\nHill of Ilmarin\nHill of Oromet\nHill of Seeing\nHill of Spies\nHill of the Ear\nHill of the Eye\nHill\nHills of Eglamar\nHills of Evendim\nHills of Scary\nHimlad\nHimring\nHírilorn\nHisilómë\nHithaeglir\nHither Lands\nHither Shore\nHithlum\nHoarwell\nHobbiton\nHobbiton Hill\nHobbiton Road\nHollin\nHollin Gate\nHollin Ridge\nHornburg\nHornrock\nHouse of Oromë\nHouse of the Hundred Chimneys\nHouse of the Kings\nHouse of the Stewards\nHouse of Tulkas\nHouses of Healing\nHouse of the Dead\nHuts of the raft-elves\nHyarastorni\nHyarmentir\nHyarnustar\nHyarrostar\nIant Iaur\nIcebay of Forochel\nIce of the North\nIdril\'s secret way\ni Drann\nIlluin\nIlmarin\nImlad Morgul\nImladris\nImloth Melui\nImrath Gondraith\nInner Seas\nInland Sea\nInland Sea of Helcar\nÍrensaga\nIron Fortress\nIron Hills\nIron Mountains\nIsen\nIsengard\nIsenmouthe\nIshmalog\nIsle of Almaren\nIsle of Balar\nIsle of Elenna\nIsle of Eressëa\nIsle of Meneltarma\nIsle of Werewolves\nIsles of the West\nIthilien\nIvrin\nIvrin\'s Well\nIvy Bush\nN/A\nKalormë\nKarningul\nKelos\nKhand\nKhazad-dûm\nKheled-zâram\nKibil-nâla\nKingdom of the South\nKingdom under the Mountain\nKing\'s Court\nKing\'s House\nKingsland\nKingsland\nKings\' Norbury\nKiril\nKirith Ungol\nKôr\nKortirion\nLadros\nLake Helevorn\nLake Mithrim\nLake Nenuial\nLake-town\nLamedon\nLammoth\nLampwrights\' Street\nLand of Bow-Helm\nLand of the Dead that Live\nLands Under the Wave\nLands Without\nLangflood\nLangstrand\nLangwell\nLanthir Lamath\nLast Bridge\nLast Homely House\nLast Mountain\nLast Shore\nLaurelindórenan\nLebennin\nLefnui\nLegolin\nLhûn\nLinaewen\nLindon\nLindórinan\nLinhir\nLisgardh\nLithir\nLithlad\nLittle Delving\nLittle Gelion\nLockholes\nLoeg Ningloron\nLond Daer Enedh\nLone-lands\nLonely Isle\nLonely Mountain\nLongbottom\nLong Cleeve\nLong Lake\nLong Marshes\nLong Wall\nLórellin\nLórien\nLórinand\nLosgar\nLossarnach\nLost Isle\nLostladen\nLothlann\nLothlórien\nLoudwater\nLower Halls\nLugbúrz\nLune\nLuvailin\nMaggot\'s Farm\nMaggot\'s Lane\nMaglor\'s Gap\nMahanaxar\nMalduin\nMandos\nMansions of Aulë\nMarch of Maedhros\nMarish\nMark\nMar-nu-Falmar\nMarket-pool\nMarshes of Nevrast\nMeduseld\nMen-i-Naugrim\nMenegroth\nMeneltarma\nMere of Dead Faces\nMeres of Twilight\nMerethrond\nMering Stream\nMethed-en-glad\nMethedras\nMichel Delving\nMiddle-earth\nMidgewater Marshes\nMill\nMinas Anor\nMinas Ithil\nMinas Morgul\nMinas Tirith\nMinas Tirith\nMindeb\nMindolluin\nMindon Eldaliéva\nMinhiriath\nMin-Rimmon\nMirkwood\nMirrormere\nMisty Mountains\nMithe\nMithe Steps\nMitheithel\nMithlond\nMithrim\nMittalmar\nMoors of the Neweglu\nMoors of the Nibin-noeg\nMorannon\nMordor\nMorgai\nMorgul Pass\nMorgul-road\nMorgulduin\nMoria\nMornan\nMorthond\nMound of Avarice\nMound of Dunlendings\nMound of Riders\nMounds of Mundburg\nMount Dolmed\nMount Doom\nMount Everwhite\nMount Fang\nMount Gram\nMount Gundabad\nMount Mindolluin\nMount of the Pine Trees\nMount Rerir\nMount Taras\nMountain of Fire\nMountains of Aman\nMountains of Angmar\nMountains of Lune\nMountains of Mirkwood\nMountains of Mithrim\nMountains of Shadow\nMountains of Shadow\nMountains of Terror\nMountains of the East\nMouths of Anduin\nMouths of Entwash\nMouths of Sirion\nMundburg\nNaith\nNameless Land\nNan Curunír\nNan Dungortheb\nNan Elmoth\nNan-tathren\nNanduhirrion\nNarchost\nNardol\nNargothrond\nNarog\nNarrows of the Forest\nNear Harad\nNeedlehole\nNeldoreth\nNen Echui\nNen Girith\nNen Hithoel\nNen Lalaith\nNenning\nNenuial\nNether Dark\nNevrast\nNevrast\nNew Haven\nNew Lands\nNewbury\nNienna\nNimbrethil\nNimrodel\nNindalf\nNindamos\nNinglor\nNîn-in-Eilph\nNísimaldar\nNísinen\nNivrim\nNobottle\nNogrod\nNoirinan\nNoman-lands\nNorbury\nNorth Cape\nNorth Downs\nNorth Farthing\nNorth Gate\nNorth Ithilien\nNorth Kingdom\nNorth Marches\nNorth Moors\nNorth Road\nNorth Road of Ithilien\nNorth Stair\nNorth Undeep\nNortherland\nNorthern Dark\nNorthern Waste\nNovrod\nNúath \nNúmendor\nNúmenor\nNunduinë\nNurn\nOatbarton\nObel Halad\nOcean\nOiolossë\nOiomúrë\nOld Bridge\nOld Ford\nOld Forest\nOld Forest Road\nOld Grange\nOld Guesthouse\nOld Mill\nOld Púkel land\nOld Road\nOld South Road\nOld South Road\nOld Winyards\nOld World\nOndolindë\nOndoluncanando\nOndonórë\nOndosto\nOnodló\nOrc-holds\nOrfalch Echor\nOrmal\nOrocarni\nOrod-na-Thôn\nOrodruin\nOromet\nOrrostar\nOrthanc\nOsgiliath\nOssiriand\nOst-in-Edhil\nOtherworld\nOuter Dark or Outer Darkness\nOuter Lands\nOuter Sea\nOutlands\nOverbourn\nOverbourn Marshes\nOverhill\nPalisor\nParth Celebrant\nParth Galen\nParty Field\nPass of Aglon\nPass of Anach\nPastures of Yavanna\nPaths of the Dead\nPelargir\nPelennor\nPelóri\nPhûrunargian\nPillars of the King\nPincup\nPine-mountain\nPinnath Gelin\nPlace of the Fountain\nPool of Bywater\nPool-side\nPools of Ivrin\nPoros\nPrancing Pony\nQerkaringa\nQuarry\nRadhrim\nRainbow Cleft\nRamdal\nRammas Echor\nRas Mewrim\nRas Morthil\nRath Celerdain\nRath Dínen\nRathlóriel\nRauros\nRavenhill\nRavines of Teiglin\nRedhorn\nRedhorn Gate\nRedwater\nRegion\nRegion of Everlasting Cold\nReunited Kingdom\nRhimdath\nRhosgobel\nRhovanion\nRhudaur\nRhûn\nMin-Rimmon\nRing of Doom\nRing of Isengard\nRingil\nRingil\nRingló\nRingwil\nRivendell\nRiver Running\nRivil\nRivil\'s Well\nRochand\nRómenna\nRûnaer\nRushdown\nRushock Bog\nRushy\nSammath Naur\nSandyman\'s Mill\nSarn Athrad\nSarn Ford\nSarn Gebir\nSauron\'s Isle\nSauron\'s Road\nSauron\'s Temple\nScary\nSea\nSea of Helcar\nSea of Núrnen\nSea of Rhûn\nSea of Ringil\nSeat of Hearing\nSeat of Seeing\nSea-ward Tower\nSecond Hall\nSerni\nSeven Gates of Gondolin\nSeventh Level\nShadowmere\nShadowy Isles\nShadowy Mountains\nShadowy Mountains\nShadowy Seas\nShadowy Spring\nSharabhund\nShathûr\nShelob\'s Lair\nShire\nShirebourn\nSide-door\nSilverlode\nSilvertine\nSindanórie\nSirannon\nSiril\nSirion\nSirith\nSîr Ninglor\nSlag-hills\nSnowbourn\nSorontil\nSouth Downs\nSouth Farthing\nSouth Gondor\nSouth Ithilien\nSouth Kingdom\nSouth Lane\nSouth Road\nSouth Road\nSouth Undeep\nSouthward Road\nSpider\'s Ring\nStaddle\nStair Falls\nStair of the Hold\nStandelf\nStarkhorn\nSteward\'s Door\nStock\nStock Road\nStockbrook\nStonewain Valley\nStoningland\nStraight Road\nStraight Stair\nStraits of the World\nSundering Seas\nSunlands\nSunlendings\nSûthburg\nSûza\nSwanfleet\nTaeglin\nTalath Dirnen\nTalath Rhûnen\nTaniquetil\nTanyasalpë\nTar-Minastir\nTarlang\'s Neck\nTarmasundar\nTarn Aeluin\nTarnost\nTasarinan\nTauremorna\nTauremornalómë\nTaur e-Ndaedelos\nTaur-en-Faroth\nTaur-im-Duinath\nTaur-na-Foen\nTaur-Na-Neldor\nTaur-nu-Fuin\nTaur-nu-Fuin\nTavrobel\nTemple of Sauron\nThalos\nThangorodrim\nTharbad\nThargelion\nThistle Brook\nThorin\'s Halls\nThousand Caves\nThree-Farthing Stone\nThrihyrne\nTighfield\nTindrock\nTirion\nTirith Aear\nTol Brandir\nTol Eressëa\nTol Fuin\nTol Galen\nTol-in-Gaurhoth\nTol Morwen\nTol Sirion\nTol Uinen\nTolfalas\nTomb of the Kings\nTongue\nTookbank\nTookland\nTorech Ungol\nTower Hills\nTower of Cirith Ungol\nTower of Ecthelion\nTower of Ingwë\nTower of the King\nTower of the Stone\nTowers of the Teeth\nTown Hole\nTreebeard\'s Hill\nTreegarth of Orthanc\nTroll\'s Cave\nTrollshaws\nTuckborough\nTumhalad\nTumladen of Gondolin\nTumladen of Gondor\nTumunzahar\nTúna\nTwenty-First Hall of the North-end\nTwilight Meres\nTwo Watchers\nTyrn Gorthad\nUdul\nUdûn\nUdûn of Mordor\nUmbar\nUmboth-muilin\nUndeeps\nUndergate\nUnderhill\nUnder-way\nUnderharrow\nUndertowers\nUndying Lands\nUngoliant\'s Lair\nUlmonan\nUpbourn\nUttermost West\nUtumno\nVale of Sirion\nValandor\nValimar\nValmar\nValinor\nVerna\nVinyalondë\nVinyamar\nVoid\nWaking Water\nWall\'s End\nWalls of Moria\nWalls of the Night\nWalls of the Sun\nWalls of the World\nWargs\' Clearing\nWaste\nWatchwood\nWater-valley\nWater of Awakening\nWay of Escape\nWay of Running Waters\nWaymeet\nWeather Hills\nWeathertop\nWellinghall\nWells of Ivrin\nWells of Varda\nWest-door\nWest-gate of Bree\nWest-gate of Moria\nWest-mark\nWest Beleriand\nWest of the World\nWest Pass\nWest Road\nWestemnet\nWestermanton\nWestern Sea\nWestern Shore\nWesternesse\nWestfarthing\nWestfold\nWestfold Vale\nWestlands\nWestmarch\nWetwang\nWhispering Wood\nWhite Downs\nWhite House of Erendis\nWhite Mountain\nWhite Mountains\nWhite Tower\nWhite Towers\nWhitfurrows\nWhitwell\nWild Wood\nWilderland\nWillowbottom\nWindle-reach\nWinding Stair\nWindow-Curtain\nWindow of the West\nWithered Heath\nWithered Wold\nWithywindle Valley\nWithywindle River\nWithy-path\nWithy-weir\nWizard\'s Isle\nWizard\'s Vale\nWold of Rohan\nWood of Anwar\nWoods of Oromë\nWoodhall\nWoodland Realm\nWoody End\nThe Yale\nYellow Mountains\nYôzâyan\nZirakzigil';
-var $author$project$Corpuses$Namur$corpus = 'Achêne\nAchet\nAgimont\nAhérée\nAische-en-Refail\nAisemont\nAlle\nAndenelle\nAndenne\nAndoy\nAnhée\nAnnevoie-Rouillon\nAnseremme\nAnthée\nArbre\nArsimont\nArville\nAssesse\nAublain\nAuvelais\nAve-et-Auffe\nAwagne\nBagimont\nBaillamont\nBaillonville\nBalâtre\nBambois\nBarcenal\nBaronville\nBarsy\nBarvaux-Condroz\nBassines\nBauche\nBaudecet\nBeauraing\nBeez\nBelgrade\nBellefontaine\nBelvaux\nBerzée\nBesinne\nBeuzet\nBiert\nBiert-le-Roi\nBierwart\nBiesme\nBiesmerée\nBièvre\nBioul\nBlaimont\nBohan\nBohisseaux\nBoignée\nBois-de-Villers\nBoisseilles\nBolinne\nBoneffe\nBoninne\nBonneville\nBonsin\nBormenville\nBossière\nBothey\nBouge\nBourseigne-Neuve\nBourseigne-Vieille\nBousalle\nBoussu-en-Fagne\nBouvignes\nBovesse\nBragard\nBraibant\nBranchon\nBriquemont\nBrûly-de-Pesche\nBrumagne\nBruyères\nBuissonville\nBuresse\nBuzet\nBuzin\nCastillon\nCelles\nCerfontaine\nChairière\nChampion\nChansin\nChapois\nChardeneux\nChastrès\nChaumont\nChevetogne\nCiergnon\nCiney\nClair-Chêne\nClermont\nCognelée\nConjoux\nConneux\nCorbion\nCorenne\nCornimont\nCorroy\nCorroy-le-Château\nCortil-Wodon\nCourrière\nCoutisse\nCouvin\nCroix\nCrupet\nCul-des-Sarts\nCustinne\nDailly\nDaussois\nDaussoulx\nDave\nDenée\nDevant-les-Bois\nDhuy\nDinant\nDion\nDoische\nDonveau\nDorinne\nDourbes\nDoyon\nDurnal\nDréhance\nÉghezée\nÉmeville\nÉmines\nEmptinal\nEmptinne\nEnhet\nÉprave\nErmeton-sur-Biert\nErnage\nErpent\nÉvelette\nÉvrehailles\nFagnolle\nFailon\nFairoul\nFalaën\nFalisolle\nFalmagne\nFalmignoul\nFaulx-les-Tombes\nFays\nFelenne\nFenffe\nFerage\nFeschaux\nFinnevaux\nFlavion\nFlawinne\nFlorée\nFloreffe\nFlorennes\nFloriffoux\nFlostoy\nFocant\nFonds-de-l\'Eau\nFontenelle\nForville\nForzée\nFosses-la-Ville\nFoy-Notre-Dame\nFraire\nFraire-la-Crotteuse\nFrancesse\nFranchimont\nFranc-Waret\nFrandeux\nFranière\nFranquenée\nFrasnes-lez-Couvin\nFreÿr\nFrisée\nFroidfontaine\nFroidmont\nFter\nFurfooz\nFurnaux\nGedinne\nGelbressée\nGembloux\nGemenne\nGendron\nGénimont\nGerin\nGerlimpont\nGéronsart\nGesves\nGimnée\nGochenée\nGodinne\nGoesnes\nGolzinne\nGonoy\nGonrieux\nGourdinne\nGoyet\nGozin\nGraide\nGramptinne\nGrand-Leez\nGrand-Manil\nGraux\nGribelle\nGros Buisson\nGros-Fays\nGroynne\nHaid\nHaillot\nHalloy\nHaltinne\nHambraine\nHamerenne\nHamois\nHam-sur-Sambre\nHanret\nHan-sur-Lesse\nHanzinelle\nHanzinne\nHarlue\nHastière-Lavaux\nHastière-par-delà\nHaut-Bois\nHaut-le-Wastia\nHaut-Vent\nHavelange\nHaversin\nHavrenne\nHeer\nHemptinne\nHemptinne\nHerbefays\nHerhet\nHérisson\nHermeton-sur-Meuse\nHérock\nHeure\nHingeon\nHogne\nHonnay\nHontoir\nHoudremont\nHour\nHoux\nHouyet\nHubaille\nHublet\nHulsonniaux\nHun\nIngremez\nInzemont\nIsnes\nIvoy\nJallet\nJamagne\nJambes\nJamblinne\nJamiolle\nJannée\nJassogne\nJavingue\nJemelle\nJemeppe-sur-Sambre\nJeneffe\nJet\nJodion\nKeumiée\nLa Bouchaille\nLa Butte\nLaforêt\nLa Forge\nLa Galopperie\nLaloux\nLandenne\nLaneffe\nLa Pisselotte\nLa Platinerie\nLa Ronce\nLa Tauminerie\nLautenne\nLa Vallée\nLavaux-Sainte-Anne\nLavis\nLe Brûly\nLe Fraity\nLeignon\nLe Mesnil\nLenne\nLe Pachy\nLe Roux\nLes Basses\nLes Boscailles\nLes Bruyères\nLes Communes\nLessive\nLes Trieux\nLesve\nLeuze\nLez-Fontaine\nLibois\nLiernu\nLigny\nLinciaux\nLiroux\nLisogne\nLissoir\nLives-sur-Meuse\nLongchamps\nLonzée\nLouette-Saint-Denis\nLouette-Saint-Pierre\nLoyers\nLumsonry\nLustin\nMaffe\nMahoux\nMaibelle\nMaillen\nMaison\nMaisoncelle\nMaizeret\nMalonne\nMalvoisin\nMarche-les-Dames\nMarchovelette\nMaredret\nMaredsous\nMariembourg\nMarteau\nMartouzin-Neuville\nMatagne-la-Grande\nMatagne-la-Petite\nMatignolle\nMaulenne\nMaurenne\nMazée\nMazy\nMéan\nMehaigne\nMembre\nMerlemont\nMertenne\nMesnil-Église\nMesnil-Saint-Blaise\nMettet\nMeux\nMianoye\nMiavoye\nMiécret\nMohiville\nMoignelée\nMonceau-en-Ardenne\nMoniat\nMont\nMontegnet\nMont-Gauthier\nMoressée\nMorialmé\nMornimont\nMorville\nMoustier-sur-Sambre\nMouzaive\nMozet\nNafraiture\nNajauge\nNalamont\nNamêche\nNamur\nNaninne\nNaomé\nNatoye\nNavaugle\nNefzée\nNettinne\nNeuve-Cour\nNeuville\nNévremont\nNismes\nNiverlée\nNoiseux\nNoville-les-Bois\nNoville-sur-Mehaigne\nOhey\nOignies-en-Thiérache\nOizy\nOlloy-sur-Viroin\nOmezée\nOnhaye\nOnoz\nOrchimont\nOret\nOssogne\nOstemerée\nPatignies\nPernelle\nPerwez\nPesche\nPessoux\nPetigny\nPetit-Doische\nPetite-Chapelle\nPetite Hour\nPetit-Fays\nPetit-Waret\nPhilippeville\nPlançon\nPondrôme\nPontaury\nPont-de-Pierres\nPontillas\nPorcheresse\nPrée\nPresgaux\nProfondeville\nPry\nPurnode\nPussemange\nRegniessart\nRésimont\nReuleau\nReux\nRevogne\nRhisnes\nRienne\nRissart\nRivière\nRochefort\nRognée\nRoly\nRomedenne\nRomerée\nRonchinne\nRonvaux\nRosée\nRostenne\nRouvroy\nSaint-Aubin\nSaint-Denis\nSaint-Gérard\nSaint-Germain\nSaint-Lambert\nSaint-Marc\nSaint-Martin\nSaint-Mort\nSaint-Servais\nSalet\nSamart\nSart-Bernard\nSart-Custinne\nSart-d\'Avril\nSart-en-Fagne\nSart-Eustache\nSart-Saint-Laurent\nSautour\nSauvenière\nSchaltin\nSclayn\nScry\nScy\nSeilles\nSenenne\nSenzeille\nSerinchamps\nSeron\nServille\nSevry\nSilenrieux\nSinsin\nSix-Planes\nSkeuvre\nSoinne\nSomal\nSombreffe\nSomme-Leuze\nSommière\nSomtet\nSomzée\nSorée\nSorinne-la-Longue\nSorinnes\nSosoye\nSoulme\nSoumoy\nSovet\nSovimont\nSoye\nSpontin\nSpy\nStave\nStée\nStrud\nSuarlée\nSugny\nSurice\nTahier\nTamines\nTarcienne\nTaviers\nTaviet\nTemploux\nThanville\nThon-Samson\nThy-le-Bauduin\nThy-le-Château\nThynes\nTillier\nTongrenelle\nTongrinne\nTreignes\nTrieu\nTrieu-des-Sarts\nTrisogne\nTroka\nTrussogne\nTry-Pochaux\nUpigny\nVaucelles\nVedrin\nVelaine\nVelaine-sur-Sambre\nVencimont\nVer\nVerlée\nVerte-Place\nVezin\nVichenet\nVieille-Maison\nVierves-sur-Viroin\nVieux-Sautour\nVillers-Deux-Églises\nVillers-en-Fagne\nVillers-le-Gambon\nVillers-lez-Heest\nVillers-sur-Lesse\nVincon\nViscourt\nVitrival\nVivier-Annon\nVodecée\nVodelée\nVogenée\nVonêche\nVresse\nWagnée\nWaillet\nWalcourt\nWancennes\nWanlin\nWaret-la-Chaussée\nWarisoulx\nWarnant\nWaulsort\nWavreille\nWeillen\nWépion\nWez-de-Chine\nWierde\nWiesme\nWillerzie\nWinenne\nYchippe\nYves-Gomezée\nYvoir';
-var $author$project$Corpuses$Texas$corpus = 'Abbott\nAbernathy\nAbilene\nAckerly\nAddison\nAdrian\nAgua Dulce\nAlamo\nAlamo Heights\nAlba\nAlbany\nAledo\nAlice\nAllen\nAlma\nAlpine\nAlto\nAlton\nAlvarado\nAlvin\nAlvord\nAmarillo\nAmes\nAmherst\nAnahuac\nAnderson\nAndrews\nAngleton\nAngus\nAnna\nAnnetta\nAnnetta North\nAnnetta South\nAnnona\nAnson\nAnthony\nAnton\nAppleby\nAquilla\nAransas Pass\nArcher City\nArcola\nArgyle\nArlington\nArp\nAsherton\nAspermont\nAthens\nAtlanta\nAubrey\nAurora\nAustin\nAustwell\nAvery\nAvinger\nAzle\nBailey\nBailey\'s Prairie\nBaird\nBalch Springs\nBalcones Heights\nBallinger\nBalmorhea\nBandera\nBangs\nBardwell\nBarry\nBarstow\nBartlett\nBartonville\nBastrop\nBay City\nBayou Vista\nBayside\nBaytown\nBayview\nBeach City\nBear Creek\nBeasley\nBeaumont\nBeckville\nBedford\nBedias\nBee Cave\nBeeville\nBellaire\nBellevue\nBellmead\nBells\nBellville\nBelton\nBenavides\nBenbrook\nBenjamin\nBerryville\nBertram\nBeverly Hills\nBevil Oaks\nBig Lake\nBig Sandy\nBig Spring\nBig Wells\nBishop\nBishop Hills\nBlackwell\nBlanco\nBlanket\nBloomburg\nBlooming Grove\nBlossom\nBlue Mound\nBlue Ridge\nBlum\nBoerne\nBogata\nBonham\nBonney\nBooker\nBorger\nBovina\nBowie\nBoyd\nBrackettville\nBrady\nBrazoria\nBrazos Bend\nBrazos Country\nBreckenridge\nBremond\nBrenham\nBriarcliff\nBriaroaks\nBridge City\nBridgeport\nBroaddus\nBronte\nBrookshire\nBrookside Village\nBrowndell\nBrownfield\nBrownsboro\nBrownsville\nBrownwood\nBruceville-Eddy\nBryan\nBryson\nBuckholts\nBuda\nBuffalo\nBuffalo Gap\nBuffalo Springs\nBullard\nBulverde\nBunker Hill Village\nBurkburnett\nBurke\nBurleson\nBurnet\nBurton\nByers\nBynum\nCactus\nCaddo Mills\nCaldwell\nCallisburg\nCalvert\nCameron\nCamp Wood\nCampbell\nCanadian\nCaney City\nCanton\nCanyon\nCarbon\nCarl\'s Corner\nCarmine\nCarrizo Springs\nCarrollton\nCarthage\nCashion Community\nCastle Hills\nCastroville\nCedar Hill\nCedar Park\nCeleste\nCelina\nCenter\nCenterville\nChandler\nChanning\nCharlotte\nChester\nChico\nChildress\nChillicothe\nChina\nChina Grove\nChireno\nChristine\nCibolo\nCisco\nClarendon\nClarksville\nClarksville City\nClaude\nClear Lake Shores\nCleburne\nCleveland\nClifton\nClint\nClute\nClyde\nCoahoma\nCockrell Hill\nCoffee City\nColdspring\nColeman\nCollege Station\nColleyville\nCollinsville\nColmesneil\nColorado City\nColumbus\nComanche\nCombes\nCombine\nCommerce\nComo\nConroe\nConverse\nCool\nCoolidge\nCooper\nCoppell\nCopper Canyon\nCopperas Cove\nCorinth\nCorpus Christi\nCorrigan\nCorsicana\nCottonwood\nCottonwood Shores\nCotulla\nCoupland\nCove\nCovington\nCoyote Flats\nCrandall\nCrane\nCranfills Gap\nCrawford\nCreedmoor\nCresson\nCrockett\nCrosbyton\nCross Plains\nCross Roads\nCross Timber\nCrowell\nCrowley\nCrystal City\nCuero\nCumby\nCuney\nCushing\nCut and Shoot\nDaingerfield\nDaisetta\nDalhart\nDallas\nDalworthington Gardens\nDanbury\nDarrouzett\nDawson\nDayton\nDayton Lakes\nDe Kalb\nDe Leon\nDean\nDecatur\nDeCordova\nDeer Park\nDel Rio\nDell City\nDenison\nDenton\nDenver City\nDeport\nDeSoto\nDetroit\nDevers\nDevine\nDiboll\nDickens\nDickinson\nDilley\nDimmitt\nDISH\nDodd City\nDodson\nDomino\nDonna\nDorchester\nDouble Oak\nDouglassville\nDraper\nDripping Springs\nDriscoll\nDublin\nDumas\nDuncanville\nEagle Lake\nEagle Pass\nEarly\nEarth\nEast Bernard\nEast Mountain\nEast Tawakoni\nEastland\nEaston\nEctor\nEdcouch\nEden\nEdgecliff Village\nEdgewood\nEdinburg\nEdmonson\nEdna\nEdom\nEl Campo\nEl Cenizo\nEl Lago\nEl Paso\nEldorado\nElectra\nElgin\nElkhart\nElmendorf\nElsa\nEmhouse\nEmory\nEnchanted Oaks\nEncinal\nEnnis\nEscobares\nEstelline\nEuless\nEureka\nEustace\nEvant\nEverman\nFair Oaks Ranch\nFairchilds\nFairfield\nFairview\nFalfurrias\nFalls City\nFarmers Branch\nFarmersville\nFarwell\nFate\nFayetteville\nFerris\nFlatonia\nFlorence\nFloresville\nFlower Mound\nFloydada\nFollett\nForest Hill\nForney\nForsan\nFort Stockton\nFort Worth\nFranklin\nFrankston\nFredericksburg\nFreeport\nFreer\nFriendswood\nFriona\nFrisco\nFritch\nFrost\nFruitvale\nFulshear\nFulton\nGainesville\nGalena Park\nGallatin\nGalveston\nGanado\nGarden Ridge\nGarland\nGarrett\nGarrison\nGary City\nGatesville\nGeorge West\nGeorgetown\nGholson\nGiddings\nGilmer\nGladewater\nGlen Rose\nGlenn Heights\nGodley\nGoldsmith\nGoldthwaite\nGoliad\nGolinda\nGonzales\nGoodlow\nGoodrich\nGordon\nGoree\nGorman\nGraford\nGraham\nGranbury\nGrand Prairie\nGrand Saline\nGrandfalls\nGrandview\nGranger\nGranite Shoals\nGranjeno\nGrapeland\nGrapevine\nGrays Prairie\nGreenville\nGregory\nGrey Forest\nGroesbeck\nGroom\nGroves\nGroveton\nGruver\nGun Barrel City\nGunter\nGustine\nHackberry\nHale Center\nHallettsville\nHallsburg\nHallsville\nHaltom City\nHamilton\nHamlin\nHappy\nHardin\nHarker Heights\nHarlingen\nHart\nHaskell\nHaslet\nHawk Cove\nHawkins\nHawley\nHays\nHearne\nHeath\nHebron\nHedley\nHedwig Village\nHelotes\nHemphill\nHempstead\nHenderson\nHenrietta\nHereford\nHewitt\nHickory Creek\nHico\nHidalgo\nHideaway\nHiggins\nHighland Haven\nHighland Park\nHighland Village\nHill Country Village\nHillcrest\nHillsboro\nHilshire Village\nHitchcock\nHoliday Lakes\nHolland\nHolliday\nHollywood Park\nHondo\nHoney Grove\nHooks\nHorizon City\nHorseshoe Bay\nHouston\nHowardwick\nHowe\nHubbard\nHudson\nHudson Oaks\nHughes Springs\nHumble\nHunters Creek Village\nHuntington\nHuntsville\nHurst\nHutchins\nHutto\nHuxley\nIdalou\nImpact\nIndian Lake\nIndustry\nIngleside\nIngleside on the Bay\nIngram\nIola\nIowa Colony\nIowa Park\nIraan\nIredell\nIrving\nItaly\nItasca\nIvanhoe\nJacinto City\nJacksboro\nJacksonville\nJamaica Beach\nJarrell\nJasper\nJayton\nJefferson\nJersey Village\nJewett\nJoaquin\nJohnson City\nJolly\nJones Creek\nJonestown\nJosephine\nJoshua\nJourdanton\nJunction\nJustin\nKarnes City\nKaty\nKaufman\nKeene\nKeller\nKemah\nKemp\nKempner\nKendleton\nKenedy\nKenefick\nKennard\nKennedale\nKerens\nKermit\nKerrville\nKilgore\nKilleen\nKingsbury\nKingsville\nKirby\nKirbyville\nKirvin\nKnollwood\nKnox City\nKosse\nKountze\nKress\nKrugerville\nKrum\nKurten\nKyle\nLa Feria\nLa Grange\nLa Grulla\nLa Joya\nLa Marque\nLa Porte\nLa Vernia\nLa Villa\nLa Ward\nLaCoste\nLacy-Lakeview\nLadonia\nLago Vista\nLaguna Vista\nLake Bridgeport\nLake City\nLake Dallas\nLake Jackson\nLake Tanglewood\nLake Worth\nLakeport\nLakeside\nLakeside\nLakeside City\nLakeview\nLakeway\nLakewood Village\nLamesa\nLampasas\nLancaster\nLaredo\nLatexo\nLavon\nLawn\nLeague City\nLeakey\nLeander\nLeary\nLefors\nLeon Valley\nLeona\nLeonard\nLeroy\nLevelland\nLewisville\nLexington\nLiberty\nLiberty Hill\nLincoln Park\nLindale\nLinden\nLindsay\nLipan\nLittle Elm\nLittle River-Academy\nLittlefield\nLive Oak\nLiverpool\nLivingston\nLlano\nLockhart\nLockney\nLog Cabin\nLometa\nLone Oak\nLone Star\nLongview\nLoraine\nLorena\nLorenzo\nLos Fresnos\nLos Indios\nLos Ybanez\nLott\nLovelady\nLowry Crossing\nLubbock\nLucas\nLueders\nLufkin\nLuling\nLumberton\nLyford\nLytle\nMabank\nMadisonville\nMagnolia\nMalakoff\nMalone\nManor\nMansfield\nManvel\nMarble Falls\nMarfa\nMarietta\nMarion\nMarlin\nMarquez\nMarshall\nMart\nMartindale\nMason\nMatador\nMathis\nMaud\nMaypearl\nMcAllen\nMcCamey\nMcGregor\nMcKinney\nMcLean\nMcLendon-Chisholm\nMeadow\nMeadowlakes\nMeadows Place\nMegargel\nMelissa\nMelvin\nMemphis\nMenard\nMercedes\nMeridian\nMerkel\nMertens\nMertzon\nMesquite\nMexia\nMiami\nMidland\nMidlothian\nMidway\nMilano\nMildred\nMiles\nMilford\nMiller\'s Cove\nMillican\nMillsap\nMineola\nMineral Wells\nMingus\nMission\nMissouri City\nMobeetie\nMobile City\nMonahans\nMont Belvieu\nMontgomery\nMoody\nMoore Station\nMoran\nMorgan\nMorgan\'s Point\nMorgan\'s Point Resort\nMorton\nMoulton\nMount Calm\nMount Enterprise\nMount Pleasant\nMount Vernon\nMountain City\nMuenster\nMuleshoe\nMullin\nMunday\nMurchison\nMurphy\nMustang\nMustang Ridge\nNacogdoches\nNaples\nNash\nNassau Bay\nNatalia\nNavarro\nNavasota\nNazareth\nNederland\nNeedville\nNevada\nNew Berlin\nNew Boston\nNew Braunfels\nNew Chapel Hill\nNew Deal\nNew Fairview\nNew Home\nNew Hope\nNew London\nNew Summerfield\nNew Waverly\nNewark\nNewcastle\nNewton\nNeylandville\nNiederwald\nNixon\nNocona\nNolanville\nNome\nNoonday\nNordheim\nNormangee\nNorth Cleveland\nNorth Richland Hills\nNorthlake\nNovice\nO\'Brien\nO\'Donnell\nOak Grove\nOak Leaf\nOak Point\nOak Ridge\nOak Ridge\nOak Ridge North\nOak Valley\nOakwood\nOdem\nOdessa\nOglesby\nOld River-Winfree\nOlmos Park\nOlney\nOlton\nOmaha\nOnalaska\nOpdyke West\nOrange\nOrange Grove\nOrchard\nOre City\nOverton\nOvilla\nOyster Creek\nPaducah\nPaint Rock\nPalacios\nPalestine\nPalisades\nPalm Valley\nPalmer\nPalmhurst\nPalmview\nPampa\nPanhandle\nPanorama Village\nPantego\nParadise\nParis\nParker\nPasadena\nPattison\nPatton Village\nPayne Springs\nPearland\nPearsall\nPecan Gap\nPecan Hill\nPecos\nPelican Bay\nPenelope\nPenitas\nPerryton\nPetersburg\nPetrolia\nPetronila\nPflugerville\nPharr\nPilot Point\nPine Forest\nPine Island\nPinehurst\nPineland\nPiney Point Village\nPittsburg\nPlains\nPlainview\nPlano\nPlantersville\nPleak\nPleasant Valley\nPleasanton\nPlum Grove\nPoint\nPoint Blank\nPoint Comfort\nPoint Venture\nPonder\nPort Aransas\nPort Arthur\nPort Isabel\nPort Lavaca\nPort Neches\nPortland\nPost\nPost Oak Bend City\nPoteet\nPoth\nPottsboro\nPowell\nPoynor\nPrairie View\nPremont\nPresidio\nPrimera\nPrinceton\nProgreso\nProgreso Lakes\nProsper\nProvidence Village\nPutnam\nPyote\nQuanah\nQueen City\nQuinlan\nQuintana\nQuitaque\nQuitman\nRalls\nRancho Viejo\nRanger\nRankin\nRansom Canyon\nRavenna\nRaymondville\nRed Lick\nRed Oak\nRedwater\nRefugio\nReklaw\nReno\nReno\nRetreat\nRhome\nRice\nRichardson\nRichland\nRichland Hills\nRichland Springs\nRichmond\nRichwood\nRiesel\nRio Bravo\nRio Grande City\nRio Hondo\nRio Vista\nRising Star\nRiver Oaks\nRiverside\nRoanoke\nRoaring Springs\nRobert Lee\nRobinson\nRobstown\nRoby\nRochester\nRockdale\nRockport\nRocksprings\nRockwall\nRocky Mound\nRogers\nRollingwood\nRoma\nRoman Forest\nRopesville\nRoscoe\nRose City\nRose Hill Acres\nRosebud\nRosenberg\nRoss\nRosser\nRotan\nRound Mountain\nRound Rock\nRound Top\nRowlett\nRoxton\nRoyse City\nRule\nRunaway Bay\nRunge\nRusk\nSabinal\nSachse\nSadler\nSaginaw\nSalado\nSan Angelo\nSan Antonio\nSan Augustine\nSan Benito\nSan Diego\nSan Elizario\nSan Felipe\nSan Juan\nSan Leanna\nSan Marcos\nSan Patricio\nSan Perlita\nSan Saba\nSanctuary\nSandy Oaks\nSandy Point\nSanford\nSanger\nSansom Park\nSanta Anna\nSanta Clara\nSanta Fe\nSanta Rosa\nSavoy\nSchertz\nSchulenburg\nScotland\nScottsville\nScurry\nSeabrook\nSeadrift\nSeagoville\nSeagraves\nSealy\nSeguin\nSelma\nSeminole\nSeven Oaks\nSeven Points\nSeymour\nShady Shores\nShallowater\nShamrock\nShavano Park\nShenandoah\nShepherd\nSherman\nShiner\nShoreacres\nSilsbee\nSilverton\nSimonton\nSinton\nSkellytown\nSlaton\nSmiley\nSmithville\nSmyer\nSnook\nSnyder\nSocorro\nSomerset\nSomerville\nSonora\nSour Lake\nSouth Houston\nSouth Mountain\nSouth Padre Island\nSouthlake\nSouthmayd\nSouthside Place\nSpearman\nSplendora\nSpofford\nSpring Branch\nSpring Valley Village\nSpringlake\nSpringtown\nSpur\nSt. Hedwig\nSt. Jo\nSt. Paul\nStafford\nStagecoach\nStamford\nStanton\nStaples\nStar Harbor\nStephenville\nSterling City\nStinnett\nStockdale\nStratford\nStrawn\nStreetman\nSudan\nSugar Land\nSullivan City\nSulphur Springs\nSun Valley\nSundown\nSunnyvale\nSunray\nSunrise Beach Village\nSunset Valley\nSurfside Beach\nSweeny\nSweetwater\nTaft\nTahoka\nTalco\nTalty\nTatum\nTaylor\nTaylor Lake Village\nTaylor Landing\nTeague\nTehuacana\nTemple\nTenaha\nTerrell\nTerrell Hills\nTexarkana\nTexas City\nTexhoma\nTexline\nThe Colony\nThe Hills\nThompsons\nThorndale\nThornton\nThorntonville\nThrall\nThree Rivers\nThrockmorton\nTiki Island\nTimbercreek Canyon\nTimpson\nTioga\nTira\nToco\nTodd Mission\nTolar\nTom Bean\nTomball\nTool\nToyah\nTrent\nTrenton\nTrinidad\nTrinity\nTrophy Club\nTroup\nTroy\nTulia\nTurkey\nTuscola\nTye\nTyler\nUhland\nUncertain\nUnion Grove\nUnion Valley\nUniversal City\nUniversity Park\nUvalde\nValentine\nValley Mills\nValley View\nVan\nVan Alstyne\nVan Horn\nVega\nVenus\nVernon\nVictoria\nVidor\nVinton\nVolente\nVon Ormy\nWaco\nWaelder\nWake Village\nWaller\nWallis\nWalnut Springs\nWarren City\nWaskom\nWatauga\nWaxahachie\nWeatherford\nWebberville\nWebster\nWeimar\nWeinert\nWeir\nWellington\nWellman\nWells\nWeslaco\nWest\nWest Columbia\nWest Lake Hills\nWest Orange\nWest Tawakoni\nWest University Place\nWestbrook\nWestlake\nWeston\nWeston Lakes\nWestover Hills\nWestworth Village\nWharton\nWheeler\nWhite Deer\nWhite Oak\nWhite Settlement\nWhiteface\nWhitehouse\nWhitesboro\nWhitewright\nWhitney\nWichita Falls\nWickett\nWillis\nWillow Park\nWills Point\nWilmer\nWilson\nWimberley\nWindcrest\nWindom\nWindthorst\nWinfield\nWink\nWinnsboro\nWinona\nWinters\nWixon Valley\nWolfe City\nWolfforth\nWoodbranch\nWoodcreek\nWoodloch\nWoodsboro\nWoodson\nWoodville\nWoodway\nWortham\nWylie\nYantis\nYoakum\nYorktown\nZavalla';
-var $elm$core$Dict$RBEmpty_elm_builtin = {$: -2};
-var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
-var $elm$core$Dict$Black = 1;
-var $elm$core$Dict$RBNode_elm_builtin = F5(
-	function (a, b, c, d, e) {
-		return {$: -1, a: a, b: b, c: c, d: d, e: e};
-	});
-var $elm$core$Dict$Red = 0;
-var $elm$core$Dict$balance = F5(
-	function (color, key, value, left, right) {
-		if ((right.$ === -1) && (!right.a)) {
-			var _v1 = right.a;
-			var rK = right.b;
-			var rV = right.c;
-			var rLeft = right.d;
-			var rRight = right.e;
-			if ((left.$ === -1) && (!left.a)) {
-				var _v3 = left.a;
-				var lK = left.b;
-				var lV = left.c;
-				var lLeft = left.d;
-				var lRight = left.e;
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					0,
-					key,
-					value,
-					A5($elm$core$Dict$RBNode_elm_builtin, 1, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, 1, rK, rV, rLeft, rRight));
-			} else {
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					color,
-					rK,
-					rV,
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, key, value, left, rLeft),
-					rRight);
-			}
-		} else {
-			if ((((left.$ === -1) && (!left.a)) && (left.d.$ === -1)) && (!left.d.a)) {
-				var _v5 = left.a;
-				var lK = left.b;
-				var lV = left.c;
-				var _v6 = left.d;
-				var _v7 = _v6.a;
-				var llK = _v6.b;
-				var llV = _v6.c;
-				var llLeft = _v6.d;
-				var llRight = _v6.e;
-				var lRight = left.e;
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					0,
-					lK,
-					lV,
-					A5($elm$core$Dict$RBNode_elm_builtin, 1, llK, llV, llLeft, llRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, 1, key, value, lRight, right));
-			} else {
-				return A5($elm$core$Dict$RBNode_elm_builtin, color, key, value, left, right);
-			}
-		}
-	});
-var $elm$core$Basics$compare = _Utils_compare;
-var $elm$core$Dict$insertHelp = F3(
-	function (key, value, dict) {
-		if (dict.$ === -2) {
-			return A5($elm$core$Dict$RBNode_elm_builtin, 0, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
-		} else {
-			var nColor = dict.a;
-			var nKey = dict.b;
-			var nValue = dict.c;
-			var nLeft = dict.d;
-			var nRight = dict.e;
-			var _v1 = A2($elm$core$Basics$compare, key, nKey);
-			switch (_v1) {
-				case 0:
-					return A5(
-						$elm$core$Dict$balance,
-						nColor,
-						nKey,
-						nValue,
-						A3($elm$core$Dict$insertHelp, key, value, nLeft),
-						nRight);
-				case 1:
-					return A5($elm$core$Dict$RBNode_elm_builtin, nColor, nKey, value, nLeft, nRight);
-				default:
-					return A5(
-						$elm$core$Dict$balance,
-						nColor,
-						nKey,
-						nValue,
-						nLeft,
-						A3($elm$core$Dict$insertHelp, key, value, nRight));
-			}
-		}
-	});
-var $elm$core$Dict$insert = F3(
-	function (key, value, dict) {
-		var _v0 = A3($elm$core$Dict$insertHelp, key, value, dict);
-		if ((_v0.$ === -1) && (!_v0.a)) {
-			var _v1 = _v0.a;
-			var k = _v0.b;
-			var v = _v0.c;
-			var l = _v0.d;
-			var r = _v0.e;
-			return A5($elm$core$Dict$RBNode_elm_builtin, 1, k, v, l, r);
-		} else {
-			var x = _v0;
-			return x;
-		}
-	});
-var $elm$core$Dict$fromList = function (assocs) {
-	return A3(
-		$elm$core$List$foldl,
-		F2(
-			function (_v0, dict) {
-				var key = _v0.a;
-				var value = _v0.b;
-				return A3($elm$core$Dict$insert, key, value, dict);
-			}),
-		$elm$core$Dict$empty,
-		assocs);
-};
-var $author$project$Corpuses$corpuses = $elm$core$Dict$fromList(
-	_List_fromArray(
-		[
-			_Utils_Tuple2(
-			'namur',
-			_Utils_Tuple2('Belgium - Namur province', $author$project$Corpuses$Namur$corpus)),
-			_Utils_Tuple2(
-			'texas',
-			_Utils_Tuple2('U.S. - Texas', $author$project$Corpuses$Texas$corpus)),
-			_Utils_Tuple2(
-			'hpspells',
-			_Utils_Tuple2('Harry Potter Spells', $author$project$Corpuses$HarryPotterSpells$corpus)),
-			_Utils_Tuple2(
-			'lotr',
-			_Utils_Tuple2('Lord of the Rings Locations', $author$project$Corpuses$Lotr$corpus)),
-			_Utils_Tuple2(
-			'zcustom',
-			_Utils_Tuple2('Custom...', ''))
-		]));
-var $elm$time$Time$Posix = $elm$core$Basics$identity;
-var $elm$time$Time$millisToPosix = $elm$core$Basics$identity;
-var $elm$file$File$Select$file = F2(
-	function (mimes, toMsg) {
-		return A2(
-			$elm$core$Task$perform,
-			toMsg,
-			_File_uploadOne(mimes));
-	});
-var $elm$random$Random$Generate = $elm$core$Basics$identity;
-var $elm$random$Random$Seed = F2(
-	function (a, b) {
-		return {$: 0, a: a, b: b};
-	});
-var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
-var $elm$random$Random$next = function (_v0) {
-	var state0 = _v0.a;
-	var incr = _v0.b;
-	return A2($elm$random$Random$Seed, ((state0 * 1664525) + incr) >>> 0, incr);
-};
-var $elm$random$Random$initialSeed = function (x) {
-	var _v0 = $elm$random$Random$next(
-		A2($elm$random$Random$Seed, 0, 1013904223));
-	var state1 = _v0.a;
-	var incr = _v0.b;
-	var state2 = (state1 + x) >>> 0;
-	return $elm$random$Random$next(
-		A2($elm$random$Random$Seed, state2, incr));
-};
-var $elm$time$Time$Name = function (a) {
-	return {$: 0, a: a};
-};
-var $elm$time$Time$Offset = function (a) {
-	return {$: 1, a: a};
-};
-var $elm$time$Time$Zone = F2(
-	function (a, b) {
-		return {$: 0, a: a, b: b};
-	});
-var $elm$time$Time$customZone = $elm$time$Time$Zone;
-var $elm$time$Time$now = _Time_now($elm$time$Time$millisToPosix);
-var $elm$time$Time$posixToMillis = function (_v0) {
-	var millis = _v0;
-	return millis;
-};
-var $elm$random$Random$init = A2(
-	$elm$core$Task$andThen,
-	function (time) {
-		return $elm$core$Task$succeed(
-			$elm$random$Random$initialSeed(
-				$elm$time$Time$posixToMillis(time)));
-	},
-	$elm$time$Time$now);
-var $elm$random$Random$step = F2(
-	function (_v0, seed) {
-		var generator = _v0;
-		return generator(seed);
-	});
-var $elm$random$Random$onEffects = F3(
-	function (router, commands, seed) {
-		if (!commands.b) {
-			return $elm$core$Task$succeed(seed);
-		} else {
-			var generator = commands.a;
-			var rest = commands.b;
-			var _v1 = A2($elm$random$Random$step, generator, seed);
-			var value = _v1.a;
-			var newSeed = _v1.b;
-			return A2(
-				$elm$core$Task$andThen,
-				function (_v2) {
-					return A3($elm$random$Random$onEffects, router, rest, newSeed);
-				},
-				A2($elm$core$Platform$sendToApp, router, value));
-		}
-	});
-var $elm$random$Random$onSelfMsg = F3(
-	function (_v0, _v1, seed) {
-		return $elm$core$Task$succeed(seed);
-	});
-var $elm$random$Random$Generator = $elm$core$Basics$identity;
-var $elm$random$Random$map = F2(
-	function (func, _v0) {
-		var genA = _v0;
-		return function (seed0) {
-			var _v1 = genA(seed0);
-			var a = _v1.a;
-			var seed1 = _v1.b;
-			return _Utils_Tuple2(
-				func(a),
-				seed1);
-		};
-	});
-var $elm$random$Random$cmdMap = F2(
-	function (func, _v0) {
-		var generator = _v0;
-		return A2($elm$random$Random$map, func, generator);
-	});
-_Platform_effectManagers['Random'] = _Platform_createManager($elm$random$Random$init, $elm$random$Random$onEffects, $elm$random$Random$onSelfMsg, $elm$random$Random$cmdMap);
-var $elm$random$Random$command = _Platform_leaf('Random');
-var $elm$random$Random$generate = F2(
-	function (tagger, generator) {
-		return $elm$random$Random$command(
-			A2($elm$random$Random$map, tagger, generator));
-	});
-var $elm$core$Dict$get = F2(
-	function (targetKey, dict) {
-		get:
-		while (true) {
-			if (dict.$ === -2) {
-				return $elm$core$Maybe$Nothing;
-			} else {
-				var key = dict.b;
-				var value = dict.c;
-				var left = dict.d;
-				var right = dict.e;
-				var _v1 = A2($elm$core$Basics$compare, targetKey, key);
-				switch (_v1) {
-					case 0:
-						var $temp$targetKey = targetKey,
-							$temp$dict = left;
-						targetKey = $temp$targetKey;
-						dict = $temp$dict;
-						continue get;
-					case 1:
-						return $elm$core$Maybe$Just(value);
-					default:
-						var $temp$targetKey = targetKey,
-							$temp$dict = right;
-						targetKey = $temp$targetKey;
-						dict = $temp$dict;
-						continue get;
-				}
-			}
-		}
-	});
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (!maybe.$) {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
-var $elm$core$Platform$Cmd$batch = _Platform_batch;
-var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $elm$core$Basics$not = _Basics_not;
-var $elm$core$Basics$composeL = F3(
-	function (g, f, x) {
-		return g(
-			f(x));
-	});
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
-var $elm$core$String$lines = _String_lines;
-var $elm$core$String$toLower = _String_toLower;
-var $elm$core$String$trim = _String_trim;
-var $author$project$Main$prepareCorpus = function (corpus) {
-	return A2(
-		$elm$core$List$filter,
-		A2($elm$core$Basics$composeL, $elm$core$Basics$not, $elm$core$String$isEmpty),
-		A2(
-			$elm$core$List$map,
-			$elm$core$String$trim,
-			$elm$core$String$lines(
-				$elm$core$String$toLower(corpus))));
-};
-var $elm$random$Random$andThen = F2(
-	function (callback, _v0) {
-		var genA = _v0;
-		return function (seed) {
-			var _v1 = genA(seed);
-			var result = _v1.a;
-			var newSeed = _v1.b;
-			var _v2 = callback(result);
-			var genB = _v2;
-			return genB(newSeed);
-		};
-	});
-var $elm$random$Random$constant = function (value) {
-	return function (seed) {
-		return _Utils_Tuple2(value, seed);
-	};
-};
-var $author$project$Main$resampleUntil = F3(
-	function (maxAttempts, predicate, generator) {
-		return A2(
-			$elm$random$Random$andThen,
-			function (s) {
-				return predicate(s) ? $elm$random$Random$constant(
-					$elm$core$Maybe$Just(s)) : ((maxAttempts === 1) ? $elm$random$Random$constant($elm$core$Maybe$Nothing) : A3($author$project$Main$resampleUntil, maxAttempts - 1, predicate, generator));
-			},
-			generator);
-	});
-var $elm$core$Dict$values = function (dict) {
-	return A3(
-		$elm$core$Dict$foldr,
-		F3(
-			function (key, value, valueList) {
-				return A2($elm$core$List$cons, value, valueList);
-			}),
-		_List_Nil,
-		dict);
-};
-var $turboMaCk$any_dict$Dict$Any$toList = function (_v0) {
-	var dict = _v0.b;
-	return $elm$core$Dict$values(dict);
-};
-var $elm_community$list_extra$List$Extra$uncons = function (list) {
-	if (!list.b) {
-		return $elm$core$Maybe$Nothing;
-	} else {
-		var first = list.a;
-		var rest = list.b;
-		return $elm$core$Maybe$Just(
-			_Utils_Tuple2(first, rest));
-	}
-};
-var $elm$core$Basics$negate = function (n) {
-	return -n;
-};
-var $elm$core$Basics$abs = function (n) {
-	return (n < 0) ? (-n) : n;
-};
-var $elm$core$Bitwise$and = _Bitwise_and;
-var $elm$core$Bitwise$xor = _Bitwise_xor;
-var $elm$random$Random$peel = function (_v0) {
-	var state = _v0.a;
-	var word = (state ^ (state >>> ((state >>> 28) + 4))) * 277803737;
-	return ((word >>> 22) ^ word) >>> 0;
-};
-var $elm$random$Random$float = F2(
-	function (a, b) {
-		return function (seed0) {
-			var seed1 = $elm$random$Random$next(seed0);
-			var range = $elm$core$Basics$abs(b - a);
-			var n1 = $elm$random$Random$peel(seed1);
-			var n0 = $elm$random$Random$peel(seed0);
-			var lo = (134217727 & n1) * 1.0;
-			var hi = (67108863 & n0) * 1.0;
-			var val = ((hi * 134217728.0) + lo) / 9007199254740992.0;
-			var scaled = (val * range) + a;
-			return _Utils_Tuple2(
-				scaled,
-				$elm$random$Random$next(seed1));
-		};
-	});
-var $elm$random$Random$getByWeight = F3(
-	function (_v0, others, countdown) {
-		getByWeight:
-		while (true) {
-			var weight = _v0.a;
-			var value = _v0.b;
-			if (!others.b) {
-				return value;
-			} else {
-				var second = others.a;
-				var otherOthers = others.b;
-				if (_Utils_cmp(
-					countdown,
-					$elm$core$Basics$abs(weight)) < 1) {
-					return value;
-				} else {
-					var $temp$_v0 = second,
-						$temp$others = otherOthers,
-						$temp$countdown = countdown - $elm$core$Basics$abs(weight);
-					_v0 = $temp$_v0;
-					others = $temp$others;
-					countdown = $temp$countdown;
-					continue getByWeight;
-				}
-			}
-		}
-	});
-var $elm$core$List$sum = function (numbers) {
-	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
-};
-var $elm$random$Random$weighted = F2(
-	function (first, others) {
-		var normalize = function (_v0) {
-			var weight = _v0.a;
-			return $elm$core$Basics$abs(weight);
-		};
-		var total = normalize(first) + $elm$core$List$sum(
-			A2($elm$core$List$map, normalize, others));
-		return A2(
-			$elm$random$Random$map,
-			A2($elm$random$Random$getByWeight, first, others),
-			A2($elm$random$Random$float, 0, total));
-	});
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (!maybe.$) {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
-var $author$project$NGram$dictionarySampler = function (d) {
-	var counts = A2(
-		$elm$core$List$map,
-		function (_v1) {
-			var a = _v1.a;
-			var b = _v1.b;
-			return _Utils_Tuple2(b, a);
-		},
-		$turboMaCk$any_dict$Dict$Any$toList(d));
-	return A2(
-		$elm$core$Maybe$withDefault,
-		$elm$random$Random$constant($elm$core$Maybe$Nothing),
-		A2(
-			$elm$core$Maybe$map,
-			function (_v0) {
-				var head = _v0.a;
-				var tail = _v0.b;
-				return A2($elm$random$Random$weighted, head, tail);
-			},
-			$elm_community$list_extra$List$Extra$uncons(counts)));
-};
-var $elm$core$String$cons = _String_cons;
-var $elm$core$String$fromChar = function (_char) {
-	return A2($elm$core$String$cons, _char, '');
-};
-var $elm$core$String$right = F2(
-	function (n, string) {
-		return (n < 1) ? '' : A3(
-			$elm$core$String$slice,
-			-n,
-			$elm$core$String$length(string),
-			string);
-	});
-var $author$project$NGram$sampler = function (_v0) {
-	var n = _v0.aj;
-	var rules = _v0.am;
-	var helper = function (soFar) {
-		var prev = A2($elm$core$String$right, n, soFar);
-		var _v1 = A2($elm$core$Dict$get, prev, rules);
-		if (_v1.$ === 1) {
-			return $elm$random$Random$constant(soFar);
-		} else {
-			var d = _v1.a;
-			return A2(
-				$elm$random$Random$andThen,
-				function (maybeC) {
-					if (maybeC.$ === 1) {
-						return $elm$random$Random$constant(soFar);
-					} else {
-						var c = maybeC.a;
-						return helper(
-							_Utils_ap(
-								soFar,
-								$elm$core$String$fromChar(c)));
-					}
-				},
-				$author$project$NGram$dictionarySampler(d));
-		}
-	};
-	return helper('');
-};
-var $elm$core$Tuple$second = function (_v0) {
-	var y = _v0.b;
-	return y;
-};
-var $elm$file$File$toString = _File_toString;
-var $author$project$NGram$empty = function (n) {
-	return {aj: n, am: $elm$core$Dict$empty};
-};
-var $author$project$NGram$strToNGrams = F2(
-	function (n, str) {
-		var helper = function (i) {
-			var prev = A3(
-				$elm$core$String$slice,
-				A2($elm$core$Basics$max, 0, i - n),
-				i,
-				str);
-			var next = A2(
-				$elm$core$Maybe$map,
-				$elm$core$Tuple$first,
-				$elm$core$String$uncons(
-					A2($elm$core$String$dropLeft, i, str)));
-			if (next.$ === 1) {
-				return _List_fromArray(
-					[
-						_Utils_Tuple2(prev, next)
-					]);
-			} else {
-				return A2(
-					$elm$core$List$cons,
-					_Utils_Tuple2(prev, next),
-					helper(i + 1));
-			}
-		};
-		return helper(0);
-	});
-var $turboMaCk$any_dict$Dict$Any$AnyDict = $elm$core$Basics$identity;
-var $turboMaCk$any_dict$Dict$Any$empty = function (toKey) {
-	return {b: $elm$core$Dict$empty, v: toKey};
-};
-var $author$project$NGram$maybeCharKey = function (c) {
-	return 1 + A2(
-		$elm$core$Maybe$withDefault,
-		0,
-		A2($elm$core$Maybe$map, $elm$core$Char$toCode, c));
-};
-var $elm$core$Dict$getMin = function (dict) {
-	getMin:
-	while (true) {
-		if ((dict.$ === -1) && (dict.d.$ === -1)) {
-			var left = dict.d;
-			var $temp$dict = left;
-			dict = $temp$dict;
-			continue getMin;
-		} else {
-			return dict;
-		}
-	}
-};
-var $elm$core$Dict$moveRedLeft = function (dict) {
-	if (((dict.$ === -1) && (dict.d.$ === -1)) && (dict.e.$ === -1)) {
-		if ((dict.e.d.$ === -1) && (!dict.e.d.a)) {
-			var clr = dict.a;
-			var k = dict.b;
-			var v = dict.c;
-			var _v1 = dict.d;
-			var lClr = _v1.a;
-			var lK = _v1.b;
-			var lV = _v1.c;
-			var lLeft = _v1.d;
-			var lRight = _v1.e;
-			var _v2 = dict.e;
-			var rClr = _v2.a;
-			var rK = _v2.b;
-			var rV = _v2.c;
-			var rLeft = _v2.d;
-			var _v3 = rLeft.a;
-			var rlK = rLeft.b;
-			var rlV = rLeft.c;
-			var rlL = rLeft.d;
-			var rlR = rLeft.e;
-			var rRight = _v2.e;
-			return A5(
-				$elm$core$Dict$RBNode_elm_builtin,
-				0,
-				rlK,
-				rlV,
-				A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					1,
-					k,
-					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, lK, lV, lLeft, lRight),
-					rlL),
-				A5($elm$core$Dict$RBNode_elm_builtin, 1, rK, rV, rlR, rRight));
-		} else {
-			var clr = dict.a;
-			var k = dict.b;
-			var v = dict.c;
-			var _v4 = dict.d;
-			var lClr = _v4.a;
-			var lK = _v4.b;
-			var lV = _v4.c;
-			var lLeft = _v4.d;
-			var lRight = _v4.e;
-			var _v5 = dict.e;
-			var rClr = _v5.a;
-			var rK = _v5.b;
-			var rV = _v5.c;
-			var rLeft = _v5.d;
-			var rRight = _v5.e;
-			if (clr === 1) {
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					1,
-					k,
-					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, rK, rV, rLeft, rRight));
-			} else {
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					1,
-					k,
-					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, rK, rV, rLeft, rRight));
-			}
-		}
-	} else {
-		return dict;
-	}
-};
-var $elm$core$Dict$moveRedRight = function (dict) {
-	if (((dict.$ === -1) && (dict.d.$ === -1)) && (dict.e.$ === -1)) {
-		if ((dict.d.d.$ === -1) && (!dict.d.d.a)) {
-			var clr = dict.a;
-			var k = dict.b;
-			var v = dict.c;
-			var _v1 = dict.d;
-			var lClr = _v1.a;
-			var lK = _v1.b;
-			var lV = _v1.c;
-			var _v2 = _v1.d;
-			var _v3 = _v2.a;
-			var llK = _v2.b;
-			var llV = _v2.c;
-			var llLeft = _v2.d;
-			var llRight = _v2.e;
-			var lRight = _v1.e;
-			var _v4 = dict.e;
-			var rClr = _v4.a;
-			var rK = _v4.b;
-			var rV = _v4.c;
-			var rLeft = _v4.d;
-			var rRight = _v4.e;
-			return A5(
-				$elm$core$Dict$RBNode_elm_builtin,
-				0,
-				lK,
-				lV,
-				A5($elm$core$Dict$RBNode_elm_builtin, 1, llK, llV, llLeft, llRight),
-				A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					1,
-					k,
-					v,
-					lRight,
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, rK, rV, rLeft, rRight)));
-		} else {
-			var clr = dict.a;
-			var k = dict.b;
-			var v = dict.c;
-			var _v5 = dict.d;
-			var lClr = _v5.a;
-			var lK = _v5.b;
-			var lV = _v5.c;
-			var lLeft = _v5.d;
-			var lRight = _v5.e;
-			var _v6 = dict.e;
-			var rClr = _v6.a;
-			var rK = _v6.b;
-			var rV = _v6.c;
-			var rLeft = _v6.d;
-			var rRight = _v6.e;
-			if (clr === 1) {
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					1,
-					k,
-					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, rK, rV, rLeft, rRight));
-			} else {
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					1,
-					k,
-					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, rK, rV, rLeft, rRight));
-			}
-		}
-	} else {
-		return dict;
-	}
-};
-var $elm$core$Dict$removeHelpPrepEQGT = F7(
-	function (targetKey, dict, color, key, value, left, right) {
-		if ((left.$ === -1) && (!left.a)) {
-			var _v1 = left.a;
-			var lK = left.b;
-			var lV = left.c;
-			var lLeft = left.d;
-			var lRight = left.e;
-			return A5(
-				$elm$core$Dict$RBNode_elm_builtin,
-				color,
-				lK,
-				lV,
-				lLeft,
-				A5($elm$core$Dict$RBNode_elm_builtin, 0, key, value, lRight, right));
-		} else {
-			_v2$2:
-			while (true) {
-				if ((right.$ === -1) && (right.a === 1)) {
-					if (right.d.$ === -1) {
-						if (right.d.a === 1) {
-							var _v3 = right.a;
-							var _v4 = right.d;
-							var _v5 = _v4.a;
-							return $elm$core$Dict$moveRedRight(dict);
-						} else {
-							break _v2$2;
-						}
-					} else {
-						var _v6 = right.a;
-						var _v7 = right.d;
-						return $elm$core$Dict$moveRedRight(dict);
-					}
-				} else {
-					break _v2$2;
-				}
-			}
-			return dict;
-		}
-	});
-var $elm$core$Dict$removeMin = function (dict) {
-	if ((dict.$ === -1) && (dict.d.$ === -1)) {
-		var color = dict.a;
-		var key = dict.b;
-		var value = dict.c;
-		var left = dict.d;
-		var lColor = left.a;
-		var lLeft = left.d;
-		var right = dict.e;
-		if (lColor === 1) {
-			if ((lLeft.$ === -1) && (!lLeft.a)) {
-				var _v3 = lLeft.a;
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					color,
-					key,
-					value,
-					$elm$core$Dict$removeMin(left),
-					right);
-			} else {
-				var _v4 = $elm$core$Dict$moveRedLeft(dict);
-				if (_v4.$ === -1) {
-					var nColor = _v4.a;
-					var nKey = _v4.b;
-					var nValue = _v4.c;
-					var nLeft = _v4.d;
-					var nRight = _v4.e;
-					return A5(
-						$elm$core$Dict$balance,
-						nColor,
-						nKey,
-						nValue,
-						$elm$core$Dict$removeMin(nLeft),
-						nRight);
-				} else {
-					return $elm$core$Dict$RBEmpty_elm_builtin;
-				}
-			}
-		} else {
-			return A5(
-				$elm$core$Dict$RBNode_elm_builtin,
-				color,
-				key,
-				value,
-				$elm$core$Dict$removeMin(left),
-				right);
-		}
-	} else {
-		return $elm$core$Dict$RBEmpty_elm_builtin;
-	}
-};
-var $elm$core$Dict$removeHelp = F2(
-	function (targetKey, dict) {
-		if (dict.$ === -2) {
-			return $elm$core$Dict$RBEmpty_elm_builtin;
-		} else {
-			var color = dict.a;
-			var key = dict.b;
-			var value = dict.c;
-			var left = dict.d;
-			var right = dict.e;
-			if (_Utils_cmp(targetKey, key) < 0) {
-				if ((left.$ === -1) && (left.a === 1)) {
-					var _v4 = left.a;
-					var lLeft = left.d;
-					if ((lLeft.$ === -1) && (!lLeft.a)) {
-						var _v6 = lLeft.a;
-						return A5(
-							$elm$core$Dict$RBNode_elm_builtin,
-							color,
-							key,
-							value,
-							A2($elm$core$Dict$removeHelp, targetKey, left),
-							right);
-					} else {
-						var _v7 = $elm$core$Dict$moveRedLeft(dict);
-						if (_v7.$ === -1) {
-							var nColor = _v7.a;
-							var nKey = _v7.b;
-							var nValue = _v7.c;
-							var nLeft = _v7.d;
-							var nRight = _v7.e;
-							return A5(
-								$elm$core$Dict$balance,
-								nColor,
-								nKey,
-								nValue,
-								A2($elm$core$Dict$removeHelp, targetKey, nLeft),
-								nRight);
-						} else {
-							return $elm$core$Dict$RBEmpty_elm_builtin;
-						}
-					}
-				} else {
-					return A5(
-						$elm$core$Dict$RBNode_elm_builtin,
-						color,
-						key,
-						value,
-						A2($elm$core$Dict$removeHelp, targetKey, left),
-						right);
-				}
-			} else {
-				return A2(
-					$elm$core$Dict$removeHelpEQGT,
-					targetKey,
-					A7($elm$core$Dict$removeHelpPrepEQGT, targetKey, dict, color, key, value, left, right));
-			}
-		}
-	});
-var $elm$core$Dict$removeHelpEQGT = F2(
-	function (targetKey, dict) {
-		if (dict.$ === -1) {
-			var color = dict.a;
-			var key = dict.b;
-			var value = dict.c;
-			var left = dict.d;
-			var right = dict.e;
-			if (_Utils_eq(targetKey, key)) {
-				var _v1 = $elm$core$Dict$getMin(right);
-				if (_v1.$ === -1) {
-					var minKey = _v1.b;
-					var minValue = _v1.c;
-					return A5(
-						$elm$core$Dict$balance,
-						color,
-						minKey,
-						minValue,
-						left,
-						$elm$core$Dict$removeMin(right));
-				} else {
-					return $elm$core$Dict$RBEmpty_elm_builtin;
-				}
-			} else {
-				return A5(
-					$elm$core$Dict$balance,
-					color,
-					key,
-					value,
-					left,
-					A2($elm$core$Dict$removeHelp, targetKey, right));
-			}
-		} else {
-			return $elm$core$Dict$RBEmpty_elm_builtin;
-		}
-	});
-var $elm$core$Dict$remove = F2(
-	function (key, dict) {
-		var _v0 = A2($elm$core$Dict$removeHelp, key, dict);
-		if ((_v0.$ === -1) && (!_v0.a)) {
-			var _v1 = _v0.a;
-			var k = _v0.b;
-			var v = _v0.c;
-			var l = _v0.d;
-			var r = _v0.e;
-			return A5($elm$core$Dict$RBNode_elm_builtin, 1, k, v, l, r);
-		} else {
-			var x = _v0;
-			return x;
-		}
-	});
-var $elm$core$Dict$update = F3(
-	function (targetKey, alter, dictionary) {
-		var _v0 = alter(
-			A2($elm$core$Dict$get, targetKey, dictionary));
-		if (!_v0.$) {
-			var value = _v0.a;
-			return A3($elm$core$Dict$insert, targetKey, value, dictionary);
-		} else {
-			return A2($elm$core$Dict$remove, targetKey, dictionary);
-		}
-	});
-var $turboMaCk$any_dict$Dict$Any$update = F3(
-	function (k, f, _v0) {
-		var inner = _v0;
-		var updateDict = A2(
-			$elm$core$Basics$composeL,
-			A2(
-				$elm$core$Basics$composeL,
-				$elm$core$Maybe$map(
-					function (b) {
-						return _Utils_Tuple2(k, b);
-					}),
-				f),
-			$elm$core$Maybe$map($elm$core$Tuple$second));
-		return _Utils_update(
-			inner,
-			{
-				b: A3(
-					$elm$core$Dict$update,
-					inner.v(k),
-					updateDict,
-					inner.b)
-			});
-	});
-var $author$project$NGram$updateRulesWithNGram = F2(
-	function (_v0, rules) {
-		var prev = _v0.a;
-		var next = _v0.b;
-		var incrementRule = function (value) {
-			return $elm$core$Maybe$Just(
-				A3(
-					$turboMaCk$any_dict$Dict$Any$update,
-					next,
-					function (x) {
-						return $elm$core$Maybe$Just(
-							A2($elm$core$Maybe$withDefault, 0, x) + 1);
-					},
-					A2(
-						$elm$core$Maybe$withDefault,
-						$turboMaCk$any_dict$Dict$Any$empty($author$project$NGram$maybeCharKey),
-						value)));
-		};
-		return A3($elm$core$Dict$update, prev, incrementRule, rules);
-	});
-var $author$project$NGram$updateWithPhrase = F2(
-	function (word, _v0) {
-		var n = _v0.aj;
-		var rules = _v0.am;
-		return {
-			aj: n,
-			am: A3(
-				$elm$core$List$foldl,
-				$author$project$NGram$updateRulesWithNGram,
-				rules,
-				A2($author$project$NGram$strToNGrams, n, word))
-		};
-	});
-var $author$project$NGram$update = F2(
-	function (corpus, model) {
-		if (!corpus.b) {
-			return model;
-		} else {
-			var word = corpus.a;
-			var rest = corpus.b;
-			return A2(
-				$author$project$NGram$update,
-				rest,
-				A2($author$project$NGram$updateWithPhrase, word, model));
-		}
-	});
-var $author$project$NGram$train = F2(
-	function (n, corpus) {
-		return A2(
-			$author$project$NGram$update,
-			corpus,
-			$author$project$NGram$empty(n));
-	});
-var $elm$core$List$any = F2(
-	function (isOkay, list) {
-		any:
-		while (true) {
-			if (!list.b) {
-				return false;
-			} else {
-				var x = list.a;
-				var xs = list.b;
-				if (isOkay(x)) {
-					return true;
-				} else {
-					var $temp$isOkay = isOkay,
-						$temp$list = xs;
-					isOkay = $temp$isOkay;
-					list = $temp$list;
-					continue any;
-				}
-			}
-		}
-	});
-var $author$project$Main$verifySample = F2(
-	function (model, sample) {
-		return !(model.X && A2(
-			$elm$core$List$any,
-			$elm$core$Basics$eq(sample),
-			model.ad));
-	});
-var $author$project$Main$update = F2(
-	function (msg, model) {
-		switch (msg.$) {
-			case 0:
-				var _v1 = function () {
-					var _v2 = model.S;
-					if (_v2.$ === 1) {
-						var newCorpus = $author$project$Main$prepareCorpus(model.V);
-						var n = A2(
-							$elm$core$Maybe$withDefault,
-							1,
-							$elm$core$String$toInt(model.af));
-						return _Utils_Tuple2(
-							newCorpus,
-							A2($author$project$NGram$train, n, newCorpus));
-					} else {
-						var x = _v2.a;
-						return _Utils_Tuple2(model.ad, x);
-					}
-				}();
-				var corpus = _v1.a;
-				var wordModel = _v1.b;
-				var newModel = _Utils_update(
-					model,
-					{
-						ad: corpus,
-						S: $elm$core$Maybe$Just(wordModel)
-					});
-				var cmd = A2(
-					$elm$random$Random$generate,
-					$author$project$Main$NewSample,
-					A3(
-						$author$project$Main$resampleUntil,
-						100,
-						$author$project$Main$verifySample(newModel),
-						$author$project$NGram$sampler(wordModel)));
-				return _Utils_Tuple2(newModel, cmd);
-			case 1:
-				var maybeSample = msg.a;
-				if (maybeSample.$ === 1) {
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{al: true}),
-						$elm$core$Platform$Cmd$none);
-				} else {
-					var sample = maybeSample.a;
-					var capitalized = model.W ? $author$project$Main$capitalize(sample) : sample;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{
-								al: false,
-								an: A2($elm$core$List$cons, capitalized, model.an)
-							}),
-						$elm$core$Platform$Cmd$none);
-				}
-			case 2:
-				return _Utils_Tuple2(
-					model,
-					A2(
-						$elm$file$File$Select$file,
-						_List_fromArray(
-							['text/plain']),
-						$author$project$Main$CorpusFileSelected));
-			case 3:
-				var file = msg.a;
-				return _Utils_Tuple2(
-					model,
-					A2(
-						$elm$core$Task$perform,
-						$author$project$Main$SetFieldCorpus,
-						$elm$file$File$toString(file)));
-			case 4:
-				var fieldPreset = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							V: A2(
-								$elm$core$Maybe$withDefault,
-								'',
-								A2(
-									$elm$core$Maybe$map,
-									$elm$core$Tuple$second,
-									A2($elm$core$Dict$get, fieldPreset, $author$project$Corpuses$corpuses))),
-							ag: fieldPreset,
-							S: $elm$core$Maybe$Nothing
-						}),
-					$elm$core$Platform$Cmd$none);
-			case 5:
-				var fieldCorpus = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{V: fieldCorpus, ag: 'zcustom', S: $elm$core$Maybe$Nothing}),
-					$elm$core$Platform$Cmd$none);
-			case 6:
-				var fieldN = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{af: fieldN, S: $elm$core$Maybe$Nothing}),
-					$elm$core$Platform$Cmd$none);
-			case 7:
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{W: !model.W}),
-					$elm$core$Platform$Cmd$none);
-			default:
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{X: !model.X}),
-					$elm$core$Platform$Cmd$none);
-		}
-	});
-var $author$project$Main$init = function (_v0) {
-	var model = {ad: _List_Nil, V: '', af: '3', ag: '', al: false, W: true, X: true, an: _List_Nil, S: $elm$core$Maybe$Nothing};
-	return A2(
-		$author$project$Main$update,
-		$author$project$Main$SetFieldPreset('namur'),
-		model);
-};
-var $elm$core$Platform$Sub$batch = _Platform_batch;
-var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-var $author$project$Main$subscriptions = function (_v0) {
-	return $elm$core$Platform$Sub$none;
-};
-var $author$project$Main$CorpusFileRequested = {$: 2};
-var $author$project$Main$GenerateSample = {$: 0};
-var $author$project$Main$SetFieldN = function (a) {
-	return {$: 6, a: a};
-};
-var $author$project$Main$ToggleResultsCapitalize = {$: 7};
-var $author$project$Main$ToggleResultsExcludeCorpus = {$: 8};
-var $elm$html$Html$a = _VirtualDom_node('a');
-var $elm$html$Html$br = _VirtualDom_node('br');
-var $elm$html$Html$button = _VirtualDom_node('button');
-var $elm$json$Json$Encode$bool = _Json_wrap;
-var $elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$bool(bool));
-	});
-var $elm$html$Html$Attributes$checked = $elm$html$Html$Attributes$boolProperty('checked');
-var $elm$html$Html$div = _VirtualDom_node('div');
-var $elm$html$Html$em = _VirtualDom_node('em');
-var $elm$html$Html$fieldset = _VirtualDom_node('fieldset');
-var $elm$json$Json$Encode$string = _Json_wrap;
-var $elm$html$Html$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$string(string));
-	});
-var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
-var $elm$html$Html$h1 = _VirtualDom_node('h1');
-var $elm$html$Html$Attributes$href = function (url) {
-	return A2(
-		$elm$html$Html$Attributes$stringProperty,
-		'href',
-		_VirtualDom_noJavaScriptUri(url));
-};
-var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
-var $elm$html$Html$input = _VirtualDom_node('input');
-var $elm$html$Html$label = _VirtualDom_node('label');
-var $elm$html$Html$legend = _VirtualDom_node('legend');
-var $elm$html$Html$Attributes$min = $elm$html$Html$Attributes$stringProperty('min');
-var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 0, a: a};
-};
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var $elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var $elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
-};
-var $elm$html$Html$Events$alwaysStop = function (x) {
-	return _Utils_Tuple2(x, true);
-};
-var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
-	return {$: 1, a: a};
-};
-var $elm$html$Html$Events$stopPropagationOn = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
-	});
-var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
-	});
-var $elm$json$Json$Decode$string = _Json_decodeString;
-var $elm$html$Html$Events$targetValue = A2(
-	$elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'value']),
-	$elm$json$Json$Decode$string);
-var $elm$html$Html$Events$onInput = function (tagger) {
-	return A2(
-		$elm$html$Html$Events$stopPropagationOn,
-		'input',
-		A2(
-			$elm$json$Json$Decode$map,
-			$elm$html$Html$Events$alwaysStop,
-			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
-};
-var $elm$html$Html$option = _VirtualDom_node('option');
-var $elm$html$Html$p = _VirtualDom_node('p');
-var $elm$html$Html$Attributes$rows = function (n) {
-	return A2(
-		_VirtualDom_attribute,
-		'rows',
-		$elm$core$String$fromInt(n));
-};
-var $elm$html$Html$select = _VirtualDom_node('select');
-var $elm$html$Html$Attributes$selected = $elm$html$Html$Attributes$boolProperty('selected');
-var $elm$core$List$singleton = function (value) {
-	return _List_fromArray(
-		[value]);
-};
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $elm$html$Html$Attributes$target = $elm$html$Html$Attributes$stringProperty('target');
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $elm$html$Html$textarea = _VirtualDom_node('textarea');
-var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
-var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
-var $author$project$Main$value_ = $elm$html$Html$Attributes$value;
-var $author$project$Main$viewWhen = F2(
-	function (shouldDisplay, elem) {
-		return shouldDisplay ? _List_fromArray(
-			[elem]) : _List_Nil;
-	});
-var $author$project$Main$view = function (model) {
-	return A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				A2($elm$html$Html$Attributes$style, 'padding', '1em')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$h1,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Phrase Generator')
-					])),
-				A2(
-				$elm$html$Html$fieldset,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$legend,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Corpus')
-							])),
-						A2(
-						$elm$html$Html$p,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text('A corpus is the list of words and phrases that the model will learn from, and try to emulate.')
-							])),
-						A2(
-						$elm$html$Html$p,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								$elm$html$Html$label,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$for('presets')
-									]),
-								_List_fromArray(
-									[
-										$elm$html$Html$text('Select an existing corpus: ')
-									])),
-								A2(
-								$elm$html$Html$select,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$id('presets'),
-										$elm$html$Html$Events$onInput($author$project$Main$SetFieldPreset)
-									]),
-								A2(
-									$elm$core$List$map,
-									function (_v0) {
-										var name = _v0.a;
-										var _v1 = _v0.b;
-										var title = _v1.a;
-										return A2(
-											$elm$html$Html$option,
-											_List_fromArray(
-												[
-													$author$project$Main$value_(name),
-													$elm$html$Html$Attributes$selected(
-													_Utils_eq(name, model.ag))
-												]),
-											_List_fromArray(
-												[
-													$elm$html$Html$text(title)
-												]));
-									},
-									$elm$core$Dict$toList($author$project$Corpuses$corpuses)))
-							])),
-						A2(
-						$elm$html$Html$p,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								$elm$html$Html$label,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$for('load-from-file')
-									]),
-								_List_fromArray(
-									[
-										$elm$html$Html$text('Or load one from a file: ')
-									])),
-								A2(
-								$elm$html$Html$button,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$id('load-from-file'),
-										$elm$html$Html$Events$onClick($author$project$Main$CorpusFileRequested)
-									]),
-								_List_fromArray(
-									[
-										$elm$html$Html$text('Load corpus from file')
-									]))
-							])),
-						A2(
-						$elm$html$Html$p,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								$elm$html$Html$label,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$for('corpus')
-									]),
-								_List_fromArray(
-									[
-										$elm$html$Html$text('Or modify the current one right here: ')
-									])),
-								A2($elm$html$Html$br, _List_Nil, _List_Nil),
-								A2(
-								$elm$html$Html$textarea,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$id('corpus'),
-										$elm$html$Html$Attributes$rows(7),
-										$elm$html$Html$Events$onInput($author$project$Main$SetFieldCorpus),
-										$author$project$Main$value_(model.V)
-									]),
-								_List_Nil)
-							]))
-					])),
-				A2(
-				$elm$html$Html$fieldset,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$legend,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Model (N-Gram)')
-							])),
-						A2(
-						$elm$html$Html$p,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text('This model generates phrases character-by-character.  It uses the previous '),
-								A2(
-								$elm$html$Html$em,
-								_List_Nil,
-								_List_fromArray(
-									[
-										$elm$html$Html$text('N')
-									])),
-								$elm$html$Html$text(' characters to make a decision about the next one, based on what it learnt from the corpus.')
-							])),
-						A2(
-						$elm$html$Html$p,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								$elm$html$Html$label,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$for('param-n')
-									]),
-								_List_fromArray(
-									[
-										A2(
-										$elm$html$Html$em,
-										_List_Nil,
-										_List_fromArray(
-											[
-												$elm$html$Html$text('N')
-											])),
-										$elm$html$Html$text(' = ')
-									])),
-								A2(
-								$elm$html$Html$input,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$id('param-n'),
-										$elm$html$Html$Attributes$type_('number'),
-										A2($elm$html$Html$Attributes$style, 'width', '2.5em'),
-										A2($elm$html$Html$Attributes$style, 'text-align', 'right'),
-										$elm$html$Html$Attributes$min('1'),
-										$author$project$Main$value_(model.af),
-										$elm$html$Html$Events$onInput($author$project$Main$SetFieldN)
-									]),
-								_List_Nil)
-							])),
-						A2(
-						$elm$html$Html$p,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Smaller '),
-								A2(
-								$elm$html$Html$em,
-								_List_Nil,
-								_List_fromArray(
-									[
-										$elm$html$Html$text('N')
-									])),
-								$elm$html$Html$text(' gives more diversity, but the results will also be more nonsensical.')
-							]))
-					])),
-				A2(
-				$elm$html$Html$fieldset,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$legend,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Post-processing')
-							])),
-						A2(
-						$elm$html$Html$p,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								$elm$html$Html$input,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$id('param-capitalize'),
-										$elm$html$Html$Attributes$type_('checkbox'),
-										$elm$html$Html$Attributes$checked(model.W),
-										$elm$html$Html$Events$onClick($author$project$Main$ToggleResultsCapitalize)
-									]),
-								_List_Nil),
-								A2(
-								$elm$html$Html$label,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$for('param-capitalize')
-									]),
-								_List_fromArray(
-									[
-										$elm$html$Html$text(' Capitalize results')
-									]))
-							])),
-						A2(
-						$elm$html$Html$p,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								$elm$html$Html$input,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$id('param-exclude-corpus'),
-										$elm$html$Html$Attributes$type_('checkbox'),
-										$elm$html$Html$Attributes$checked(model.X),
-										$elm$html$Html$Events$onClick($author$project$Main$ToggleResultsExcludeCorpus)
-									]),
-								_List_Nil),
-								A2(
-								$elm$html$Html$label,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$for('param-exclude-corpus')
-									]),
-								_List_fromArray(
-									[
-										$elm$html$Html$text(' Exclude results that exist in the corpus')
-									]))
-							]))
-					])),
-				A2(
-				$elm$html$Html$fieldset,
-				_List_Nil,
-				_Utils_ap(
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$legend,
-							_List_Nil,
-							_List_fromArray(
-								[
-									$elm$html$Html$text('Results')
-								])),
-							A2(
-							$elm$html$Html$p,
-							_List_Nil,
-							_List_fromArray(
-								[
-									A2(
-									$elm$html$Html$button,
-									_List_fromArray(
-										[
-											$elm$html$Html$Events$onClick($author$project$Main$GenerateSample)
-										]),
-									_List_fromArray(
-										[
-											$elm$html$Html$text('Generate!')
-										]))
-								]))
-						]),
-					_Utils_ap(
-						A2(
-							$author$project$Main$viewWhen,
-							model.al,
-							A2(
-								$elm$html$Html$p,
-								_List_fromArray(
-									[
-										A2($elm$html$Html$Attributes$style, 'color', 'darkred')
-									]),
-								_List_fromArray(
-									[
-										$elm$html$Html$text('Could not generate something not in the corpus.  Maybe try a less constrained model?')
-									]))),
-						A2(
-							$elm$core$List$map,
-							A2(
-								$elm$core$Basics$composeL,
-								A2(
-									$elm$core$Basics$composeL,
-									$elm$html$Html$div(_List_Nil),
-									$elm$core$List$singleton),
-								$elm$html$Html$text),
-							model.an)))),
-				A2(
-				$elm$html$Html$p,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'font-size', '0.9em'),
-						A2($elm$html$Html$Attributes$style, 'text-align', 'right')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$a,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$href('https://github.com/xlambein/phrase-generator'),
-								$elm$html$Html$Attributes$target('_blank')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Source code on GitHub :>')
-							]))
-					]))
-			]));
-};
-var $author$project$Main$main = $elm$browser$Browser$element(
-	{bV: $author$project$Main$init, ch: $author$project$Main$subscriptions, cm: $author$project$Main$update, cn: $author$project$Main$view});
-_Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(0))(0)}});}(this));
+(function(Bn){"use strict";function un(n,r,e){return e.a=n,e.f=r,e}function c(n){return un(2,n,function(r){return function(e){return n(r,e)}})}function S(n){return un(3,n,function(r){return function(e){return function(a){return n(r,e,a)}}})}function Z(n){return un(4,n,function(r){return function(e){return function(a){return function(t){return n(r,e,a,t)}}}})}function hn(n){return un(5,n,function(r){return function(e){return function(a){return function(t){return function(o){return n(r,e,a,t,o)}}}}})}function Kn(n){return un(6,n,function(r){return function(e){return function(a){return function(t){return function(o){return function(i){return n(r,e,a,t,o,i)}}}}}})}function Br(n){return un(7,n,function(r){return function(e){return function(a){return function(t){return function(o){return function(i){return function(u){return n(r,e,a,t,o,i,u)}}}}}}})}function te(n){return un(8,n,function(r){return function(e){return function(a){return function(t){return function(o){return function(i){return function(u){return function(s){return n(r,e,a,t,o,i,u,s)}}}}}}}})}function oe(n){return un(9,n,function(r){return function(e){return function(a){return function(t){return function(o){return function(i){return function(u){return function(s){return function(f){return n(r,e,a,t,o,i,u,s,f)}}}}}}}}})}function l(n,r,e){return n.a===2?n.f(r,e):n(r)(e)}function _(n,r,e,a){return n.a===3?n.f(r,e,a):n(r)(e)(a)}function x(n,r,e,a,t){return n.a===4?n.f(r,e,a,t):n(r)(e)(a)(t)}function b(n,r,e,a,t,o){return n.a===5?n.f(r,e,a,t,o):n(r)(e)(a)(t)(o)}function Cr(n,r,e,a,t,o,i){return n.a===6?n.f(r,e,a,t,o,i):n(r)(e)(a)(t)(o)(i)}function ie(n,r,e,a,t,o,i,u){return n.a===7?n.f(r,e,a,t,o,i,u):n(r)(e)(a)(t)(o)(i)(u)}function Ta(n,r,e,a,t,o,i,u,s){return n.a===8?n.f(r,e,a,t,o,i,u,s):n(r)(e)(a)(t)(o)(i)(u)(s)}function hu(n,r,e,a,t,o,i,u,s,f){return n.a===9?n.f(r,e,a,t,o,i,u,s,f):n(r)(e)(a)(t)(o)(i)(u)(s)(f)}function qn(n,r){for(var e,a=[],t=yr(n,r,0,a);t&&(e=a.pop());t=yr(e.a,e.b,0,a));return t}function yr(n,r,e,a){if(n===r)return!0;if(typeof n!="object"||n===null||r===null)return typeof n=="function"&&K(5),!1;if(e>100)return a.push(w(n,r)),!0;n.$<0&&(n=ur(n),r=ur(r));for(var t in n)if(!yr(n[t],r[t],e+1,a))return!1;return!0}var ka=c(qn),du=c(function(n,r){return!qn(n,r)});function V(n,r,e){if(typeof n!="object")return n===r?0:n<r?-1:1;if(typeof n.$>"u")return(e=V(n.a,r.a))||(e=V(n.b,r.b))?e:V(n.c,r.c);for(;n.b&&r.b&&!(e=V(n.a,r.a));n=n.b,r=r.b);return e||(n.b?1:r.b?-1:0)}var Ga=c(function(n,r){return V(n,r)<0}),Wa=c(function(n,r){return V(n,r)<1}),Va=c(function(n,r){return V(n,r)>0}),gu=c(function(n,r){return V(n,r)>=0}),Oa=c(function(n,r){var e=V(n,r);return e<0?Je:e?Ro:Oe}),dn=0,_u={$:"#0"};function w(n,r){return{a:n,b:r}}function bu(n,r){return{$:"#2",a:n,b:r}}function pu(n,r,e){return{a:n,b:r,c:e}}function Su(n,r,e){return{$:"#3",a:n,b:r,c:e}}function wu(n){return n}function Bu(n){return new String(n)}function rn(n,r){var e={};for(var a in n)e[a]=n[a];for(var a in r)e[a]=r[a];return e}var Ja=c(Yn);function Yn(n,r){if(typeof n=="string")return n+r;if(!n.b)return r;var e=nn(n.a,r);n=n.b;for(var a=e;n.b;n=n.b)a=a.b=nn(n.a,r);return e}var h={$:0},Cu={$:"[]"};function nn(n,r){return{$:1,a:n,b:r}}function yu(n,r){return{$:"::",a:n,b:r}}var Ua=c(nn);function $(n){for(var r=h,e=n.length;e--;)r=nn(n[e],r);return r}function Qn(n){for(var r=[];n.b;n=n.b)r.push(n.a);return r}var Ia=S(function(n,r,e){for(var a=[];r.b&&e.b;r=r.b,e=e.b)a.push(l(n,r.a,e.a));return $(a)}),Du=Z(function(n,r,e,a){for(var t=[];r.b&&e.b&&a.b;r=r.b,e=e.b,a=a.b)t.push(_(n,r.a,e.a,a.a));return $(t)}),Mu=hn(function(n,r,e,a,t){for(var o=[];r.b&&e.b&&a.b&&t.b;r=r.b,e=e.b,a=a.b,t=t.b)o.push(x(n,r.a,e.a,a.a,t.a));return $(o)}),Hu=Kn(function(n,r,e,a,t,o){for(var i=[];r.b&&e.b&&a.b&&t.b&&o.b;r=r.b,e=e.b,a=a.b,t=t.b,o=o.b)i.push(b(n,r.a,e.a,a.a,t.a,o.a));return $(i)}),Au=c(function(n,r){return $(Qn(r).sort(function(e,a){return V(n(e),n(a))}))}),Lu=c(function(n,r){return $(Qn(r).sort(function(e,a){var t=l(n,e,a);return t===Oe?0:t===Je?-1:1}))}),Na=[];function Eu(n){return[n]}function ja(n){return n.length}var za=S(function(n,r,e){for(var a=new Array(n),t=0;t<n;t++)a[t]=e(r+t);return a}),Ka=c(function(n,r){for(var e=new Array(n),a=0;a<n&&r.b;a++)e[a]=r.a,r=r.b;return e.length=a,w(e,r)}),Fu=c(function(n,r){return r[n]}),Ru=S(function(n,r,e){for(var a=e.length,t=new Array(a),o=0;o<a;o++)t[o]=e[o];return t[n]=r,t}),Pu=c(function(n,r){for(var e=r.length,a=new Array(e+1),t=0;t<e;t++)a[t]=r[t];return a[e]=n,a}),Tu=S(function(n,r,e){for(var a=e.length,t=0;t<a;t++)r=l(n,e[t],r);return r}),qa=S(function(n,r,e){for(var a=e.length-1;a>=0;a--)r=l(n,e[a],r);return r}),ku=c(function(n,r){for(var e=r.length,a=new Array(e),t=0;t<e;t++)a[t]=n(r[t]);return a}),Gu=S(function(n,r,e){for(var a=e.length,t=new Array(a),o=0;o<a;o++)t[o]=l(n,r+o,e[o]);return t}),Wu=S(function(n,r,e){return e.slice(n,r)}),Vu=S(function(n,r,e){var a=r.length,t=n-a;t>e.length&&(t=e.length);for(var o=a+t,i=new Array(o),u=0;u<a;u++)i[u]=r[u];for(var u=0;u<t;u++)i[u+a]=e[u];return i}),Ou=c(function(n,r){return r}),Ju=c(function(n,r){return console.log(n+": "+le(r)),r});function Uu(n,r){return function(e){K(8,n,r,e)}}function Iu(n,r,e){return function(a){K(9,n,r,e,a)}}function le(n){return"<internals>"}function Nu(n){return en(!1,n)}function en(n,r){if(typeof r=="function")return Zn(n,"<function>");if(typeof r=="boolean")return Gn(n,r?"True":"False");if(typeof r=="number")return Ya(n,r+"");if(r instanceof String)return Qa(n,"'"+ue(r,!0)+"'");if(typeof r=="string")return se(n,'"'+ue(r,!1)+'"');if(typeof r=="object"&&"$"in r){var e=r.$;if(typeof e=="number")return Zn(n,"<internals>");if(e[0]==="#"){var t=[];for(var a in r)a!=="$"&&t.push(en(n,r[a]));return"("+t.join(",")+")"}if(e==="Set_elm_builtin")return Gn(n,"Set")+Xn(n,".fromList")+" "+en(n,To(r));if(e==="RBNode_elm_builtin"||e==="RBEmpty_elm_builtin")return Gn(n,"Dict")+Xn(n,".fromList")+" "+en(n,ur(r));if(e==="Array_elm_builtin")return Gn(n,"Array")+Xn(n,".fromList")+" "+en(n,Go(r));if(e==="::"||e==="[]"){var t="[";for(r.b&&(t+=en(n,r.a),r=r.b);r.b;r=r.b)t+=","+en(n,r.a);return t+"]"}var t="";for(var o in r)if(o!=="$"){var i=en(n,r[o]),u=i[0],s=u==="{"||u==="("||u==="["||u==="<"||u==='"'||i.indexOf(" ")<0;t+=" "+(s?i:"("+i+")")}return Gn(n,e)+t}if(typeof DataView=="function"&&r instanceof DataView)return se(n,"<"+r.byteLength+" bytes>");if(typeof File<"u"&&r instanceof File)return Zn(n,"<"+r.name+">");if(typeof r=="object"){var t=[];for(var f in r){var v=f[0]==="_"?f.slice(1):f;t.push(Xn(n,v)+" = "+en(n,r[f]))}return t.length===0?"{}":"{ "+t.join(", ")+" }"}return Zn(n,"<internals>")}function ue(n,r){var e=n.replace(/\\/g,"\\\\").replace(/\n/g,"\\n").replace(/\t/g,"\\t").replace(/\r/g,"\\r").replace(/\v/g,"\\v").replace(/\0/g,"\\0");return r?e.replace(/\'/g,"\\'"):e.replace(/\"/g,'\\"')}function Gn(n,r){return n?"\x1B[96m"+r+"\x1B[0m":r}function Ya(n,r){return n?"\x1B[95m"+r+"\x1B[0m":r}function se(n,r){return n?"\x1B[93m"+r+"\x1B[0m":r}function Qa(n,r){return n?"\x1B[92m"+r+"\x1B[0m":r}function Xn(n,r){return n?"\x1B[37m"+r+"\x1B[0m":r}function Zn(n,r){return n?"\x1B[36m"+r+"\x1B[0m":r}function ju(n){return String.fromCharCode(n<10?48+n:55+n)}function K(n){throw new Error("https://github.com/elm/core/blob/1.0.0/hints/"+n+".md")}function zu(n,r,e,a,t){switch(n){case 0:throw new Error(`What node should I take over? In JavaScript I need something like:
+
+    Elm.Main.init({
+        node: document.getElementById("elm-node")
+    })
+
+You need to do this with any Browser.sandbox or Browser.element program.`);case 1:throw new Error(`Browser.application programs cannot handle URLs like this:
+
+    `+document.location.href+"\n\nWhat is the root? The root of your file system? Try looking at this program with `elm reactor` or some other server.");case 2:var o=r;throw new Error(`Problem with the flags given to your Elm program on initialization.
+
+`+o);case 3:var i=r;throw new Error("There can only be one port named `"+i+"`, but your program has multiple.");case 4:var i=r,u=e;throw new Error("Trying to send an unexpected type of value through port `"+i+"`:\n"+u);case 5:throw new Error('Trying to use `(==)` on functions.\nThere is no way to know if functions are "the same" in the Elm sense.\nRead more about this at https://package.elm-lang.org/packages/elm/core/latest/Basics#== which describes why it is this way and what the better version will look like.');case 6:var s=r;throw new Error("Your page is loading multiple Elm scripts with a module named "+s+". Maybe a duplicate script is getting loaded accidentally? If not, rename one of them so I know which is which!");case 8:var s=r,f=e,m=a;throw new Error("TODO in module `"+s+"` "+ce(f)+`
+
+`+m);case 9:var s=r,f=e,v=a,m=t;throw new Error("TODO in module `"+s+"` from the `case` expression "+ce(f)+`
+
+It received the following value:
+
+    `+le(v).replace(`
+`,`
+    `)+`
+
+But the branch that handles it says:
+
+    `+m.replace(`
+`,`
+    `));case 10:throw new Error("Bug in https://github.com/elm/virtual-dom/issues");case 11:throw new Error("Cannot perform mod 0. Division by zero error.")}}function ce(n){return n.aI.ai===n.aW.ai?"on line "+n.aI.ai:"on lines "+n.aI.ai+" through "+n.aW.ai}var Xa=c(function(n,r){return n+r}),Za=c(function(n,r){return n-r}),xa=c(function(n,r){return n*r}),nt=c(function(n,r){return n/r}),rt=c(function(n,r){return n/r|0}),Ku=c(Math.pow),et=c(function(n,r){return r%n}),qu=c(function(n,r){var e=r%n;return n===0?K(11):e>0&&n<0||e<0&&n>0?e+n:e}),Yu=Math.PI,Qu=Math.E,Xu=Math.cos,Zu=Math.sin,xu=Math.tan,ns=Math.acos,rs=Math.asin,es=Math.atan,as=c(Math.atan2);function at(n){return n}function ts(n){return n|0}function os(n){return n===1/0||n===-1/0}var tt=Math.ceil,ot=Math.floor,is=Math.round,ls=Math.sqrt,fe=Math.log,us=isNaN;function it(n){return!n}var lt=c(function(n,r){return n&&r}),ut=c(function(n,r){return n||r}),ss=c(function(n,r){return n!==r}),st=c(function(n,r){return n+r});function ct(n){var r=n.charCodeAt(0);return isNaN(r)?H:G(55296<=r&&r<=56319?w(n[0]+n[1],n.slice(2)):w(n[0],n.slice(1)))}var cs=c(function(n,r){return n+r});function ft(n){return n.length}var fs=c(function(n,r){for(var e=r.length,a=new Array(e),t=0;t<e;){var o=r.charCodeAt(t);if(55296<=o&&o<=56319){a[t]=n(r[t]+r[t+1]),t+=2;continue}a[t]=n(r[t]),t++}return a.join("")}),vs=c(function(n,r){for(var e=[],a=r.length,t=0;t<a;){var o=r[t],i=r.charCodeAt(t);t++,55296<=i&&i<=56319&&(o+=r[t],t++),n(o)&&e.push(o)}return e.join("")});function $s(n){for(var r=n.length,e=new Array(r),a=0;a<r;){var t=n.charCodeAt(a);55296<=t&&t<=56319?(e[r-a]=n[a+1],a++,e[r-a]=n[a-1],a++):(e[r-a]=n[a],a++)}return e.join("")}var ms=S(function(n,r,e){for(var a=e.length,t=0;t<a;){var o=e[t],i=e.charCodeAt(t);t++,55296<=i&&i<=56319&&(o+=e[t],t++),r=l(n,o,r)}return r}),vt=S(function(n,r,e){for(var a=e.length;a--;){var t=e[a],o=e.charCodeAt(a);56320<=o&&o<=57343&&(a--,t=e[a]+t),r=l(n,t,r)}return r}),$t=c(function(n,r){return r.split(n)}),mt=c(function(n,r){return r.join(n)}),ht=S(function(n,r,e){return e.slice(n,r)});function dt(n){return n.trim()}function hs(n){return n.replace(/^\s+/,"")}function ds(n){return n.replace(/\s+$/,"")}function gs(n){return $(n.trim().split(/\s+/g))}function gt(n){return $(n.split(/\r\n|\r|\n/g))}function _s(n){return n.toUpperCase()}function _t(n){return n.toLowerCase()}var bs=c(function(n,r){for(var e=r.length;e--;){var a=r[e],t=r.charCodeAt(e);if(56320<=t&&t<=57343&&(e--,a=r[e]+a),n(a))return!0}return!1}),bt=c(function(n,r){for(var e=r.length;e--;){var a=r[e],t=r.charCodeAt(e);if(56320<=t&&t<=57343&&(e--,a=r[e]+a),!n(a))return!1}return!0}),pt=c(function(n,r){return r.indexOf(n)>-1}),St=c(function(n,r){return r.indexOf(n)===0}),ps=c(function(n,r){return r.length>=n.length&&r.lastIndexOf(n)===r.length-n.length}),wt=c(function(n,r){var e=n.length;if(e<1)return h;for(var a=0,t=[];(a=r.indexOf(n,a))>-1;)t.push(a),a=a+e;return $(t)});function Bt(n){return n+""}function Ct(n){for(var r=0,e=n.charCodeAt(0),a=e==43||e==45?1:0,t=a;t<n.length;++t){var o=n.charCodeAt(t);if(o<48||57<o)return H;r=10*r+o-48}return t==a?H:G(e==45?-r:r)}function Ss(n){if(n.length===0||/[\sxbo]/.test(n))return H;var r=+n;return r===r?G(r):H}function yt(n){return Qn(n).join("")}function Dt(n){var r=n.charCodeAt(0);return 55296<=r&&r<=56319?(r-55296)*1024+n.charCodeAt(1)-56320+65536:r}function ws(n){return n<0||1114111<n?"\uFFFD":n<=65535?String.fromCharCode(n):(n-=65536,String.fromCharCode(Math.floor(n/1024)+55296,n%1024+56320))}function Mt(n){return n.toUpperCase()}function Bs(n){return n.toLowerCase()}function Cs(n){return n.toLocaleUpperCase()}function ys(n){return n.toLocaleLowerCase()}function Ht(n){return{$:0,a:n}}function Ds(n){return{$:1,a:n}}function Cn(n){return{$:2,b:n}}var Ms=Cn(function(n){return typeof n!="number"?U("an INT",n):-2147483647<n&&n<2147483647&&(n|0)===n||isFinite(n)&&!(n%1)?I(n):U("an INT",n)}),Hs=Cn(function(n){return typeof n=="boolean"?I(n):U("a BOOL",n)}),As=Cn(function(n){return typeof n=="number"?I(n):U("a FLOAT",n)}),Ls=Cn(function(n){return I(n)}),At=Cn(function(n){return typeof n=="string"?I(n):n instanceof String?I(n+""):U("a STRING",n)});function Es(n){return{$:3,b:n}}function Fs(n){return{$:4,b:n}}function Rs(n){return{$:5,c:n}}var Lt=c(function(n,r){return{$:6,d:n,b:r}}),Ps=c(function(n,r){return{$:7,e:n,b:r}});function Ts(n){return{$:8,b:n}}function sn(n,r){return{$:9,f:n,g:r}}var ks=c(function(n,r){return{$:10,b:r,h:n}});function Gs(n){return{$:11,g:n}}var Et=c(function(n,r){return sn(n,[r])}),Ft=S(function(n,r,e){return sn(n,[r,e])}),Ws=Z(function(n,r,e,a){return sn(n,[r,e,a])}),Vs=hn(function(n,r,e,a,t){return sn(n,[r,e,a,t])}),Os=Kn(function(n,r,e,a,t,o){return sn(n,[r,e,a,t,o])}),Js=Br(function(n,r,e,a,t,o,i){return sn(n,[r,e,a,t,o,i])}),Us=te(function(n,r,e,a,t,o,i,u){return sn(n,[r,e,a,t,o,i,u])}),Is=oe(function(n,r,e,a,t,o,i,u,s){return sn(n,[r,e,a,t,o,i,u,s])}),Ns=c(function(n,r){try{var e=JSON.parse(r);return j(n,e)}catch(a){return vn(l(Vr,"This is not valid JSON! "+a.message,r))}}),ve=c(function(n,r){return j(n,r)});function j(n,r){switch(n.$){case 2:return n.b(r);case 5:return r===null?I(n.c):U("null",r);case 3:return xn(r)?$e(n.b,r,$):U("a LIST",r);case 4:return xn(r)?$e(n.b,r,Rt):U("an ARRAY",r);case 6:var e=n.d;if(typeof r!="object"||r===null||!(e in r))return U("an OBJECT with a field named `"+e+"`",r);var f=j(n.b,r[e]);return X(f)?f:vn(l(Ue,e,f.a));case 7:var a=n.e;if(!xn(r))return U("an ARRAY",r);if(a>=r.length)return U("a LONGER array. Need index "+a+" but only see "+r.length+" entries",r);var f=j(n.b,r[a]);return X(f)?f:vn(l(Ie,a,f.a));case 8:if(typeof r!="object"||r===null||xn(r))return U("an OBJECT",r);var t=h;for(var o in r)if(r.hasOwnProperty(o)){var f=j(n.b,r[o]);if(!X(f))return vn(l(Ue,o,f.a));t=nn(w(o,f.a),t)}return I(tn(t));case 9:for(var i=n.f,u=n.g,s=0;s<u.length;s++){var f=j(u[s],r);if(!X(f))return f;i=i(f.a)}return I(i);case 10:var f=j(n.b,r);return X(f)?j(n.h(f.a),r):f;case 11:for(var v=h,m=n.g;m.b;m=m.b){var f=j(m.a,r);if(X(f))return f;v=nn(f.a,v)}return vn(Wo(tn(v)));case 1:return vn(l(Vr,n.a,r));case 0:return I(n.a)}}function $e(n,r,e){for(var a=r.length,t=new Array(a),o=0;o<a;o++){var i=j(n,r[o]);if(!X(i))return vn(l(Ie,o,i.a));t[o]=i.a}return I(e(t))}function xn(n){return Array.isArray(n)||typeof FileList<"u"&&n instanceof FileList}function Rt(n){return l(si,n.length,function(r){return n[r]})}function U(n,r){return vn(l(Vr,"Expecting "+n,r))}function yn(n,r){if(n===r)return!0;if(n.$!==r.$)return!1;switch(n.$){case 0:case 1:return n.a===r.a;case 2:return n.b===r.b;case 5:return n.c===r.c;case 3:case 4:case 8:return yn(n.b,r.b);case 6:return n.d===r.d&&yn(n.b,r.b);case 7:return n.e===r.e&&yn(n.b,r.b);case 9:return n.f===r.f&&me(n.g,r.g);case 10:return n.h===r.h&&yn(n.b,r.b);case 11:return me(n.g,r.g)}}function me(n,r){var e=n.length;if(e!==r.length)return!1;for(var a=0;a<e;a++)if(!yn(n[a],r[a]))return!1;return!0}var Pt=c(function(n,r){return JSON.stringify(r,null,n)+""});function js(n){return{$:0,a:n}}function zs(n){return n.a}function he(n){return n}function Ks(n){return n}function qs(){return[]}function Ys(){return{}}var Qs=S(function(n,r,e){return e[n]=r,e});function Xs(n){return c(function(r,e){return e.push(n(r)),e})}var Zs=null;function E(n){return{$:0,a:n}}function Tt(n){return{$:1,a:n}}function M(n){return{$:2,b:n,c:null}}var Dr=c(function(n,r){return{$:3,b:n,d:r}}),xs=c(function(n,r){return{$:4,b:n,d:r}});function kt(n){return{$:5,b:n}}var Gt=0;function nr(n){var r={$:0,e:Gt++,f:n,g:null,h:[]};return Hr(r),r}function de(n){return M(function(r){r(E(nr(n)))})}function ge(n,r){n.h.push(r),Hr(n)}var Wt=c(function(n,r){return M(function(e){ge(n,r),e(E(dn))})});function nc(n){return M(function(r){var e=n.f;e.$===2&&e.c&&e.c(),n.f=null,r(E(dn))})}var Mr=!1,_e=[];function Hr(n){if(_e.push(n),!Mr){for(Mr=!0;n=_e.shift();)Vt(n);Mr=!1}}function Vt(n){for(;n.f;){var r=n.f.$;if(r===0||r===1){for(;n.g&&n.g.$!==r;)n.g=n.g.i;if(!n.g)return;n.f=n.g.b(n.f.a),n.g=n.g.i}else if(r===2){n.f.c=n.f.b(function(e){n.f=e,Hr(n)});return}else if(r===5){if(n.h.length===0)return;n.f=n.f.b(n.h.shift())}else n.g={$:r===3?0:1,b:n.f.b,i:n.g},n.f=n.f.d}}function Ot(n){return M(function(r){var e=setTimeout(function(){r(E(dn))},n);return function(){clearTimeout(e)}})}var rc=Z(function(n,r,e,a){return Ar(r,a,n.bV,n.cm,n.ch,function(){return function(){}})});function Ar(n,r,e,a,t,o){var i=l(ve,n,r?r.flags:void 0);X(i)||K(2);var u={},s=e(i.a),f=s.a,v=o(g,f),m=Ut(u,g);function g(d,p){var C=l(a,d,f);v(f=C.a,p),we(u,C.b,t(f))}return we(u,s.b,t(f)),m?{ports:m}:{}}var Jt;function ec(n){Jt.add(n)}var T={};function Ut(n,r){var e;for(var a in T){var t=T[a];t.a&&(e=e||{},e[a]=t.a(a,r)),n[a]=It(t,r)}return e}function be(n,r,e,a,t){return{b:n,c:r,d:e,e:a,f:t}}function It(n,r){var e={g:r,h:void 0},a=n.c,t=n.d,o=n.e,i=n.f;function u(s){return l(Dr,u,kt(function(f){var v=f.a;return f.$===0?_(t,e,v,s):o&&i?x(a,e,v.i,v.j,s):_(a,e,o?v.i:v.j,s)}))}return e.h=nr(l(Dr,u,n.b))}var Nt=c(function(n,r){return M(function(e){n.g(r),e(E(dn))})}),ac=c(function(n,r){return l(Wt,n.h,{$:0,a:r})});function rr(n){return function(r){return{$:1,k:n,l:r}}}function pe(n){return{$:2,m:n}}var tc=c(function(n,r){return{$:3,n,o:r}}),Se=[],Lr=!1;function we(n,r,e){if(Se.push({p:n,q:r,r:e}),!Lr){Lr=!0;for(var a;a=Se.shift();)jt(a.p,a.q,a.r);Lr=!1}}function jt(n,r,e){var a={};er(!0,r,a,null),er(!1,e,a,null);for(var t in n)ge(n[t],{$:"fx",a:a[t]||{i:h,j:h}})}function er(n,r,e,a){switch(r.$){case 1:var t=r.k,o=zt(n,t,a,r.l);e[t]=Kt(n,o,e[t]);return;case 2:for(var i=r.m;i.b;i=i.b)er(n,i.a,e,a);return;case 3:er(n,r.o,e,{s:r.n,t:a});return}}function zt(n,r,e,a){function t(i){for(var u=e;u;u=u.t)i=u.s(i);return i}var o=n?T[r].e:T[r].f;return l(o,t,a)}function Kt(n,r,e){return e=e||{i:h,j:h},n?e.i=nn(r,e.i):e.j=nn(r,e.j),e}function Be(n){T[n]&&K(3,n)}function oc(n,r){return Be(n),T[n]={e:qt,u:r,a:Yt},rr(n)}var qt=c(function(n,r){return r});function Yt(n){var r=[],e=T[n].u,a=Ot(0);T[n].b=a,T[n].c=S(function(i,u,s){for(;u.b;u=u.b)for(var f=r,v=e(u.a),m=0;m<f.length;m++)f[m](v);return a});function t(i){r.push(i)}function o(i){r=r.slice();var u=r.indexOf(i);u>=0&&r.splice(u,1)}return{subscribe:t,unsubscribe:o}}function ic(n,r){return Be(n),T[n]={f:Qt,u:r,a:Xt},rr(n)}var Qt=c(function(n,r){return function(e){return n(r(e))}});function Xt(n,r){var e=h,a=T[n].u,t=E(null);T[n].b=t,T[n].c=S(function(i,u,s){return e=u,t});function o(i){var u=l(ve,a,i);X(u)||K(4,n,u.a);for(var s=u.a,f=e;f.b;f=f.b)r(f.a(s))}return{send:o}}function Zt(n){Bn.Elm?Ce(Bn.Elm,n):Bn.Elm=n}function Ce(n,r){for(var e in r)e in n?e=="init"?K(6):Ce(n[e],r[e]):n[e]=r[e]}function lc(n){Bn.Elm?ye("Elm",Bn.Elm,n):Bn.Elm=n}function ye(n,r,e){for(var a in e)a in r?a=="init"?K(6,n):ye(n+"."+a,r[a],e[a]):r[a]=e[a]}var ar,O=typeof document<"u"?document:{};function Er(n,r){n.appendChild(r)}var uc=Z(function(n,r,e,a){var t=a.node;return t.parentNode.replaceChild(fn(n,function(){}),t),{}});function Fr(n){return{$:0,a:n}}var xt=c(function(n,r){return c(function(e,a){for(var t=[],o=0;a.b;a=a.b){var i=a.a;o+=i.b||0,t.push(i)}return o+=t.length,{$:1,c:r,d:Rr(e),e:t,f:n,b:o}})}),P=xt(void 0),no=c(function(n,r){return c(function(e,a){for(var t=[],o=0;a.b;a=a.b){var i=a.a;o+=i.b.b||0,t.push(i)}return o+=t.length,{$:2,c:r,d:Rr(e),e:t,f:n,b:o}})}),sc=no(void 0);function cc(n,r,e,a){return{$:3,d:Rr(n),g:r,h:e,i:a}}var fc=c(function(n,r){return{$:4,j:n,k:r,b:1+(r.b||0)}});function cn(n,r){return{$:5,l:n,m:r,k:void 0}}var vc=c(function(n,r){return cn([n,r],function(){return n(r)})}),$c=S(function(n,r,e){return cn([n,r,e],function(){return l(n,r,e)})}),mc=Z(function(n,r,e,a){return cn([n,r,e,a],function(){return _(n,r,e,a)})}),hc=hn(function(n,r,e,a,t){return cn([n,r,e,a,t],function(){return x(n,r,e,a,t)})}),dc=Kn(function(n,r,e,a,t,o){return cn([n,r,e,a,t,o],function(){return b(n,r,e,a,t,o)})}),gc=Br(function(n,r,e,a,t,o,i){return cn([n,r,e,a,t,o,i],function(){return Cr(n,r,e,a,t,o,i)})}),_c=te(function(n,r,e,a,t,o,i,u){return cn([n,r,e,a,t,o,i,u],function(){return ie(n,r,e,a,t,o,i,u)})}),bc=oe(function(n,r,e,a,t,o,i,u,s){return cn([n,r,e,a,t,o,i,u,s],function(){return Ta(n,r,e,a,t,o,i,u,s)})}),De=c(function(n,r){return{$:"a0",n,o:r}}),ro=c(function(n,r){return{$:"a1",n,o:r}}),Me=c(function(n,r){return{$:"a2",n,o:r}}),He=c(function(n,r){return{$:"a3",n,o:r}}),pc=S(function(n,r,e){return{$:"a4",n:r,o:{f:n,o:e}}});function Sc(n){return n=="script"?"p":n}function wc(n){return/^(on|formAction$)/i.test(n)?"data-"+n:n}function Bc(n){return n=="innerHTML"||n=="formAction"?"data-"+n:n}function eo(n){return/^javascript:/i.test(n.replace(/\s/g,""))?"":n}function Cc(n){return/^javascript:/i.test(n.replace(/\s/g,""))?'javascript:alert("This is an XSS vector. Please use ports or web components instead.")':n}function yc(n){return/^\s*(javascript:|data:text\/html)/i.test(n)?"":n}function Dc(n){return/^\s*(javascript:|data:text\/html)/i.test(n)?'javascript:alert("This is an XSS vector. Please use ports or web components instead.")':n}var Mc=c(function(n,r){return r.$==="a0"?l(De,r.n,ao(n,r.o)):r});function ao(n,r){var e=jr(r);return{$:r.$,a:e?_(ci,e<3?to:oo,Nr(n),r.a):l(Ir,n,r.a)}}var to=c(function(n,r){return w(n(r.a),r.b)}),oo=c(function(n,r){return{H:n(r.H),aJ:r.aJ,aG:r.aG}});function Rr(n){for(var r={};n.b;n=n.b){var e=n.a,a=e.$,t=e.n,o=e.o;if(a==="a2"){t==="className"?Ae(r,t,o):r[t]=o;continue}var i=r[a]||(r[a]={});a==="a3"&&t==="class"?Ae(i,t,o):i[t]=o}return r}function Ae(n,r,e){var a=n[r];n[r]=a?a+" "+e:e}function fn(n,r){var e=n.$;if(e===5)return fn(n.k||(n.k=n.m()),r);if(e===0)return O.createTextNode(n.a);if(e===4){for(var a=n.k,t=n.j;a.$===4;)typeof t!="object"?t=[t,a.j]:t.push(a.j),a=a.k;var o={j:t,p:r},i=fn(a,o);return i.elm_event_node_ref=o,i}if(e===3){var i=n.h(n.g);return Pr(i,r,n.d),i}var i=n.f?O.createElementNS(n.f,n.c):O.createElement(n.c);ar&&n.c=="a"&&i.addEventListener("click",ar(i)),Pr(i,r,n.d);for(var u=n.e,s=0;s<u.length;s++)Er(i,fn(e===1?u[s]:u[s].b,r));return i}function Pr(n,r,e){for(var a in e){var t=e[a];a==="a1"?io(n,t):a==="a0"?so(n,r,t):a==="a3"?lo(n,t):a==="a4"?uo(n,t):(a!=="value"&&a!=="checked"||n[a]!==t)&&(n[a]=t)}}function io(n,r){var e=n.style;for(var a in r)e[a]=r[a]}function lo(n,r){for(var e in r){var a=r[e];typeof a<"u"?n.setAttribute(e,a):n.removeAttribute(e)}}function uo(n,r){for(var e in r){var a=r[e],t=a.f,o=a.o;typeof o<"u"?n.setAttributeNS(t,e,o):n.removeAttributeNS(t,e)}}function so(n,r,e){var a=n.elmFs||(n.elmFs={});for(var t in e){var o=e[t],i=a[t];if(!o){n.removeEventListener(t,i),a[t]=void 0;continue}if(i){var u=i.q;if(u.$===o.$){i.q=o;continue}n.removeEventListener(t,i)}i=co(r,o),n.addEventListener(t,i,Tr&&{passive:jr(o)<2}),a[t]=i}}var Tr;try{window.addEventListener("t",null,Object.defineProperty({},"passive",{get:function(){Tr=!0}}))}catch{}function co(n,r){function e(a){var t=e.q,o=j(t.a,a);if(X(o)){for(var i=jr(t),u=o.a,s=i?i<3?u.a:u.H:u,f=i==1?u.b:i==3&&u.aJ,v=(f&&a.stopPropagation(),(i==2?u.b:i==3&&u.aG)&&a.preventDefault(),n),m,g;m=v.j;){if(typeof m=="function")s=m(s);else for(var g=m.length;g--;)s=m[g](s);v=v.p}v(s,f)}}return e.q=r,e}function fo(n,r){return n.$==r.$&&yn(n.a,r.a)}function Le(n,r){var e=[];return q(n,r,e,0),e}function k(n,r,e,a){var t={$:r,r:e,s:a,t:void 0,u:void 0};return n.push(t),t}function q(n,r,e,a){if(n!==r){var t=n.$,o=r.$;if(t!==o)if(t===1&&o===2)r=po(r),o=1;else{k(e,0,a,r);return}switch(o){case 5:for(var i=n.l,u=r.l,s=i.length,f=s===u.length;f&&s--;)f=i[s]===u[s];if(f){r.k=n.k;return}r.k=r.m();var v=[];q(n.k,r.k,v,0),v.length>0&&k(e,1,a,v);return;case 4:for(var m=n.j,g=r.j,d=!1,p=n.k;p.$===4;)d=!0,typeof m!="object"?m=[m,p.j]:m.push(p.j),p=p.k;for(var C=r.k;C.$===4;)d=!0,typeof g!="object"?g=[g,C.j]:g.push(C.j),C=C.k;if(d&&m.length!==g.length){k(e,0,a,r);return}(d?!vo(m,g):m!==g)&&k(e,2,a,g),q(p,C,e,a+1);return;case 0:n.a!==r.a&&k(e,3,a,r.a);return;case 1:Ee(n,r,e,a,$o);return;case 2:Ee(n,r,e,a,mo);return;case 3:if(n.h!==r.h){k(e,0,a,r);return}var y=kr(n.d,r.d);y&&k(e,4,a,y);var L=r.i(n.g,r.g);L&&k(e,5,a,L);return}}}function vo(n,r){for(var e=0;e<n.length;e++)if(n[e]!==r[e])return!1;return!0}function Ee(n,r,e,a,t){if(n.c!==r.c||n.f!==r.f){k(e,0,a,r);return}var o=kr(n.d,r.d);o&&k(e,4,a,o),t(n,r,e,a)}function kr(n,r,e){var a;for(var t in n){if(t==="a1"||t==="a0"||t==="a3"||t==="a4"){var o=kr(n[t],r[t]||{},t);o&&(a=a||{},a[t]=o);continue}if(!(t in r)){a=a||{},a[t]=e?e==="a1"?"":e==="a0"||e==="a3"?void 0:{f:n[t].f,o:void 0}:typeof n[t]=="string"?"":null;continue}var i=n[t],u=r[t];i===u&&t!=="value"&&t!=="checked"||e==="a0"&&fo(i,u)||(a=a||{},a[t]=u)}for(var s in r)s in n||(a=a||{},a[s]=r[s]);return a}function $o(n,r,e,a){var t=n.e,o=r.e,i=t.length,u=o.length;i>u?k(e,6,a,{v:u,i:i-u}):i<u&&k(e,7,a,{v:i,e:o});for(var s=i<u?i:u,f=0;f<s;f++){var v=t[f];q(v,o[f],e,++a),a+=v.b||0}}function mo(n,r,e,a){for(var t=[],o={},i=[],u=n.e,s=r.e,f=u.length,v=s.length,m=0,g=0,d=a;m<f&&g<v;){var p=u[m],C=s[g],y=p.a,L=C.a,D=p.b,J=C.b,W=void 0,R=void 0;if(y===L){d++,q(D,J,t,d),d+=D.b||0,m++,g++;continue}var N=u[m+1],ln=s[g+1];if(N){var Ra=N.a,kn=N.b;R=L===Ra}if(ln){var Pa=ln.a,ae=ln.b;W=y===Pa}if(W&&R){d++,q(D,ae,t,d),Wn(o,t,y,J,g,i),d+=D.b||0,d++,Vn(o,t,y,kn,d),d+=kn.b||0,m+=2,g+=2;continue}if(W){d++,Wn(o,t,L,J,g,i),q(D,ae,t,d),d+=D.b||0,m+=1,g+=2;continue}if(R){d++,Vn(o,t,y,D,d),d+=D.b||0,d++,q(kn,J,t,d),d+=kn.b||0,m+=2,g+=1;continue}if(N&&Ra===Pa){d++,Vn(o,t,y,D,d),Wn(o,t,L,J,g,i),d+=D.b||0,d++,q(kn,ae,t,d),d+=kn.b||0,m+=2,g+=2;continue}break}for(;m<f;){d++;var p=u[m],D=p.b;Vn(o,t,p.a,D,d),d+=D.b||0,m++}for(;g<v;){var wr=wr||[],C=s[g];Wn(o,t,C.a,C.b,void 0,wr),g++}(t.length>0||i.length>0||wr)&&k(e,8,a,{w:t,x:i,y:wr})}var Fe="_elmW6BL";function Wn(n,r,e,a,t,o){var i=n[e];if(!i){i={c:0,z:a,r:t,s:void 0},o.push({r:t,A:i}),n[e]=i;return}if(i.c===1){o.push({r:t,A:i}),i.c=2;var u=[];q(i.z,a,u,i.r),i.r=t,i.s.s={w:u,A:i};return}Wn(n,r,e+Fe,a,t,o)}function Vn(n,r,e,a,t){var o=n[e];if(!o){var i=k(r,9,t,void 0);n[e]={c:1,z:a,r:t,s:i};return}if(o.c===0){o.c=2;var u=[];q(a,o.z,u,t),k(r,9,t,{w:u,A:o});return}Vn(n,r,e+Fe,a,t)}function Re(n,r,e,a){On(n,r,e,0,0,r.b,a)}function On(n,r,e,a,t,o,i){for(var u=e[a],s=u.r;s===t;){var f=u.$;if(f===1)Re(n,r.k,u.s,i);else if(f===8){u.t=n,u.u=i;var v=u.s.w;v.length>0&&On(n,r,v,0,t,o,i)}else if(f===9){u.t=n,u.u=i;var m=u.s;if(m){m.A.s=n;var v=m.w;v.length>0&&On(n,r,v,0,t,o,i)}}else u.t=n,u.u=i;if(a++,!(u=e[a])||(s=u.r)>o)return a}var g=r.$;if(g===4){for(var d=r.k;d.$===4;)d=d.k;return On(n,d,e,a,t+1,o,n.elm_event_node_ref)}for(var p=r.e,C=n.childNodes,y=0;y<p.length;y++){t++;var L=g===1?p[y]:p[y].b,D=t+(L.b||0);if(t<=s&&s<=D&&(a=On(C[y],L,e,a,t,D,i),!(u=e[a])||(s=u.r)>o))return a;t=D}return a}function Pe(n,r,e,a){return e.length===0?n:(Re(n,r,e,a),tr(n,e))}function tr(n,r){for(var e=0;e<r.length;e++){var a=r[e],t=a.t,o=ho(t,a);t===n&&(n=o)}return n}function ho(n,r){switch(r.$){case 0:return go(n,r.s,r.u);case 4:return Pr(n,r.u,r.s),n;case 3:return n.replaceData(0,n.length,r.s),n;case 1:return tr(n,r.s);case 2:return n.elm_event_node_ref?n.elm_event_node_ref.j=r.s:n.elm_event_node_ref={j:r.s,p:r.u},n;case 6:for(var o=r.s,a=0;a<o.i;a++)n.removeChild(n.childNodes[o.v]);return n;case 7:for(var o=r.s,e=o.e,a=o.v,t=n.childNodes[a];a<e.length;a++)n.insertBefore(fn(e[a],r.u),t);return n;case 9:var o=r.s;if(!o)return n.parentNode.removeChild(n),n;var i=o.A;return typeof i.r<"u"&&n.parentNode.removeChild(n),i.s=tr(n,o.w),n;case 8:return _o(n,r);case 5:return r.s(n);default:K(10)}}function go(n,r,e){var a=n.parentNode,t=fn(r,e);return t.elm_event_node_ref||(t.elm_event_node_ref=n.elm_event_node_ref),a&&t!==n&&a.replaceChild(t,n),t}function _o(n,r){var e=r.s,a=bo(e.y,r);n=tr(n,e.w);for(var t=e.x,o=0;o<t.length;o++){var i=t[o],u=i.A,s=u.c===2?u.s:fn(u.z,r.u);n.insertBefore(s,n.childNodes[i.r])}return a&&Er(n,a),n}function bo(n,r){if(n){for(var e=O.createDocumentFragment(),a=0;a<n.length;a++){var t=n[a],o=t.A;Er(e,o.c===2?o.s:fn(o.z,r.u))}return e}}function Gr(n){if(n.nodeType===3)return Fr(n.textContent);if(n.nodeType!==1)return Fr("");for(var r=h,e=n.attributes,a=e.length;a--;){var t=e[a],o=t.name,i=t.value;r=nn(l(He,o,i),r)}for(var u=n.tagName.toLowerCase(),s=h,f=n.childNodes,a=f.length;a--;)s=nn(Gr(f[a]),s);return _(P,u,r,s)}function po(n){for(var r=n.e,e=r.length,a=new Array(e),t=0;t<e;t++)a[t]=r[t].b;return{$:1,c:n.c,d:n.d,e:a,f:n.f,b:n.b}}var So,wo=So||Z(function(n,r,e,a){return Ar(r,a,n.bV,n.cm,n.ch,function(t,o){var i=n.cn,u=a.node,s=Gr(u);return Te(o,function(f){var v=i(f),m=Le(s,v);u=Pe(u,s,m,t),s=v})})}),Bo,Co=Bo||Z(function(n,r,e,a){return Ar(r,a,n.bV,n.cm,n.ch,function(t,o){var i=n.aH&&n.aH(t),u=n.cn,s=O.title,f=O.body,v=Gr(f);return Te(o,function(m){ar=i;var g=u(m),d=P("body")(h)(g.bE),p=Le(v,d);f=Pe(f,v,p,t),v=d,ar=0,s!==g.ck&&(O.title=s=g.ck)})})}),yo=typeof cancelAnimationFrame<"u"?cancelAnimationFrame:function(n){clearTimeout(n)},Jn=typeof requestAnimationFrame<"u"?requestAnimationFrame:function(n){return setTimeout(n,1e3/60)};function Te(n,r){r(n);var e=0;function a(){e=e===1?0:(Jn(a),r(n),1)}return function(t,o){n=t,o?(r(n),e===2&&(e=1)):(e===0&&Jn(a),e=2)}}function Hc(n){var r=n.b8,e=n.b9,a=function(){a.a(r(Wr()))};return Co({aH:function(t){return a.a=t,an.addEventListener("popstate",a),an.navigator.userAgent.indexOf("Trident")<0||an.addEventListener("hashchange",a),c(function(o,i){if(!i.ctrlKey&&!i.metaKey&&!i.shiftKey&&i.button<1&&!o.target&&!o.hasAttribute("download")){i.preventDefault();var u=o.href,s=Wr(),f=sa(u).a;t(e(f&&s.bh===f.bh&&s.a1===f.a1&&s.be.a===f.be.a?vi(f):fi(u)))}})},bV:function(t){return _(n.bV,t,Wr(),a)},cn:n.cn,cm:n.cm,ch:n.ch})}function Wr(){return sa(O.location.href).a||K(1)}var Ac=c(function(n,r){return l(pn,In,M(function(){r&&history.go(r),n()}))}),Lc=c(function(n,r){return l(pn,In,M(function(){history.pushState({},"",r),n()}))}),Ec=c(function(n,r){return l(pn,In,M(function(){history.replaceState({},"",r),n()}))}),ke={addEventListener:function(){},removeEventListener:function(){}},Dn=typeof document<"u"?document:ke,an=typeof window<"u"?window:ke,Fc=S(function(n,r,e){return de(M(function(a){function t(o){nr(e(o))}return n.addEventListener(r,t,Tr&&{passive:!0}),function(){n.removeEventListener(r,t)}}))}),Rc=c(function(n,r){var e=j(n,r);return X(e)?G(e.a):H});function Pc(){return typeof O.hidden<"u"?{bS:"hidden",bH:"visibilitychange"}:typeof O.mozHidden<"u"?{bS:"mozHidden",bH:"mozvisibilitychange"}:typeof O.msHidden<"u"?{bS:"msHidden",bH:"msvisibilitychange"}:typeof O.webkitHidden<"u"?{bS:"webkitHidden",bH:"webkitvisibilitychange"}:{bS:"hidden",bH:"visibilitychange"}}function Tc(){return M(function(n){var r=Jn(function(){n(E(Date.now()))});return function(){yo(r)}})}function kc(){return M(function(n){n(E(Date.now()))})}function or(n,r){return M(function(e){Jn(function(){var a=document.getElementById(n);e(a?E(r(a)):Tt($i(n)))})})}function Do(n){return M(function(r){Jn(function(){r(E(n()))})})}var Gc=c(function(n,r){return or(r,function(e){return e[n](),dn})});function Wc(){return{bm:Ge(),bu:{bx:an.pageXOffset,by:an.pageYOffset,bw:Dn.documentElement.clientWidth,a0:Dn.documentElement.clientHeight}}}function Ge(){var n=Dn.body,r=Dn.documentElement;return{bw:Math.max(n.scrollWidth,n.offsetWidth,r.scrollWidth,r.offsetWidth,r.clientWidth),a0:Math.max(n.scrollHeight,n.offsetHeight,r.scrollHeight,r.offsetHeight,r.clientHeight)}}var Vc=c(function(n,r){return Do(function(){return an.scroll(n,r),dn})});function Oc(n){return or(n,function(r){return{bm:{bw:r.scrollWidth,a0:r.scrollHeight},bu:{bx:r.scrollLeft,by:r.scrollTop,bw:r.clientWidth,a0:r.clientHeight}}})}var Jc=S(function(n,r,e){return or(n,function(a){return a.scrollLeft=r,a.scrollTop=e,dn})});function Uc(n){return or(n,function(r){var e=r.getBoundingClientRect(),a=an.pageXOffset,t=an.pageYOffset;return{bm:Ge(),bu:{bx:a,by:t,bw:Dn.documentElement.clientWidth,a0:Dn.documentElement.clientHeight},bM:{bx:a+e.left,by:t+e.top,bw:e.width,a0:e.height}}})}function Ic(n){return l(pn,In,M(function(r){O.location.reload(n)}))}function Nc(n){return l(pn,In,M(function(r){try{an.location=n}catch{O.location.reload(!1)}}))}var jc=Cn(function(n){return typeof File<"u"&&n instanceof File?I(n):U("a FILE",n)});function zc(n){return n.name}function Kc(n){return n.type}function qc(n){return n.size}function Yc(n){return ga(n.lastModified)}var We;function Ve(){return We||(We=document.createElement("a"))}var Qc=S(function(n,r,e){return M(function(a){var t=new Blob([e],{type:r});if(navigator.msSaveOrOpenBlob){navigator.msSaveOrOpenBlob(t,n);return}var o=Ve(),i=URL.createObjectURL(t);o.href=i,o.download=n,ir(o),URL.revokeObjectURL(i)})});function Xc(n){return M(function(r){var e=Ve();e.href=n,e.download="",e.origin===location.origin||(e.target="_blank"),ir(e)})}function Zc(n){return new Uint8Array(n.buffer,n.byteOffset,n.byteLength)}function ir(n){if(typeof MouseEvent=="function")n.dispatchEvent(new MouseEvent("click"));else{var r=document.createEvent("MouseEvents");r.initMouseEvent("click",!0,!0,window,0,0,0,0,0,!1,!1,!1,!1,0,null),document.body.appendChild(n),n.dispatchEvent(r),document.body.removeChild(n)}}var Y;function Mo(n){return M(function(r){Y=document.createElement("input"),Y.type="file",Y.accept=l(gn,",",n),Y.addEventListener("change",function(e){r(E(e.target.files[0]))}),ir(Y)})}function xc(n){return M(function(r){Y=document.createElement("input"),Y.type="file",Y.multiple=!0,Y.accept=l(gn,",",n),Y.addEventListener("change",function(e){var a=$(e.target.files);r(E(w(a.a,a.b)))}),ir(Y)})}function Ho(n){return M(function(r){var e=new FileReader;return e.addEventListener("loadend",function(){r(E(e.result))}),e.readAsText(n),function(){e.abort()}})}function nf(n){return M(function(r){var e=new FileReader;return e.addEventListener("loadend",function(){r(E(new DataView(e.result)))}),e.readAsArrayBuffer(n),function(){e.abort()}})}function rf(n){return M(function(r){var e=new FileReader;return e.addEventListener("loadend",function(){r(E(e.result))}),e.readAsDataURL(n),function(){e.abort()}})}var Ao=c(function(n,r){return n&r}),ef=c(function(n,r){return n|r}),Lo=c(function(n,r){return n^r});function af(n){return~n}var tf=c(function(n,r){return r<<n}),of=c(function(n,r){return r>>n}),Eo=c(function(n,r){return r>>>n});function Fo(n){return M(function(r){r(E(n(Date.now())))})}var lf=c(function(n,r){return M(function(e){var a=setInterval(function(){nr(r)},n);return function(){clearInterval(a)}})});function uf(){return M(function(n){n(E(l(Ui,-new Date().getTimezoneOffset(),h)))})}function sf(){return M(function(n){try{var r=Vi(Intl.DateTimeFormat().resolvedOptions().timeZone)}catch{var r=Oi(new Date().getTimezoneOffset())}n(E(r))})}var Oe=1,Ro=2,Je=0,F=Ua,lr=S(function(n,r,e){n:for(;;){if(e.$===-2)return r;var a=e.b,t=e.c,o=e.d,i=e.e,u=n,s=_(n,a,t,_(lr,n,r,i)),f=o;n=u,r=s,e=f;continue n}}),ur=function(n){return _(lr,S(function(r,e,a){return l(F,w(r,e),a)}),h,n)},Po=function(n){return _(lr,S(function(r,e,a){return l(F,r,a)}),h,n)},To=function(n){var r=n;return Po(r)},sr=qa,ko=S(function(n,r,e){var a=e.c,t=e.d,o=c(function(i,u){if(i.$){var f=i.a;return _(sr,n,u,f)}else{var s=i.a;return _(sr,o,u,s)}});return _(sr,o,_(sr,n,r,t),a)}),Go=function(n){return _(ko,F,h,n)},vn=function(n){return{$:1,a:n}},Vr=c(function(n,r){return{$:3,a:n,b:r}}),Ue=c(function(n,r){return{$:0,a:n,b:r}}),Ie=c(function(n,r){return{$:1,a:n,b:r}}),I=function(n){return{$:0,a:n}},Wo=function(n){return{$:2,a:n}},cf=1,Vo=Xa,G=function(n){return{$:0,a:n}},H={$:1},Oo=bt,ff=lt,vf=Ja,Jo=Pt,cr=Bt,gn=c(function(n,r){return l(mt,n,Qn(r))}),Uo=c(function(n,r){return $(l($t,n,r))}),Ne=function(n){return l(gn,`
+    `,l(Uo,`
+`,n))},_n=S(function(n,r,e){n:for(;;)if(e.b){var a=e.a,t=e.b,o=n,i=l(n,a,r),u=t;n=o,r=i,e=u;continue n}else return r}),je=function(n){return _(_n,c(function(r,e){return e+1}),0,n)},Io=Ia,$f=Wa,mf=Za,No=S(function(n,r,e){n:for(;;)if(V(n,r)<1){var a=n,t=r-1,o=l(F,r,e);n=a,r=t,e=o;continue n}else return e}),jo=c(function(n,r){return _(No,n,r,h)}),zo=c(function(n,r){return _(Io,n,l(jo,0,je(r)-1),r)}),fr=Dt,ze=function(n){var r=fr(n);return 97<=r&&r<=122},Ke=function(n){var r=fr(n);return r<=90&&65<=r},hf=ut,Ko=function(n){return ze(n)||Ke(n)},qo=function(n){var r=fr(n);return r<=57&&48<=r},Yo=function(n){return ze(n)||Ke(n)||qo(n)},tn=function(n){return _(_n,F,h,n)},qe=ct,Qo=c(function(n,r){return`
+
+(`+(cr(n+1)+(") "+Ne(Xo(r))))}),Xo=function(n){return l(Zo,n,h)},Zo=c(function(n,r){n:for(;;)switch(n.$){case 0:var e=n.a,i=n.b,a=function(){var C=qe(e);if(C.$===1)return!1;var y=C.a,L=y.a,D=y.b;return Ko(L)&&l(Oo,Yo,D)}(),t=a?"."+e:"['"+(e+"']"),s=i,f=l(F,t,r);n=s,r=f;continue n;case 1:var o=n.a,i=n.b,u="["+(cr(o)+"]"),s=i,f=l(F,u,r);n=s,r=f;continue n;case 2:var v=n.a;if(v.b)if(v.b.b){var m=function(){return r.b?"The Json.Decode.oneOf at json"+l(gn,"",tn(r)):"Json.Decode.oneOf"}(),p=m+(" failed in the following "+(cr(je(v))+" ways:"));return l(gn,`
+
+`,l(F,p,l(zo,Qo,v)))}else{var i=v.a,s=i,f=r;n=s,r=f;continue n}else return"Ran into a Json.Decode.oneOf with no possibilities"+function(){return r.b?" at json"+l(gn,"",tn(r)):"!"}();default:var g=n.a,d=n.b,p=function(){return r.b?"Problem with the value at json"+(l(gn,"",tn(r))+`:
+
+    `):`Problem with the given value:
+
+`}();return p+(Ne(l(Jo,4,d))+(`
+
+`+g))}}),Q=32,Or=Z(function(n,r,e,a){return{$:0,a:n,b:r,c:e,d:a}}),Jr=Na,Ye=tt,df=nt,Qe=c(function(n,r){return fe(r)/fe(n)}),gf=at,Ur=Ye(l(Qe,2,Q)),xo=x(Or,0,Ur,Jr,Jr),Xe=za,ni=function(n){return{$:1,a:n}},_f=c(function(n,r){return n(r)}),bf=c(function(n,r){return r(n)}),ri=ka,ei=ot,Ze=ja,pf=Va,xe=c(function(n,r){return V(n,r)>0?n:r}),Sf=xa,ai=function(n){return{$:0,a:n}},na=Ka,ti=c(function(n,r){n:for(;;){var e=l(na,Q,n),a=e.a,t=e.b,o=l(F,ai(a),r);if(t.b){var i=t,u=o;n=i,r=u;continue n}else return tn(o)}}),oi=function(n){var r=n.a;return r},ii=c(function(n,r){n:for(;;){var e=Ye(r/Q);if(e===1)return l(na,Q,n).a;var a=l(ti,n,h),t=e;n=a,r=t;continue n}}),li=c(function(n,r){if(r.h){var e=r.h*Q,a=ei(l(Qe,Q,e-1)),t=n?tn(r.k):r.k,o=l(ii,t,r.h);return x(Or,Ze(r.j)+e,l(xe,5,a*Ur),o,r.j)}else return x(Or,Ze(r.j),Ur,Jr,r.j)}),wf=rt,Bf=Ga,ui=hn(function(n,r,e,a,t){n:for(;;){if(r<0)return l(li,!1,{k:a,h:e/Q|0,j:t});var o=ni(_(Xe,Q,r,n)),i=n,u=r-Q,s=e,f=l(F,o,a),v=t;n=i,r=u,e=s,a=f,t=v;continue n}}),Cf=et,si=c(function(n,r){if(n<=0)return xo;var e=n%Q,a=_(Xe,e,n-e,r),t=n-e-Q;return b(ui,r,t,n,h,a)}),yf=0,X=function(n){return!n.$},Ir=Et,ci=Ft,Nr=Ht,jr=function(n){switch(n.$){case 0:return 0;case 1:return 1;case 2:return 2;default:return 3}},fi=function(n){return{$:1,a:n}},vi=function(n){return{$:0,a:n}},bn=function(n){return n},$i=bn,Df=0,Mf=1,ra=Kn(function(n,r,e,a,t,o){return{aY:o,a1:r,bc:a,be:e,bh:n,bi:t}}),mi=pt,ea=ft,vr=ht,$n=c(function(n,r){return n<1?r:_(vr,n,ea(r),r)}),$r=wt,Un=function(n){return n===""},mr=c(function(n,r){return n<1?"":_(vr,0,n,r)}),aa=Ct,ta=hn(function(n,r,e,a,t){if(Un(t)||l(mi,"@",t))return H;var o=l($r,":",t);if(o.b){if(o.b.b)return H;var i=o.a,u=aa(l($n,i+1,t));if(u.$===1)return H;var s=u;return G(Cr(ra,n,l(mr,i,t),s,r,e,a))}else return G(Cr(ra,n,t,H,r,e,a))}),oa=Z(function(n,r,e,a){if(Un(a))return H;var t=l($r,"/",a);if(t.b){var o=t.a;return b(ta,n,l($n,o,a),r,e,l(mr,o,a))}else return b(ta,n,"/",r,e,a)}),ia=S(function(n,r,e){if(Un(e))return H;var a=l($r,"?",e);if(a.b){var t=a.a;return x(oa,n,G(l($n,t+1,e)),r,l(mr,t,e))}else return x(oa,n,H,r,e)}),la=c(function(n,r){if(Un(r))return H;var e=l($r,"#",r);if(e.b){var a=e.a;return _(ia,n,G(l($n,a+1,r)),l(mr,a,r))}else return _(ia,n,H,r)}),ua=St,sa=function(n){return l(ua,"http://",n)?l(la,0,l($n,7,n)):l(ua,"https://",n)?l(la,1,l($n,8,n)):H},In=function(n){n:for(;;){var r=n,e=r;n=e;continue n}},Hf=bn,mn=E,hi=mn(0),ca=Z(function(n,r,e,a){if(a.b){var t=a.a,o=a.b;if(o.b){var i=o.a,u=o.b;if(u.b){var s=u.a,f=u.b;if(f.b){var v=f.a,m=f.b,g=e>500?_(_n,n,r,tn(m)):x(ca,n,r,e+1,m);return l(n,t,l(n,i,l(n,s,l(n,v,g))))}else return l(n,t,l(n,i,l(n,s,r)))}else return l(n,t,l(n,i,r))}else return l(n,t,r)}else return r}),hr=S(function(n,r,e){return x(ca,n,r,0,e)}),Mn=c(function(n,r){return _(hr,c(function(e,a){return l(F,n(e),a)}),h,r)}),Hn=Dr,zr=c(function(n,r){return l(Hn,function(e){return mn(n(e))},r)}),di=S(function(n,r,e){return l(Hn,function(a){return l(Hn,function(t){return mn(l(n,a,t))},e)},r)}),gi=function(n){return _(hr,di(F),mn(h),n)},fa=Nt,_i=c(function(n,r){var e=r;return de(l(Hn,fa(n),e))}),bi=S(function(n,r,e){return l(zr,function(a){return 0},gi(l(Mn,_i(n),r)))}),pi=S(function(n,r,e){return mn(0)}),Si=c(function(n,r){var e=r;return l(zr,n,e)});T.Task=be(hi,bi,pi,Si);var wi=rr("Task"),pn=c(function(n,r){return wi(l(zr,n,r))}),Bi=wo,va=function(n){return{$:4,a:n}},Ci=function(n){return{$:3,a:n}},yi=function(n){return{$:1,a:n}},$a=function(n){return{$:5,a:n}},Di=yt,Mi=S(function(n,r,e){var a=c(function(t,o){if(o.b){var i=o.a;return l(F,l(n,t,i),o)}else return h});return tn(_(_n,a,$([r]),e))}),Hi=vt,Ai=function(n){return _(Hi,F,h,n)},Li=Mt,Ei=function(n){return l($n,1,Di(_(Mi,c(function(r,e){return e===" "||e==="-"?Li(r):r})," ",Ai(n))))},Fi=`Aberto
+Accio
+Aguamenti
+Alohomora
+Avada Kedavra
+Bat-Bogey Hex
+Bubble-Head Charm
+Caterwauling Charm
+Cheering Charm
+Colloportus
+Confringo
+Confundo
+Crucio
+Descendo
+Diffindo
+Disillusionment Charm
+Engorgio
+Episkey
+Evanesco
+Expecto Patronum
+Expelliarmus
+Finestra
+Homenum Revelio
+Impedimenta
+Imperio
+Impervius
+Incendio
+Levicorpus
+Liberacorpus
+Locomotor
+Lumos
+Morsmordre
+Muffliato
+Nox
+Obliviate
+Permanent Sticking Charm
+Petrificus Totalus
+Portus
+Priori Incantato
+Protego
+Reducto
+Rennervate
+Relashio
+Rennervate
+Reparo
+Revelio
+Rictusempra
+Riddikulus
+Scourgify
+Sectumsempra
+Silencio
+Sonorus
+Stupefy
+Taboo
+Tergeo
+Unbreakable Vow
+Wingardium Leviosa
+Appare Vestigium
+Avenseguim
+Finite
+Nebulus
+Protego Diabolica
+Surgito
+Papyrus Reparo`,Ri=`Abyss
+Achad Tarlang
+Adorn
+Adurant
+Aelin-uial
+Aeluin
+Afros
+Agar
+Agathurush
+Aglarond
+Aglon
+Akallab\xEAth
+Aldal\xF3m\xEB
+Aldburg
+Almaren
+Alqualond\xEB
+Aman
+Ambar\xF3na
+Amon Amarth
+Amon Anwar
+Amon Darthir
+Amon D\xEEn
+Amon Ereb
+Amon Ethir
+Amon Gwareth
+Amon Hen
+Amon Lanc
+Amon Lhaw
+Amon Obel
+Amon R\xFBdh
+Amon S\xFBl
+Amon Uilos
+Anach
+Anad\xFBn\xEA
+Ancient West
+Andafalass\xEB
+Andor
+Andram
+Andrast
+Andrath
+Androth
+Anduin
+And\xFAne Pelo
+And\xFAni\xEB
+Andustar
+Anfalas
+Anfauglith
+Angamando
+Angband
+Anghabar
+Angmar
+Angren
+Angrenost
+Annon-in-Gelydh
+Ann\xFAminas
+An\xF3rien
+Antaro
+Araman
+Arandor
+Archet
+Arda
+Ard-galen
+Argonath
+Armenelos
+Arnach
+Arnor
+Aros
+Arossiach
+Arthedain
+Arthor na Challonnas
+Arthor na Forlonnas
+Arth\xF3rien
+Arvernien
+Ascar
+Ash Mountains
+Astulat
+Atalant\xEB
+Athrad Angren
+Avall\xF3n\xEB
+Avathar
+Azanulbizar
+Bag End
+Bagshot Row
+Balar
+Bamfurlong
+Bar-en-Danwedh
+Bar-en-Nibin-noeg
+Bar-in-M\u0177l\u200E
+Bar-erib
+Barad-d\xFBr
+Barad Eithel
+Barad Nimras
+Baranduin
+Barazinbar
+Barrow-downs
+Barrowfield
+Battle Pit
+Battle Plain
+Bay of Balar
+Bay of Belfalas
+Bay of And\xFAni\xEB
+Bay of Eldamar
+Bay of Eldanna
+Bay of R\xF3menna
+Belegaer
+Belegost
+Beleriand
+Belfalas
+Bent Seas
+Beorn's House
+Bindbale Wood
+Birchwoods of Nimbrethil
+Black Crack
+Black Gate
+Black Land
+Black Pit
+Black Pits
+Blackroot
+Blessed Realm
+Blue Mountains
+Bombadil's House
+Bonfire Glade
+Bony ridge
+The Bounds
+Branda-n\xEEn
+Brandywine Bridge
+Bree
+Bree Hill
+Bree-land
+Breredon
+Brethil
+Bridge of Esgalduin
+Bridge of Mitheithel
+Bridge of Khazad-d\xFBm
+Bridge of Stonebows
+Bridgefields
+Brilthor
+Brithiach
+Brithombar
+Brithon
+Brockenbores
+Brodda's hall
+Brown Lands
+Bruinen
+Buck Hill
+Buckland
+Buckland Gate
+Buckland Road
+Bucklebury
+Bucklebury Ferry
+Bucklebury Ford
+Budge Ford
+Budgeford
+Bundushath\xFBr
+Bywater
+Bywater Pool
+Bywater Road
+Cabed-en-Aras
+Cair Andros
+Calacirya
+Calacirian
+Calembel
+Calenardhon
+Calenhad
+Calmindon
+Cape Balar
+Cape of Andrast
+Cape of Forochel
+Carach Angren
+Caradhras
+Caragd\xFBr
+Caras Galadhon
+Carchost
+Cardolan
+Carn D\xFBm
+Carnen
+Carrock
+Causeway Forts
+Caverns of Helm's Deep
+Caverns of Narog
+Caves of Androth
+Caves of Menegroth
+Celduin
+Celebdil
+Celebrant
+Celebros
+Celon
+Celos
+Central Highlands
+Cerin Amroth
+Chamber of Mazarbul
+Chambers of Fire
+Chetwood
+Chill Gulf
+Ciril
+Cirith D\xFAath
+Cirith Forn en Andrath
+Cirith Gorgor
+Cirith Ninniach
+Cirith Thoronath
+Cirith Ungol
+Citadel of Stars
+City of the Corsairs
+Cloudyhead
+Cobas Haven
+C\xF4f Belfalas
+Coldfells
+Combe
+Cormallen
+Corollair\xEB
+Coron Oiolair\xEB
+Court of the Fountain
+Cracks of Doom
+Crickhollow
+Crissaegrim
+Cristhorn
+Crossings of Teiglin
+Cross-roads
+Cuivi\xE9nen
+C\xFBl B\xEEn
+C\xFBl Veleg
+C\xFBm-nan-Arasaith
+Dagorlad
+Dale
+Dark Door
+Dark Gate
+Dark Land
+Dark Lands
+Dark Mountains
+Dark Tower
+Dead Marshes
+Deadmen's Dike
+Death Down
+Deathless Lands
+Deeping
+Deephallow
+Deeping Coomb
+Deeping-road
+Deeping Stream
+Deeping Wall
+Deer's Leap
+Deld\xFAwath
+Derndingle
+Desert of Lostladen
+Desolation of Smaug
+Desolation of the Morannon
+Dimbar
+Dimholt
+Dimrill Dale
+Dimrill Gate
+Dimrill Stair
+Dimrost
+Dingle
+Dol Amroth
+Dol Baran
+Dol Guldur
+Dol Tarlang
+Dome of Stars
+Doors of Night
+Doors of Durin
+Dor Caranthir
+Dor-C\xFAarthol
+Dor Daedeloth
+Dor D\xEDnen
+Dor-en-Ernil
+Dor Firn-i-Guinar
+Dor-l\xF3min
+Dor-Nu-Fauglith
+Doriath
+Dorthonion
+Dorwinion
+Downlands
+Drowns
+Drengist
+Dr\xFAadan Forest
+Dr\xFAwaith Iaur
+Dry River
+Duilwen
+Dungortheb
+Dunharrow
+D\xFAnharg
+Dunland
+Durin's Bridge
+Durin's Tower
+Durthang
+Dwaling
+Dwarf-Road
+Dwarrowdelf
+Dwimorberg
+Dwimordene
+Eagles' Eyrie
+East Beleriand
+East Bight
+East Emnet
+Eastern Eriador
+East Farthing
+Eastfold
+East-gate
+East-lands
+East L\xF3rien
+East March
+East Road
+East Wall of Rohan
+Eastwood
+Echad i Sedryn
+Echoing Hills
+Echoriath
+Edge of the Wild
+Edhellond
+Edoras
+Egladil
+Eglador
+Eglamar
+Eglarest
+Eilenach
+Eilenaer
+Eithel Ivrin
+Eithel N\xEDnui
+Eithel Sirion
+Ekkaia
+Eldalond\xEB the Green
+Eldamar
+Elennan\xF3r\xEA
+Elerr\xEDna
+Elostirion
+Elros' Tower
+Elvenhome
+Elwing's tower
+Emeri\xEB
+Emyn Arnen
+Emyn Beraid
+Emyn Duir
+Emyn Eglain
+Emyn Muil
+Emyn-nu-Fuin
+Emyn Uial
+Enchanted Isles
+Enchanted River
+Encircling Mountains
+Encircling Sea
+Endless Stair
+Endor
+Ened
+Enedwaith
+Entwade
+River Entwash
+Entwash Vale
+Entwood
+\xC9oth\xE9od
+Ephel Brandir
+Ephel D\xFAath
+Erebor
+Erech
+Ered Engrin
+Ered Gorgoroth
+Ered Lindon
+Ered Lithui
+Ered L\xF3min
+Ered Mithrin
+Ered Nimrais
+Ered Wethrin
+Eregion
+Erelas
+Erendis
+Eress\xEBa
+Eriador
+Erui
+Eryn Fuir
+Eryn Galen
+Eryn Vorn
+Esgalduin
+Esgaroth
+Estolad
+Ethir Anduin
+Ethraid Engrin
+Ethring
+Ettendales
+Ettenmoors
+Evereven
+Everholt
+Evernight
+Ezellohar
+Falas
+Falls of Esgalduin
+Falls of Irvin
+Falls of Rauros
+Falls of Sirion
+Fangorn Forest
+Fanuidhol
+Far Downs
+Far Harad
+Far Shore
+Far West
+Faskalan
+Faskala-n\xFAmen
+Fen Hollen
+Fen of Serech
+Fenmarch
+Fens of Sirion
+Ferry Lane
+Field of Celebrant
+Field of Cormallen
+Fingolfin's Cairn
+Firienholt
+Firien Wood
+First Deep
+First Hall
+Firth of Drengist
+Firth of R\xF3menna
+Foen
+Folde
+Ford of Brithiach
+Ford of Bruinen
+Ford of Stones
+Fords of Isen
+Forest Gate
+Forest of Brethil
+Forest of Neldoreth
+Forest of Region
+Forest River
+Forest Road
+Forgotten Villages
+Forlindon
+Forlond
+Formenos
+Fornarthan
+Fornost Erain
+Forochel
+Forodwaith
+Forostar
+Forsaken Inn
+F\xF4s' Almir
+Fountain of Tin\xFAviel
+Fox Downs
+Framsburg
+Frogmorton
+Front Gate
+Front Porch
+Gabilgathod
+Gamwich
+Gap of Calenardhon
+Gap of Rohan
+Gardens of L\xF3rien
+Gate of the Dead
+Gate of the Noldor
+Gate Stream
+Gates of Morning
+Gates of Sirion
+Gelion
+Gilrain
+Ginglith
+Girdle of Arda
+Girdle of Melian
+Girdley Island
+Gladden Fields
+Gladden River
+Glanduin
+Glanh\xEDr
+Glithui
+Glittering Caves
+Goblin-gate
+Goblin-town
+Golden Gates
+Golden Wood
+Gollum's Lake
+Gondolin
+Gondor
+Gorbelgod
+Gorge of Aglon
+Gorgoroth
+Gorgoroth
+great East Road
+Great Fens
+Great Gulf
+Great Hall of Thr\xE1in
+Great Lakes
+Great Lands
+Great Mound
+Great Plains
+Great Rift
+Great River
+Great Shelf
+Great Smials
+Great Southern Forests
+Great West Road
+Great Willow
+Greater Gelion
+Green Dragon
+Green Hill Country
+Green Hills
+Green Hills
+Greenfields
+Greenholm
+Greenway
+Greenwood the Great
+Grey Havens
+Grey Mountains
+Grey Mountains
+Grey Wood
+Greyflood
+Greylin
+Grinding Ice
+Grindwall
+Gruir
+Guarded Plain
+Gulf of Lh\xFBn
+Gundabad
+Gwathl\xF3
+Hadhodrond
+Haeren
+Haerast
+Halifirien
+Hall of Brodda
+Hall of Fire
+Halls of Aul\xEB
+Halls of Durin
+Halls of Mandos
+Hanstov\xE1nen
+Harad
+Harad Road
+Hardbottle
+Harlindon
+Harlond
+Harnen
+Harondor
+Harrowdale
+Haudh-en-Elleth
+Haudh-en-Ndengin
+Haudh-en-Nirnaeth
+Haudh in Gwan\xFBr
+Haunted Mountain
+Haunted Pass
+Haven of the Eldar
+Haven of the Swans
+Havens of Mithlond
+Havens of Sirion
+Haven of Umbar
+Hay Gate
+Haysend
+Heats of the South
+Hedge
+Helcar
+Helcarax\xEB
+Helevorn
+Helm's Deep
+Helm's Dike
+Helm's Gate
+Henneth Ann\xFBn
+Hidden Ferries
+Hidden Way
+High Court
+High Faroth
+High Hay
+High Pass
+Hild\xF3rien
+Hill of Awe
+Hill of Guard
+Hill of Hearing
+Hill of Himring
+Hill of Ilmarin
+Hill of Oromet
+Hill of Seeing
+Hill of Spies
+Hill of the Ear
+Hill of the Eye
+Hill
+Hills of Eglamar
+Hills of Evendim
+Hills of Scary
+Himlad
+Himring
+H\xEDrilorn
+Hisil\xF3m\xEB
+Hithaeglir
+Hither Lands
+Hither Shore
+Hithlum
+Hoarwell
+Hobbiton
+Hobbiton Hill
+Hobbiton Road
+Hollin
+Hollin Gate
+Hollin Ridge
+Hornburg
+Hornrock
+House of Orom\xEB
+House of the Hundred Chimneys
+House of the Kings
+House of the Stewards
+House of Tulkas
+Houses of Healing
+House of the Dead
+Huts of the raft-elves
+Hyarastorni
+Hyarmentir
+Hyarnustar
+Hyarrostar
+Iant Iaur
+Icebay of Forochel
+Ice of the North
+Idril's secret way
+i Drann
+Illuin
+Ilmarin
+Imlad Morgul
+Imladris
+Imloth Melui
+Imrath Gondraith
+Inner Seas
+Inland Sea
+Inland Sea of Helcar
+\xCDrensaga
+Iron Fortress
+Iron Hills
+Iron Mountains
+Isen
+Isengard
+Isenmouthe
+Ishmalog
+Isle of Almaren
+Isle of Balar
+Isle of Elenna
+Isle of Eress\xEBa
+Isle of Meneltarma
+Isle of Werewolves
+Isles of the West
+Ithilien
+Ivrin
+Ivrin's Well
+Ivy Bush
+N/A
+Kalorm\xEB
+Karningul
+Kelos
+Khand
+Khazad-d\xFBm
+Kheled-z\xE2ram
+Kibil-n\xE2la
+Kingdom of the South
+Kingdom under the Mountain
+King's Court
+King's House
+Kingsland
+Kingsland
+Kings' Norbury
+Kiril
+Kirith Ungol
+K\xF4r
+Kortirion
+Ladros
+Lake Helevorn
+Lake Mithrim
+Lake Nenuial
+Lake-town
+Lamedon
+Lammoth
+Lampwrights' Street
+Land of Bow-Helm
+Land of the Dead that Live
+Lands Under the Wave
+Lands Without
+Langflood
+Langstrand
+Langwell
+Lanthir Lamath
+Last Bridge
+Last Homely House
+Last Mountain
+Last Shore
+Laurelind\xF3renan
+Lebennin
+Lefnui
+Legolin
+Lh\xFBn
+Linaewen
+Lindon
+Lind\xF3rinan
+Linhir
+Lisgardh
+Lithir
+Lithlad
+Little Delving
+Little Gelion
+Lockholes
+Loeg Ningloron
+Lond Daer Enedh
+Lone-lands
+Lonely Isle
+Lonely Mountain
+Longbottom
+Long Cleeve
+Long Lake
+Long Marshes
+Long Wall
+L\xF3rellin
+L\xF3rien
+L\xF3rinand
+Losgar
+Lossarnach
+Lost Isle
+Lostladen
+Lothlann
+Lothl\xF3rien
+Loudwater
+Lower Halls
+Lugb\xFArz
+Lune
+Luvailin
+Maggot's Farm
+Maggot's Lane
+Maglor's Gap
+Mahanaxar
+Malduin
+Mandos
+Mansions of Aul\xEB
+March of Maedhros
+Marish
+Mark
+Mar-nu-Falmar
+Market-pool
+Marshes of Nevrast
+Meduseld
+Men-i-Naugrim
+Menegroth
+Meneltarma
+Mere of Dead Faces
+Meres of Twilight
+Merethrond
+Mering Stream
+Methed-en-glad
+Methedras
+Michel Delving
+Middle-earth
+Midgewater Marshes
+Mill
+Minas Anor
+Minas Ithil
+Minas Morgul
+Minas Tirith
+Minas Tirith
+Mindeb
+Mindolluin
+Mindon Eldali\xE9va
+Minhiriath
+Min-Rimmon
+Mirkwood
+Mirrormere
+Misty Mountains
+Mithe
+Mithe Steps
+Mitheithel
+Mithlond
+Mithrim
+Mittalmar
+Moors of the Neweglu
+Moors of the Nibin-noeg
+Morannon
+Mordor
+Morgai
+Morgul Pass
+Morgul-road
+Morgulduin
+Moria
+Mornan
+Morthond
+Mound of Avarice
+Mound of Dunlendings
+Mound of Riders
+Mounds of Mundburg
+Mount Dolmed
+Mount Doom
+Mount Everwhite
+Mount Fang
+Mount Gram
+Mount Gundabad
+Mount Mindolluin
+Mount of the Pine Trees
+Mount Rerir
+Mount Taras
+Mountain of Fire
+Mountains of Aman
+Mountains of Angmar
+Mountains of Lune
+Mountains of Mirkwood
+Mountains of Mithrim
+Mountains of Shadow
+Mountains of Shadow
+Mountains of Terror
+Mountains of the East
+Mouths of Anduin
+Mouths of Entwash
+Mouths of Sirion
+Mundburg
+Naith
+Nameless Land
+Nan Curun\xEDr
+Nan Dungortheb
+Nan Elmoth
+Nan-tathren
+Nanduhirrion
+Narchost
+Nardol
+Nargothrond
+Narog
+Narrows of the Forest
+Near Harad
+Needlehole
+Neldoreth
+Nen Echui
+Nen Girith
+Nen Hithoel
+Nen Lalaith
+Nenning
+Nenuial
+Nether Dark
+Nevrast
+Nevrast
+New Haven
+New Lands
+Newbury
+Nienna
+Nimbrethil
+Nimrodel
+Nindalf
+Nindamos
+Ninglor
+N\xEEn-in-Eilph
+N\xEDsimaldar
+N\xEDsinen
+Nivrim
+Nobottle
+Nogrod
+Noirinan
+Noman-lands
+Norbury
+North Cape
+North Downs
+North Farthing
+North Gate
+North Ithilien
+North Kingdom
+North Marches
+North Moors
+North Road
+North Road of Ithilien
+North Stair
+North Undeep
+Northerland
+Northern Dark
+Northern Waste
+Novrod
+N\xFAath 
+N\xFAmendor
+N\xFAmenor
+Nunduin\xEB
+Nurn
+Oatbarton
+Obel Halad
+Ocean
+Oioloss\xEB
+Oiom\xFAr\xEB
+Old Bridge
+Old Ford
+Old Forest
+Old Forest Road
+Old Grange
+Old Guesthouse
+Old Mill
+Old P\xFAkel land
+Old Road
+Old South Road
+Old South Road
+Old Winyards
+Old World
+Ondolind\xEB
+Ondoluncanando
+Ondon\xF3r\xEB
+Ondosto
+Onodl\xF3
+Orc-holds
+Orfalch Echor
+Ormal
+Orocarni
+Orod-na-Th\xF4n
+Orodruin
+Oromet
+Orrostar
+Orthanc
+Osgiliath
+Ossiriand
+Ost-in-Edhil
+Otherworld
+Outer Dark or Outer Darkness
+Outer Lands
+Outer Sea
+Outlands
+Overbourn
+Overbourn Marshes
+Overhill
+Palisor
+Parth Celebrant
+Parth Galen
+Party Field
+Pass of Aglon
+Pass of Anach
+Pastures of Yavanna
+Paths of the Dead
+Pelargir
+Pelennor
+Pel\xF3ri
+Ph\xFBrunargian
+Pillars of the King
+Pincup
+Pine-mountain
+Pinnath Gelin
+Place of the Fountain
+Pool of Bywater
+Pool-side
+Pools of Ivrin
+Poros
+Prancing Pony
+Qerkaringa
+Quarry
+Radhrim
+Rainbow Cleft
+Ramdal
+Rammas Echor
+Ras Mewrim
+Ras Morthil
+Rath Celerdain
+Rath D\xEDnen
+Rathl\xF3riel
+Rauros
+Ravenhill
+Ravines of Teiglin
+Redhorn
+Redhorn Gate
+Redwater
+Region
+Region of Everlasting Cold
+Reunited Kingdom
+Rhimdath
+Rhosgobel
+Rhovanion
+Rhudaur
+Rh\xFBn
+Min-Rimmon
+Ring of Doom
+Ring of Isengard
+Ringil
+Ringil
+Ringl\xF3
+Ringwil
+Rivendell
+River Running
+Rivil
+Rivil's Well
+Rochand
+R\xF3menna
+R\xFBnaer
+Rushdown
+Rushock Bog
+Rushy
+Sammath Naur
+Sandyman's Mill
+Sarn Athrad
+Sarn Ford
+Sarn Gebir
+Sauron's Isle
+Sauron's Road
+Sauron's Temple
+Scary
+Sea
+Sea of Helcar
+Sea of N\xFArnen
+Sea of Rh\xFBn
+Sea of Ringil
+Seat of Hearing
+Seat of Seeing
+Sea-ward Tower
+Second Hall
+Serni
+Seven Gates of Gondolin
+Seventh Level
+Shadowmere
+Shadowy Isles
+Shadowy Mountains
+Shadowy Mountains
+Shadowy Seas
+Shadowy Spring
+Sharabhund
+Shath\xFBr
+Shelob's Lair
+Shire
+Shirebourn
+Side-door
+Silverlode
+Silvertine
+Sindan\xF3rie
+Sirannon
+Siril
+Sirion
+Sirith
+S\xEEr Ninglor
+Slag-hills
+Snowbourn
+Sorontil
+South Downs
+South Farthing
+South Gondor
+South Ithilien
+South Kingdom
+South Lane
+South Road
+South Road
+South Undeep
+Southward Road
+Spider's Ring
+Staddle
+Stair Falls
+Stair of the Hold
+Standelf
+Starkhorn
+Steward's Door
+Stock
+Stock Road
+Stockbrook
+Stonewain Valley
+Stoningland
+Straight Road
+Straight Stair
+Straits of the World
+Sundering Seas
+Sunlands
+Sunlendings
+S\xFBthburg
+S\xFBza
+Swanfleet
+Taeglin
+Talath Dirnen
+Talath Rh\xFBnen
+Taniquetil
+Tanyasalp\xEB
+Tar-Minastir
+Tarlang's Neck
+Tarmasundar
+Tarn Aeluin
+Tarnost
+Tasarinan
+Tauremorna
+Tauremornal\xF3m\xEB
+Taur e-Ndaedelos
+Taur-en-Faroth
+Taur-im-Duinath
+Taur-na-Foen
+Taur-Na-Neldor
+Taur-nu-Fuin
+Taur-nu-Fuin
+Tavrobel
+Temple of Sauron
+Thalos
+Thangorodrim
+Tharbad
+Thargelion
+Thistle Brook
+Thorin's Halls
+Thousand Caves
+Three-Farthing Stone
+Thrihyrne
+Tighfield
+Tindrock
+Tirion
+Tirith Aear
+Tol Brandir
+Tol Eress\xEBa
+Tol Fuin
+Tol Galen
+Tol-in-Gaurhoth
+Tol Morwen
+Tol Sirion
+Tol Uinen
+Tolfalas
+Tomb of the Kings
+Tongue
+Tookbank
+Tookland
+Torech Ungol
+Tower Hills
+Tower of Cirith Ungol
+Tower of Ecthelion
+Tower of Ingw\xEB
+Tower of the King
+Tower of the Stone
+Towers of the Teeth
+Town Hole
+Treebeard's Hill
+Treegarth of Orthanc
+Troll's Cave
+Trollshaws
+Tuckborough
+Tumhalad
+Tumladen of Gondolin
+Tumladen of Gondor
+Tumunzahar
+T\xFAna
+Twenty-First Hall of the North-end
+Twilight Meres
+Two Watchers
+Tyrn Gorthad
+Udul
+Ud\xFBn
+Ud\xFBn of Mordor
+Umbar
+Umboth-muilin
+Undeeps
+Undergate
+Underhill
+Under-way
+Underharrow
+Undertowers
+Undying Lands
+Ungoliant's Lair
+Ulmonan
+Upbourn
+Uttermost West
+Utumno
+Vale of Sirion
+Valandor
+Valimar
+Valmar
+Valinor
+Verna
+Vinyalond\xEB
+Vinyamar
+Void
+Waking Water
+Wall's End
+Walls of Moria
+Walls of the Night
+Walls of the Sun
+Walls of the World
+Wargs' Clearing
+Waste
+Watchwood
+Water-valley
+Water of Awakening
+Way of Escape
+Way of Running Waters
+Waymeet
+Weather Hills
+Weathertop
+Wellinghall
+Wells of Ivrin
+Wells of Varda
+West-door
+West-gate of Bree
+West-gate of Moria
+West-mark
+West Beleriand
+West of the World
+West Pass
+West Road
+Westemnet
+Westermanton
+Western Sea
+Western Shore
+Westernesse
+Westfarthing
+Westfold
+Westfold Vale
+Westlands
+Westmarch
+Wetwang
+Whispering Wood
+White Downs
+White House of Erendis
+White Mountain
+White Mountains
+White Tower
+White Towers
+Whitfurrows
+Whitwell
+Wild Wood
+Wilderland
+Willowbottom
+Windle-reach
+Winding Stair
+Window-Curtain
+Window of the West
+Withered Heath
+Withered Wold
+Withywindle Valley
+Withywindle River
+Withy-path
+Withy-weir
+Wizard's Isle
+Wizard's Vale
+Wold of Rohan
+Wood of Anwar
+Woods of Orom\xEB
+Woodhall
+Woodland Realm
+Woody End
+The Yale
+Yellow Mountains
+Y\xF4z\xE2yan
+Zirakzigil`,Pi=`Ach\xEAne
+Achet
+Agimont
+Ah\xE9r\xE9e
+Aische-en-Refail
+Aisemont
+Alle
+Andenelle
+Andenne
+Andoy
+Anh\xE9e
+Annevoie-Rouillon
+Anseremme
+Anth\xE9e
+Arbre
+Arsimont
+Arville
+Assesse
+Aublain
+Auvelais
+Ave-et-Auffe
+Awagne
+Bagimont
+Baillamont
+Baillonville
+Bal\xE2tre
+Bambois
+Barcenal
+Baronville
+Barsy
+Barvaux-Condroz
+Bassines
+Bauche
+Baudecet
+Beauraing
+Beez
+Belgrade
+Bellefontaine
+Belvaux
+Berz\xE9e
+Besinne
+Beuzet
+Biert
+Biert-le-Roi
+Bierwart
+Biesme
+Biesmer\xE9e
+Bi\xE8vre
+Bioul
+Blaimont
+Bohan
+Bohisseaux
+Boign\xE9e
+Bois-de-Villers
+Boisseilles
+Bolinne
+Boneffe
+Boninne
+Bonneville
+Bonsin
+Bormenville
+Bossi\xE8re
+Bothey
+Bouge
+Bourseigne-Neuve
+Bourseigne-Vieille
+Bousalle
+Boussu-en-Fagne
+Bouvignes
+Bovesse
+Bragard
+Braibant
+Branchon
+Briquemont
+Br\xFBly-de-Pesche
+Brumagne
+Bruy\xE8res
+Buissonville
+Buresse
+Buzet
+Buzin
+Castillon
+Celles
+Cerfontaine
+Chairi\xE8re
+Champion
+Chansin
+Chapois
+Chardeneux
+Chastr\xE8s
+Chaumont
+Chevetogne
+Ciergnon
+Ciney
+Clair-Ch\xEAne
+Clermont
+Cognel\xE9e
+Conjoux
+Conneux
+Corbion
+Corenne
+Cornimont
+Corroy
+Corroy-le-Ch\xE2teau
+Cortil-Wodon
+Courri\xE8re
+Coutisse
+Couvin
+Croix
+Crupet
+Cul-des-Sarts
+Custinne
+Dailly
+Daussois
+Daussoulx
+Dave
+Den\xE9e
+Devant-les-Bois
+Dhuy
+Dinant
+Dion
+Doische
+Donveau
+Dorinne
+Dourbes
+Doyon
+Durnal
+Dr\xE9hance
+\xC9ghez\xE9e
+\xC9meville
+\xC9mines
+Emptinal
+Emptinne
+Enhet
+\xC9prave
+Ermeton-sur-Biert
+Ernage
+Erpent
+\xC9velette
+\xC9vrehailles
+Fagnolle
+Failon
+Fairoul
+Fala\xEBn
+Falisolle
+Falmagne
+Falmignoul
+Faulx-les-Tombes
+Fays
+Felenne
+Fenffe
+Ferage
+Feschaux
+Finnevaux
+Flavion
+Flawinne
+Flor\xE9e
+Floreffe
+Florennes
+Floriffoux
+Flostoy
+Focant
+Fonds-de-l'Eau
+Fontenelle
+Forville
+Forz\xE9e
+Fosses-la-Ville
+Foy-Notre-Dame
+Fraire
+Fraire-la-Crotteuse
+Francesse
+Franchimont
+Franc-Waret
+Frandeux
+Frani\xE8re
+Franquen\xE9e
+Frasnes-lez-Couvin
+Fre\xFFr
+Fris\xE9e
+Froidfontaine
+Froidmont
+Fter
+Furfooz
+Furnaux
+Gedinne
+Gelbress\xE9e
+Gembloux
+Gemenne
+Gendron
+G\xE9nimont
+Gerin
+Gerlimpont
+G\xE9ronsart
+Gesves
+Gimn\xE9e
+Gochen\xE9e
+Godinne
+Goesnes
+Golzinne
+Gonoy
+Gonrieux
+Gourdinne
+Goyet
+Gozin
+Graide
+Gramptinne
+Grand-Leez
+Grand-Manil
+Graux
+Gribelle
+Gros Buisson
+Gros-Fays
+Groynne
+Haid
+Haillot
+Halloy
+Haltinne
+Hambraine
+Hamerenne
+Hamois
+Ham-sur-Sambre
+Hanret
+Han-sur-Lesse
+Hanzinelle
+Hanzinne
+Harlue
+Hasti\xE8re-Lavaux
+Hasti\xE8re-par-del\xE0
+Haut-Bois
+Haut-le-Wastia
+Haut-Vent
+Havelange
+Haversin
+Havrenne
+Heer
+Hemptinne
+Hemptinne
+Herbefays
+Herhet
+H\xE9risson
+Hermeton-sur-Meuse
+H\xE9rock
+Heure
+Hingeon
+Hogne
+Honnay
+Hontoir
+Houdremont
+Hour
+Houx
+Houyet
+Hubaille
+Hublet
+Hulsonniaux
+Hun
+Ingremez
+Inzemont
+Isnes
+Ivoy
+Jallet
+Jamagne
+Jambes
+Jamblinne
+Jamiolle
+Jann\xE9e
+Jassogne
+Javingue
+Jemelle
+Jemeppe-sur-Sambre
+Jeneffe
+Jet
+Jodion
+Keumi\xE9e
+La Bouchaille
+La Butte
+Lafor\xEAt
+La Forge
+La Galopperie
+Laloux
+Landenne
+Laneffe
+La Pisselotte
+La Platinerie
+La Ronce
+La Tauminerie
+Lautenne
+La Vall\xE9e
+Lavaux-Sainte-Anne
+Lavis
+Le Br\xFBly
+Le Fraity
+Leignon
+Le Mesnil
+Lenne
+Le Pachy
+Le Roux
+Les Basses
+Les Boscailles
+Les Bruy\xE8res
+Les Communes
+Lessive
+Les Trieux
+Lesve
+Leuze
+Lez-Fontaine
+Libois
+Liernu
+Ligny
+Linciaux
+Liroux
+Lisogne
+Lissoir
+Lives-sur-Meuse
+Longchamps
+Lonz\xE9e
+Louette-Saint-Denis
+Louette-Saint-Pierre
+Loyers
+Lumsonry
+Lustin
+Maffe
+Mahoux
+Maibelle
+Maillen
+Maison
+Maisoncelle
+Maizeret
+Malonne
+Malvoisin
+Marche-les-Dames
+Marchovelette
+Maredret
+Maredsous
+Mariembourg
+Marteau
+Martouzin-Neuville
+Matagne-la-Grande
+Matagne-la-Petite
+Matignolle
+Maulenne
+Maurenne
+Maz\xE9e
+Mazy
+M\xE9an
+Mehaigne
+Membre
+Merlemont
+Mertenne
+Mesnil-\xC9glise
+Mesnil-Saint-Blaise
+Mettet
+Meux
+Mianoye
+Miavoye
+Mi\xE9cret
+Mohiville
+Moignel\xE9e
+Monceau-en-Ardenne
+Moniat
+Mont
+Montegnet
+Mont-Gauthier
+Moress\xE9e
+Morialm\xE9
+Mornimont
+Morville
+Moustier-sur-Sambre
+Mouzaive
+Mozet
+Nafraiture
+Najauge
+Nalamont
+Nam\xEAche
+Namur
+Naninne
+Naom\xE9
+Natoye
+Navaugle
+Nefz\xE9e
+Nettinne
+Neuve-Cour
+Neuville
+N\xE9vremont
+Nismes
+Niverl\xE9e
+Noiseux
+Noville-les-Bois
+Noville-sur-Mehaigne
+Ohey
+Oignies-en-Thi\xE9rache
+Oizy
+Olloy-sur-Viroin
+Omez\xE9e
+Onhaye
+Onoz
+Orchimont
+Oret
+Ossogne
+Ostemer\xE9e
+Patignies
+Pernelle
+Perwez
+Pesche
+Pessoux
+Petigny
+Petit-Doische
+Petite-Chapelle
+Petite Hour
+Petit-Fays
+Petit-Waret
+Philippeville
+Plan\xE7on
+Pondr\xF4me
+Pontaury
+Pont-de-Pierres
+Pontillas
+Porcheresse
+Pr\xE9e
+Presgaux
+Profondeville
+Pry
+Purnode
+Pussemange
+Regniessart
+R\xE9simont
+Reuleau
+Reux
+Revogne
+Rhisnes
+Rienne
+Rissart
+Rivi\xE8re
+Rochefort
+Rogn\xE9e
+Roly
+Romedenne
+Romer\xE9e
+Ronchinne
+Ronvaux
+Ros\xE9e
+Rostenne
+Rouvroy
+Saint-Aubin
+Saint-Denis
+Saint-G\xE9rard
+Saint-Germain
+Saint-Lambert
+Saint-Marc
+Saint-Martin
+Saint-Mort
+Saint-Servais
+Salet
+Samart
+Sart-Bernard
+Sart-Custinne
+Sart-d'Avril
+Sart-en-Fagne
+Sart-Eustache
+Sart-Saint-Laurent
+Sautour
+Sauveni\xE8re
+Schaltin
+Sclayn
+Scry
+Scy
+Seilles
+Senenne
+Senzeille
+Serinchamps
+Seron
+Serville
+Sevry
+Silenrieux
+Sinsin
+Six-Planes
+Skeuvre
+Soinne
+Somal
+Sombreffe
+Somme-Leuze
+Sommi\xE8re
+Somtet
+Somz\xE9e
+Sor\xE9e
+Sorinne-la-Longue
+Sorinnes
+Sosoye
+Soulme
+Soumoy
+Sovet
+Sovimont
+Soye
+Spontin
+Spy
+Stave
+St\xE9e
+Strud
+Suarl\xE9e
+Sugny
+Surice
+Tahier
+Tamines
+Tarcienne
+Taviers
+Taviet
+Temploux
+Thanville
+Thon-Samson
+Thy-le-Bauduin
+Thy-le-Ch\xE2teau
+Thynes
+Tillier
+Tongrenelle
+Tongrinne
+Treignes
+Trieu
+Trieu-des-Sarts
+Trisogne
+Troka
+Trussogne
+Try-Pochaux
+Upigny
+Vaucelles
+Vedrin
+Velaine
+Velaine-sur-Sambre
+Vencimont
+Ver
+Verl\xE9e
+Verte-Place
+Vezin
+Vichenet
+Vieille-Maison
+Vierves-sur-Viroin
+Vieux-Sautour
+Villers-Deux-\xC9glises
+Villers-en-Fagne
+Villers-le-Gambon
+Villers-lez-Heest
+Villers-sur-Lesse
+Vincon
+Viscourt
+Vitrival
+Vivier-Annon
+Vodec\xE9e
+Vodel\xE9e
+Vogen\xE9e
+Von\xEAche
+Vresse
+Wagn\xE9e
+Waillet
+Walcourt
+Wancennes
+Wanlin
+Waret-la-Chauss\xE9e
+Warisoulx
+Warnant
+Waulsort
+Wavreille
+Weillen
+W\xE9pion
+Wez-de-Chine
+Wierde
+Wiesme
+Willerzie
+Winenne
+Ychippe
+Yves-Gomez\xE9e
+Yvoir`,Ti=`Abbott
+Abernathy
+Abilene
+Ackerly
+Addison
+Adrian
+Agua Dulce
+Alamo
+Alamo Heights
+Alba
+Albany
+Aledo
+Alice
+Allen
+Alma
+Alpine
+Alto
+Alton
+Alvarado
+Alvin
+Alvord
+Amarillo
+Ames
+Amherst
+Anahuac
+Anderson
+Andrews
+Angleton
+Angus
+Anna
+Annetta
+Annetta North
+Annetta South
+Annona
+Anson
+Anthony
+Anton
+Appleby
+Aquilla
+Aransas Pass
+Archer City
+Arcola
+Argyle
+Arlington
+Arp
+Asherton
+Aspermont
+Athens
+Atlanta
+Aubrey
+Aurora
+Austin
+Austwell
+Avery
+Avinger
+Azle
+Bailey
+Bailey's Prairie
+Baird
+Balch Springs
+Balcones Heights
+Ballinger
+Balmorhea
+Bandera
+Bangs
+Bardwell
+Barry
+Barstow
+Bartlett
+Bartonville
+Bastrop
+Bay City
+Bayou Vista
+Bayside
+Baytown
+Bayview
+Beach City
+Bear Creek
+Beasley
+Beaumont
+Beckville
+Bedford
+Bedias
+Bee Cave
+Beeville
+Bellaire
+Bellevue
+Bellmead
+Bells
+Bellville
+Belton
+Benavides
+Benbrook
+Benjamin
+Berryville
+Bertram
+Beverly Hills
+Bevil Oaks
+Big Lake
+Big Sandy
+Big Spring
+Big Wells
+Bishop
+Bishop Hills
+Blackwell
+Blanco
+Blanket
+Bloomburg
+Blooming Grove
+Blossom
+Blue Mound
+Blue Ridge
+Blum
+Boerne
+Bogata
+Bonham
+Bonney
+Booker
+Borger
+Bovina
+Bowie
+Boyd
+Brackettville
+Brady
+Brazoria
+Brazos Bend
+Brazos Country
+Breckenridge
+Bremond
+Brenham
+Briarcliff
+Briaroaks
+Bridge City
+Bridgeport
+Broaddus
+Bronte
+Brookshire
+Brookside Village
+Browndell
+Brownfield
+Brownsboro
+Brownsville
+Brownwood
+Bruceville-Eddy
+Bryan
+Bryson
+Buckholts
+Buda
+Buffalo
+Buffalo Gap
+Buffalo Springs
+Bullard
+Bulverde
+Bunker Hill Village
+Burkburnett
+Burke
+Burleson
+Burnet
+Burton
+Byers
+Bynum
+Cactus
+Caddo Mills
+Caldwell
+Callisburg
+Calvert
+Cameron
+Camp Wood
+Campbell
+Canadian
+Caney City
+Canton
+Canyon
+Carbon
+Carl's Corner
+Carmine
+Carrizo Springs
+Carrollton
+Carthage
+Cashion Community
+Castle Hills
+Castroville
+Cedar Hill
+Cedar Park
+Celeste
+Celina
+Center
+Centerville
+Chandler
+Channing
+Charlotte
+Chester
+Chico
+Childress
+Chillicothe
+China
+China Grove
+Chireno
+Christine
+Cibolo
+Cisco
+Clarendon
+Clarksville
+Clarksville City
+Claude
+Clear Lake Shores
+Cleburne
+Cleveland
+Clifton
+Clint
+Clute
+Clyde
+Coahoma
+Cockrell Hill
+Coffee City
+Coldspring
+Coleman
+College Station
+Colleyville
+Collinsville
+Colmesneil
+Colorado City
+Columbus
+Comanche
+Combes
+Combine
+Commerce
+Como
+Conroe
+Converse
+Cool
+Coolidge
+Cooper
+Coppell
+Copper Canyon
+Copperas Cove
+Corinth
+Corpus Christi
+Corrigan
+Corsicana
+Cottonwood
+Cottonwood Shores
+Cotulla
+Coupland
+Cove
+Covington
+Coyote Flats
+Crandall
+Crane
+Cranfills Gap
+Crawford
+Creedmoor
+Cresson
+Crockett
+Crosbyton
+Cross Plains
+Cross Roads
+Cross Timber
+Crowell
+Crowley
+Crystal City
+Cuero
+Cumby
+Cuney
+Cushing
+Cut and Shoot
+Daingerfield
+Daisetta
+Dalhart
+Dallas
+Dalworthington Gardens
+Danbury
+Darrouzett
+Dawson
+Dayton
+Dayton Lakes
+De Kalb
+De Leon
+Dean
+Decatur
+DeCordova
+Deer Park
+Del Rio
+Dell City
+Denison
+Denton
+Denver City
+Deport
+DeSoto
+Detroit
+Devers
+Devine
+Diboll
+Dickens
+Dickinson
+Dilley
+Dimmitt
+DISH
+Dodd City
+Dodson
+Domino
+Donna
+Dorchester
+Double Oak
+Douglassville
+Draper
+Dripping Springs
+Driscoll
+Dublin
+Dumas
+Duncanville
+Eagle Lake
+Eagle Pass
+Early
+Earth
+East Bernard
+East Mountain
+East Tawakoni
+Eastland
+Easton
+Ector
+Edcouch
+Eden
+Edgecliff Village
+Edgewood
+Edinburg
+Edmonson
+Edna
+Edom
+El Campo
+El Cenizo
+El Lago
+El Paso
+Eldorado
+Electra
+Elgin
+Elkhart
+Elmendorf
+Elsa
+Emhouse
+Emory
+Enchanted Oaks
+Encinal
+Ennis
+Escobares
+Estelline
+Euless
+Eureka
+Eustace
+Evant
+Everman
+Fair Oaks Ranch
+Fairchilds
+Fairfield
+Fairview
+Falfurrias
+Falls City
+Farmers Branch
+Farmersville
+Farwell
+Fate
+Fayetteville
+Ferris
+Flatonia
+Florence
+Floresville
+Flower Mound
+Floydada
+Follett
+Forest Hill
+Forney
+Forsan
+Fort Stockton
+Fort Worth
+Franklin
+Frankston
+Fredericksburg
+Freeport
+Freer
+Friendswood
+Friona
+Frisco
+Fritch
+Frost
+Fruitvale
+Fulshear
+Fulton
+Gainesville
+Galena Park
+Gallatin
+Galveston
+Ganado
+Garden Ridge
+Garland
+Garrett
+Garrison
+Gary City
+Gatesville
+George West
+Georgetown
+Gholson
+Giddings
+Gilmer
+Gladewater
+Glen Rose
+Glenn Heights
+Godley
+Goldsmith
+Goldthwaite
+Goliad
+Golinda
+Gonzales
+Goodlow
+Goodrich
+Gordon
+Goree
+Gorman
+Graford
+Graham
+Granbury
+Grand Prairie
+Grand Saline
+Grandfalls
+Grandview
+Granger
+Granite Shoals
+Granjeno
+Grapeland
+Grapevine
+Grays Prairie
+Greenville
+Gregory
+Grey Forest
+Groesbeck
+Groom
+Groves
+Groveton
+Gruver
+Gun Barrel City
+Gunter
+Gustine
+Hackberry
+Hale Center
+Hallettsville
+Hallsburg
+Hallsville
+Haltom City
+Hamilton
+Hamlin
+Happy
+Hardin
+Harker Heights
+Harlingen
+Hart
+Haskell
+Haslet
+Hawk Cove
+Hawkins
+Hawley
+Hays
+Hearne
+Heath
+Hebron
+Hedley
+Hedwig Village
+Helotes
+Hemphill
+Hempstead
+Henderson
+Henrietta
+Hereford
+Hewitt
+Hickory Creek
+Hico
+Hidalgo
+Hideaway
+Higgins
+Highland Haven
+Highland Park
+Highland Village
+Hill Country Village
+Hillcrest
+Hillsboro
+Hilshire Village
+Hitchcock
+Holiday Lakes
+Holland
+Holliday
+Hollywood Park
+Hondo
+Honey Grove
+Hooks
+Horizon City
+Horseshoe Bay
+Houston
+Howardwick
+Howe
+Hubbard
+Hudson
+Hudson Oaks
+Hughes Springs
+Humble
+Hunters Creek Village
+Huntington
+Huntsville
+Hurst
+Hutchins
+Hutto
+Huxley
+Idalou
+Impact
+Indian Lake
+Industry
+Ingleside
+Ingleside on the Bay
+Ingram
+Iola
+Iowa Colony
+Iowa Park
+Iraan
+Iredell
+Irving
+Italy
+Itasca
+Ivanhoe
+Jacinto City
+Jacksboro
+Jacksonville
+Jamaica Beach
+Jarrell
+Jasper
+Jayton
+Jefferson
+Jersey Village
+Jewett
+Joaquin
+Johnson City
+Jolly
+Jones Creek
+Jonestown
+Josephine
+Joshua
+Jourdanton
+Junction
+Justin
+Karnes City
+Katy
+Kaufman
+Keene
+Keller
+Kemah
+Kemp
+Kempner
+Kendleton
+Kenedy
+Kenefick
+Kennard
+Kennedale
+Kerens
+Kermit
+Kerrville
+Kilgore
+Killeen
+Kingsbury
+Kingsville
+Kirby
+Kirbyville
+Kirvin
+Knollwood
+Knox City
+Kosse
+Kountze
+Kress
+Krugerville
+Krum
+Kurten
+Kyle
+La Feria
+La Grange
+La Grulla
+La Joya
+La Marque
+La Porte
+La Vernia
+La Villa
+La Ward
+LaCoste
+Lacy-Lakeview
+Ladonia
+Lago Vista
+Laguna Vista
+Lake Bridgeport
+Lake City
+Lake Dallas
+Lake Jackson
+Lake Tanglewood
+Lake Worth
+Lakeport
+Lakeside
+Lakeside
+Lakeside City
+Lakeview
+Lakeway
+Lakewood Village
+Lamesa
+Lampasas
+Lancaster
+Laredo
+Latexo
+Lavon
+Lawn
+League City
+Leakey
+Leander
+Leary
+Lefors
+Leon Valley
+Leona
+Leonard
+Leroy
+Levelland
+Lewisville
+Lexington
+Liberty
+Liberty Hill
+Lincoln Park
+Lindale
+Linden
+Lindsay
+Lipan
+Little Elm
+Little River-Academy
+Littlefield
+Live Oak
+Liverpool
+Livingston
+Llano
+Lockhart
+Lockney
+Log Cabin
+Lometa
+Lone Oak
+Lone Star
+Longview
+Loraine
+Lorena
+Lorenzo
+Los Fresnos
+Los Indios
+Los Ybanez
+Lott
+Lovelady
+Lowry Crossing
+Lubbock
+Lucas
+Lueders
+Lufkin
+Luling
+Lumberton
+Lyford
+Lytle
+Mabank
+Madisonville
+Magnolia
+Malakoff
+Malone
+Manor
+Mansfield
+Manvel
+Marble Falls
+Marfa
+Marietta
+Marion
+Marlin
+Marquez
+Marshall
+Mart
+Martindale
+Mason
+Matador
+Mathis
+Maud
+Maypearl
+McAllen
+McCamey
+McGregor
+McKinney
+McLean
+McLendon-Chisholm
+Meadow
+Meadowlakes
+Meadows Place
+Megargel
+Melissa
+Melvin
+Memphis
+Menard
+Mercedes
+Meridian
+Merkel
+Mertens
+Mertzon
+Mesquite
+Mexia
+Miami
+Midland
+Midlothian
+Midway
+Milano
+Mildred
+Miles
+Milford
+Miller's Cove
+Millican
+Millsap
+Mineola
+Mineral Wells
+Mingus
+Mission
+Missouri City
+Mobeetie
+Mobile City
+Monahans
+Mont Belvieu
+Montgomery
+Moody
+Moore Station
+Moran
+Morgan
+Morgan's Point
+Morgan's Point Resort
+Morton
+Moulton
+Mount Calm
+Mount Enterprise
+Mount Pleasant
+Mount Vernon
+Mountain City
+Muenster
+Muleshoe
+Mullin
+Munday
+Murchison
+Murphy
+Mustang
+Mustang Ridge
+Nacogdoches
+Naples
+Nash
+Nassau Bay
+Natalia
+Navarro
+Navasota
+Nazareth
+Nederland
+Needville
+Nevada
+New Berlin
+New Boston
+New Braunfels
+New Chapel Hill
+New Deal
+New Fairview
+New Home
+New Hope
+New London
+New Summerfield
+New Waverly
+Newark
+Newcastle
+Newton
+Neylandville
+Niederwald
+Nixon
+Nocona
+Nolanville
+Nome
+Noonday
+Nordheim
+Normangee
+North Cleveland
+North Richland Hills
+Northlake
+Novice
+O'Brien
+O'Donnell
+Oak Grove
+Oak Leaf
+Oak Point
+Oak Ridge
+Oak Ridge
+Oak Ridge North
+Oak Valley
+Oakwood
+Odem
+Odessa
+Oglesby
+Old River-Winfree
+Olmos Park
+Olney
+Olton
+Omaha
+Onalaska
+Opdyke West
+Orange
+Orange Grove
+Orchard
+Ore City
+Overton
+Ovilla
+Oyster Creek
+Paducah
+Paint Rock
+Palacios
+Palestine
+Palisades
+Palm Valley
+Palmer
+Palmhurst
+Palmview
+Pampa
+Panhandle
+Panorama Village
+Pantego
+Paradise
+Paris
+Parker
+Pasadena
+Pattison
+Patton Village
+Payne Springs
+Pearland
+Pearsall
+Pecan Gap
+Pecan Hill
+Pecos
+Pelican Bay
+Penelope
+Penitas
+Perryton
+Petersburg
+Petrolia
+Petronila
+Pflugerville
+Pharr
+Pilot Point
+Pine Forest
+Pine Island
+Pinehurst
+Pineland
+Piney Point Village
+Pittsburg
+Plains
+Plainview
+Plano
+Plantersville
+Pleak
+Pleasant Valley
+Pleasanton
+Plum Grove
+Point
+Point Blank
+Point Comfort
+Point Venture
+Ponder
+Port Aransas
+Port Arthur
+Port Isabel
+Port Lavaca
+Port Neches
+Portland
+Post
+Post Oak Bend City
+Poteet
+Poth
+Pottsboro
+Powell
+Poynor
+Prairie View
+Premont
+Presidio
+Primera
+Princeton
+Progreso
+Progreso Lakes
+Prosper
+Providence Village
+Putnam
+Pyote
+Quanah
+Queen City
+Quinlan
+Quintana
+Quitaque
+Quitman
+Ralls
+Rancho Viejo
+Ranger
+Rankin
+Ransom Canyon
+Ravenna
+Raymondville
+Red Lick
+Red Oak
+Redwater
+Refugio
+Reklaw
+Reno
+Reno
+Retreat
+Rhome
+Rice
+Richardson
+Richland
+Richland Hills
+Richland Springs
+Richmond
+Richwood
+Riesel
+Rio Bravo
+Rio Grande City
+Rio Hondo
+Rio Vista
+Rising Star
+River Oaks
+Riverside
+Roanoke
+Roaring Springs
+Robert Lee
+Robinson
+Robstown
+Roby
+Rochester
+Rockdale
+Rockport
+Rocksprings
+Rockwall
+Rocky Mound
+Rogers
+Rollingwood
+Roma
+Roman Forest
+Ropesville
+Roscoe
+Rose City
+Rose Hill Acres
+Rosebud
+Rosenberg
+Ross
+Rosser
+Rotan
+Round Mountain
+Round Rock
+Round Top
+Rowlett
+Roxton
+Royse City
+Rule
+Runaway Bay
+Runge
+Rusk
+Sabinal
+Sachse
+Sadler
+Saginaw
+Salado
+San Angelo
+San Antonio
+San Augustine
+San Benito
+San Diego
+San Elizario
+San Felipe
+San Juan
+San Leanna
+San Marcos
+San Patricio
+San Perlita
+San Saba
+Sanctuary
+Sandy Oaks
+Sandy Point
+Sanford
+Sanger
+Sansom Park
+Santa Anna
+Santa Clara
+Santa Fe
+Santa Rosa
+Savoy
+Schertz
+Schulenburg
+Scotland
+Scottsville
+Scurry
+Seabrook
+Seadrift
+Seagoville
+Seagraves
+Sealy
+Seguin
+Selma
+Seminole
+Seven Oaks
+Seven Points
+Seymour
+Shady Shores
+Shallowater
+Shamrock
+Shavano Park
+Shenandoah
+Shepherd
+Sherman
+Shiner
+Shoreacres
+Silsbee
+Silverton
+Simonton
+Sinton
+Skellytown
+Slaton
+Smiley
+Smithville
+Smyer
+Snook
+Snyder
+Socorro
+Somerset
+Somerville
+Sonora
+Sour Lake
+South Houston
+South Mountain
+South Padre Island
+Southlake
+Southmayd
+Southside Place
+Spearman
+Splendora
+Spofford
+Spring Branch
+Spring Valley Village
+Springlake
+Springtown
+Spur
+St. Hedwig
+St. Jo
+St. Paul
+Stafford
+Stagecoach
+Stamford
+Stanton
+Staples
+Star Harbor
+Stephenville
+Sterling City
+Stinnett
+Stockdale
+Stratford
+Strawn
+Streetman
+Sudan
+Sugar Land
+Sullivan City
+Sulphur Springs
+Sun Valley
+Sundown
+Sunnyvale
+Sunray
+Sunrise Beach Village
+Sunset Valley
+Surfside Beach
+Sweeny
+Sweetwater
+Taft
+Tahoka
+Talco
+Talty
+Tatum
+Taylor
+Taylor Lake Village
+Taylor Landing
+Teague
+Tehuacana
+Temple
+Tenaha
+Terrell
+Terrell Hills
+Texarkana
+Texas City
+Texhoma
+Texline
+The Colony
+The Hills
+Thompsons
+Thorndale
+Thornton
+Thorntonville
+Thrall
+Three Rivers
+Throckmorton
+Tiki Island
+Timbercreek Canyon
+Timpson
+Tioga
+Tira
+Toco
+Todd Mission
+Tolar
+Tom Bean
+Tomball
+Tool
+Toyah
+Trent
+Trenton
+Trinidad
+Trinity
+Trophy Club
+Troup
+Troy
+Tulia
+Turkey
+Tuscola
+Tye
+Tyler
+Uhland
+Uncertain
+Union Grove
+Union Valley
+Universal City
+University Park
+Uvalde
+Valentine
+Valley Mills
+Valley View
+Van
+Van Alstyne
+Van Horn
+Vega
+Venus
+Vernon
+Victoria
+Vidor
+Vinton
+Volente
+Von Ormy
+Waco
+Waelder
+Wake Village
+Waller
+Wallis
+Walnut Springs
+Warren City
+Waskom
+Watauga
+Waxahachie
+Weatherford
+Webberville
+Webster
+Weimar
+Weinert
+Weir
+Wellington
+Wellman
+Wells
+Weslaco
+West
+West Columbia
+West Lake Hills
+West Orange
+West Tawakoni
+West University Place
+Westbrook
+Westlake
+Weston
+Weston Lakes
+Westover Hills
+Westworth Village
+Wharton
+Wheeler
+White Deer
+White Oak
+White Settlement
+Whiteface
+Whitehouse
+Whitesboro
+Whitewright
+Whitney
+Wichita Falls
+Wickett
+Willis
+Willow Park
+Wills Point
+Wilmer
+Wilson
+Wimberley
+Windcrest
+Windom
+Windthorst
+Winfield
+Wink
+Winnsboro
+Winona
+Winters
+Wixon Valley
+Wolfe City
+Wolfforth
+Woodbranch
+Woodcreek
+Woodloch
+Woodsboro
+Woodson
+Woodville
+Woodway
+Wortham
+Wylie
+Yantis
+Yoakum
+Yorktown
+Zavalla`,on={$:-2},Kr=on,Af=1,B=hn(function(n,r,e,a,t){return{$:-1,a:n,b:r,c:e,d:a,e:t}}),Lf=0,An=hn(function(n,r,e,a,t){if(t.$===-1&&!t.a){var o=t.a,i=t.b,u=t.c,s=t.d,f=t.e;if(a.$===-1&&!a.a){var v=a.a,m=a.b,g=a.c,d=a.d,p=a.e;return b(B,0,r,e,b(B,1,m,g,d,p),b(B,1,i,u,s,f))}else return b(B,n,i,u,b(B,0,r,e,a,s),f)}else if(a.$===-1&&!a.a&&a.d.$===-1&&!a.d.a){var C=a.a,m=a.b,g=a.c,y=a.d,L=y.a,D=y.b,J=y.c,W=y.d,R=y.e,p=a.e;return b(B,0,m,g,b(B,1,D,J,W,R),b(B,1,r,e,p,t))}else return b(B,n,r,e,a,t)}),ma=Oa,qr=S(function(n,r,e){if(e.$===-2)return b(B,0,n,r,on,on);var a=e.a,t=e.b,o=e.c,i=e.d,u=e.e,s=l(ma,n,t);switch(s){case 0:return b(An,a,t,o,_(qr,n,r,i),u);case 1:return b(B,a,t,r,i,u);default:return b(An,a,t,o,i,_(qr,n,r,u))}}),ha=S(function(n,r,e){var a=_(qr,n,r,e);if(a.$===-1&&!a.a){var t=a.a,o=a.b,i=a.c,u=a.d,s=a.e;return b(B,1,o,i,u,s)}else{var f=a;return f}}),ki=function(n){return _(_n,c(function(r,e){var a=r.a,t=r.b;return _(ha,a,t,e)}),Kr,n)},da=ki($([w("namur",w("Belgium - Namur province",Pi)),w("texas",w("U.S. - Texas",Ti)),w("hpspells",w("Harry Potter Spells",Fi)),w("lotr",w("Lord of the Rings Locations",Ri)),w("zcustom",w("Custom...",""))])),Ef=bn,ga=bn,Gi=c(function(n,r){return l(pn,r,Mo(n))}),Ff=bn,Yr=c(function(n,r){return{$:0,a:n,b:r}}),Rf=Eo,dr=function(n){var r=n.a,e=n.b;return l(Yr,r*1664525+e>>>0,e)},Wi=function(n){var r=dr(l(Yr,0,1013904223)),e=r.a,a=r.b,t=e+n>>>0;return dr(l(Yr,t,a))},Vi=function(n){return{$:0,a:n}},Oi=function(n){return{$:1,a:n}},Ji=c(function(n,r){return{$:0,a:n,b:r}}),Ui=Ji,Ii=Fo(ga),Ni=function(n){var r=n;return r},ji=l(Hn,function(n){return mn(Wi(Ni(n)))},Ii),zi=c(function(n,r){var e=n;return e(r)}),_a=S(function(n,r,e){if(r.b){var a=r.a,t=r.b,o=l(zi,a,e),i=o.a,u=o.b;return l(Hn,function(s){return _(_a,n,t,u)},l(fa,n,i))}else return mn(e)}),Ki=S(function(n,r,e){return mn(e)}),Pf=bn,Qr=c(function(n,r){var e=r;return function(a){var t=e(a),o=t.a,i=t.b;return w(n(o),i)}}),qi=c(function(n,r){var e=r;return l(Qr,n,e)});T.Random=be(ji,_a,Ki,qi);var Yi=rr("Random"),Qi=c(function(n,r){return Yi(l(Qr,n,r))}),Xr=c(function(n,r){n:for(;;){if(r.$===-2)return H;var e=r.b,a=r.c,t=r.d,o=r.e,i=l(ma,n,e);switch(i){case 0:var u=n,s=t;n=u,r=s;continue n;case 1:return G(a);default:var u=n,s=o;n=u,r=s;continue n}}}),Ln=c(function(n,r){if(r.$)return H;var e=r.a;return G(n(e))}),Xi=pe,Sn=Xi(h),Zi=it,Nn=S(function(n,r,e){return n(r(e))}),xi=c(function(n,r){return _(hr,c(function(e,a){return n(e)?l(F,e,a):a}),h,r)}),nl=gt,rl=_t,el=dt,al=function(n){return l(xi,l(Nn,Zi,Un),l(Mn,el,nl(rl(n))))},ba=c(function(n,r){var e=r;return function(a){var t=e(a),o=t.a,i=t.b,u=n(o),s=u;return s(i)}}),jn=function(n){return function(r){return w(n,r)}},pa=S(function(n,r,e){return l(ba,function(a){return r(a)?jn(G(a)):n===1?jn(H):_(pa,n-1,r,e)},e)}),tl=function(n){return _(lr,S(function(r,e,a){return l(F,e,a)}),h,n)},ol=function(n){var r=n.b;return tl(r)},il=function(n){if(n.b){var r=n.a,e=n.b;return G(w(r,e))}else return H},Tf=function(n){return-n},gr=function(n){return n<0?-n:n},kf=Ao,Gf=Lo,Sa=function(n){var r=n.a,e=(r^r>>>(r>>>28)+4)*277803737;return(e>>>22^e)>>>0},ll=c(function(n,r){return function(e){var a=dr(e),t=gr(r-n),o=Sa(a),i=Sa(e),u=(134217727&o)*1,s=(67108863&i)*1,f=(s*134217728+u)/9007199254740992,v=f*t+n;return w(v,dr(a))}}),ul=S(function(n,r,e){n:for(;;){var a=n.a,t=n.b;if(r.b){var o=r.a,i=r.b;if(V(e,gr(a))<1)return t;var u=o,s=i,f=e-gr(a);n=u,r=s,e=f;continue n}else return t}}),sl=function(n){return _(_n,Vo,0,n)},cl=c(function(n,r){var e=function(t){var o=t.a;return gr(o)},a=e(n)+sl(l(Mn,e,r));return l(Qr,l(ul,n,r),l(ll,0,a))}),En=c(function(n,r){if(r.$)return n;var e=r.a;return e}),fl=function(n){var r=l(Mn,function(e){var a=e.a,t=e.b;return w(t,a)},ol(n));return l(En,jn(H),l(Ln,function(e){var a=e.a,t=e.b;return l(cl,a,t)},il(r)))},vl=st,$l=function(n){return l(vl,n,"")},ml=c(function(n,r){return n<1?"":_(vr,-n,ea(r),r)}),hl=function(n){var r=n.aj,e=n.am,a=function(t){var o=l(ml,r,t),i=l(Xr,o,e);if(i.$===1)return jn(t);var u=i.a;return l(ba,function(s){if(s.$===1)return jn(t);var f=s.a;return a(Yn(t,$l(f)))},fl(u))};return a("")},wa=function(n){var r=n.b;return r},dl=Ho,gl=function(n){return{aj:n,am:Kr}},_l=c(function(n,r){var e=function(a){var t=_(vr,l(xe,0,a-n),a,r),o=l(Ln,oi,qe(l($n,a,r)));return o.$===1?$([w(t,o)]):l(F,w(t,o),e(a+1))};return e(0)}),Wf=bn,bl=function(n){return{b:Kr,v:n}},pl=function(n){return 1+l(En,0,l(Ln,fr,n))},Sl=function(n){n:for(;;)if(n.$===-1&&n.d.$===-1){var r=n.d,e=r;n=e;continue n}else return n},Ba=function(n){if(n.$===-1&&n.d.$===-1&&n.e.$===-1)if(n.e.d.$===-1&&!n.e.d.a){var r=n.a,e=n.b,a=n.c,t=n.d,o=t.a,i=t.b,u=t.c,s=t.d,f=t.e,v=n.e,m=v.a,g=v.b,d=v.c,p=v.d,C=p.a,y=p.b,L=p.c,D=p.d,J=p.e,W=v.e;return b(B,0,y,L,b(B,1,e,a,b(B,0,i,u,s,f),D),b(B,1,g,d,J,W))}else{var r=n.a,e=n.b,a=n.c,R=n.d,o=R.a,i=R.b,u=R.c,s=R.d,f=R.e,N=n.e,m=N.a,g=N.b,d=N.c,p=N.d,W=N.e;return b(B,1,e,a,b(B,0,i,u,s,f),b(B,0,g,d,p,W))}else return n},Ca=function(n){if(n.$===-1&&n.d.$===-1&&n.e.$===-1)if(n.d.d.$===-1&&!n.d.d.a){var r=n.a,e=n.b,a=n.c,t=n.d,o=t.a,i=t.b,u=t.c,s=t.d,f=s.a,v=s.b,m=s.c,g=s.d,d=s.e,p=t.e,C=n.e,y=C.a,L=C.b,D=C.c,J=C.d,W=C.e;return b(B,0,i,u,b(B,1,v,m,g,d),b(B,1,e,a,p,b(B,0,L,D,J,W)))}else{var r=n.a,e=n.b,a=n.c,R=n.d,o=R.a,i=R.b,u=R.c,N=R.d,p=R.e,ln=n.e,y=ln.a,L=ln.b,D=ln.c,J=ln.d,W=ln.e;return b(B,1,e,a,b(B,0,i,u,N,p),b(B,0,L,D,J,W))}else return n},wl=Br(function(n,r,e,a,t,o,i){if(o.$===-1&&!o.a){var u=o.a,s=o.b,f=o.c,v=o.d,m=o.e;return b(B,e,s,f,v,b(B,0,a,t,m,i))}else{n:for(;;)if(i.$===-1&&i.a===1)if(i.d.$===-1)if(i.d.a===1){var g=i.a,d=i.d,p=d.a;return Ca(r)}else break n;else{var C=i.a,y=i.d;return Ca(r)}else break n;return r}}),_r=function(n){if(n.$===-1&&n.d.$===-1){var r=n.a,e=n.b,a=n.c,t=n.d,o=t.a,i=t.d,u=n.e;if(o===1)if(i.$===-1&&!i.a){var s=i.a;return b(B,r,e,a,_r(t),u)}else{var f=Ba(n);if(f.$===-1){var v=f.a,m=f.b,g=f.c,d=f.d,p=f.e;return b(An,v,m,g,_r(d),p)}else return on}else return b(B,r,e,a,_r(t),u)}else return on},zn=c(function(n,r){if(r.$===-2)return on;var e=r.a,a=r.b,t=r.c,o=r.d,i=r.e;if(V(n,a)<0)if(o.$===-1&&o.a===1){var u=o.a,s=o.d;if(s.$===-1&&!s.a){var f=s.a;return b(B,e,a,t,l(zn,n,o),i)}else{var v=Ba(r);if(v.$===-1){var m=v.a,g=v.b,d=v.c,p=v.d,C=v.e;return b(An,m,g,d,l(zn,n,p),C)}else return on}}else return b(B,e,a,t,l(zn,n,o),i);else return l(Bl,n,ie(wl,n,r,e,a,t,o,i))}),Bl=c(function(n,r){if(r.$===-1){var e=r.a,a=r.b,t=r.c,o=r.d,i=r.e;if(qn(n,a)){var u=Sl(i);if(u.$===-1){var s=u.b,f=u.c;return b(An,e,s,f,o,_r(i))}else return on}else return b(An,e,a,t,o,l(zn,n,i))}else return on}),Cl=c(function(n,r){var e=l(zn,n,r);if(e.$===-1&&!e.a){var a=e.a,t=e.b,o=e.c,i=e.d,u=e.e;return b(B,1,t,o,i,u)}else{var s=e;return s}}),ya=S(function(n,r,e){var a=r(l(Xr,n,e));if(a.$)return l(Cl,n,e);var t=a.a;return _(ha,n,t,e)}),yl=S(function(n,r,e){var a=e,t=l(Nn,l(Nn,Ln(function(o){return w(n,o)}),r),Ln(wa));return rn(a,{b:_(ya,a.v(n),t,a.b)})}),Dl=c(function(n,r){var e=n.a,a=n.b,t=function(o){return G(_(yl,a,function(i){return G(l(En,0,i)+1)},l(En,bl(pl),o)))};return _(ya,e,t,r)}),Ml=c(function(n,r){var e=r.aj,a=r.am;return{aj:e,am:_(_n,Dl,a,l(_l,e,n))}}),Da=c(function(n,r){if(n.b){var e=n.a,a=n.b;return l(Da,a,l(Ml,e,r))}else return r}),Hl=c(function(n,r){return l(Da,r,gl(n))}),Al=c(function(n,r){n:for(;;)if(r.b){var e=r.a,a=r.b;if(n(e))return!0;var t=n,o=a;n=t,r=o;continue n}else return!1}),Ll=c(function(n,r){return!(n.X&&l(Al,ri(r),n.ad))}),Ma=c(function(n,r){switch(n.$){case 0:var e=function(){var p=r.S;if(p.$===1){var C=al(r.V),y=l(En,1,aa(r.af));return w(C,l(Hl,y,C))}else{var L=p.a;return w(r.ad,L)}}(),a=e.a,t=e.b,o=rn(r,{ad:a,S:G(t)}),i=l(Qi,yi,_(pa,100,Ll(o),hl(t)));return w(o,i);case 1:var u=n.a;if(u.$===1)return w(rn(r,{al:!0}),Sn);var s=u.a,f=r.W?Ei(s):s;return w(rn(r,{al:!1,an:l(F,f,r.an)}),Sn);case 2:return w(r,l(Gi,$(["text/plain"]),Ci));case 3:var v=n.a;return w(r,l(pn,$a,dl(v)));case 4:var m=n.a;return w(rn(r,{V:l(En,"",l(Ln,wa,l(Xr,m,da))),ag:m,S:H}),Sn);case 5:var g=n.a;return w(rn(r,{V:g,ag:"zcustom",S:H}),Sn);case 6:var d=n.a;return w(rn(r,{af:d,S:H}),Sn);case 7:return w(rn(r,{W:!r.W}),Sn);default:return w(rn(r,{X:!r.X}),Sn)}}),El=function(n){var r={ad:h,V:"",af:"3",ag:"",al:!1,W:!0,X:!0,an:h,S:H};return l(Ma,va("namur"),r)},Fl=pe,Rl=Fl(h),Pl=function(n){return Rl},Tl={$:2},kl={$:0},Gl=function(n){return{$:6,a:n}},Wl={$:7},Vl={$:8},Ol=P("a"),Jl=P("br"),Ha=P("button"),Ul=he,Aa=c(function(n,r){return l(Me,n,Ul(r))}),La=Aa("checked"),Ea=P("div"),Zr=P("em"),br=P("fieldset"),Il=he,wn=c(function(n,r){return l(Me,n,Il(r))}),Fn=wn("htmlFor"),Nl=P("h1"),jl=function(n){return l(wn,"href",eo(n))},Rn=wn("id"),xr=P("input"),Pn=P("label"),pr=P("legend"),zl=wn("min"),Kl=function(n){return{$:0,a:n}},Fa=De,ql=c(function(n,r){return l(Fa,n,Kl(r))}),Sr=function(n){return l(ql,"click",Nr(n))},Yl=function(n){return w(n,!0)},Ql=function(n){return{$:1,a:n}},Xl=c(function(n,r){return l(Fa,n,Ql(r))}),Zl=Lt,xl=c(function(n,r){return _(hr,Zl,r,n)}),nu=At,ru=l(xl,$(["target","value"]),nu),ne=function(n){return l(Xl,"input",l(Ir,Yl,l(Ir,n,ru)))},eu=P("option"),z=P("p"),au=function(n){return l(He,"rows",cr(n))},tu=P("select"),ou=Aa("selected"),iu=function(n){return $([n])},lu=ro,Tn=lu,uu=wn("target"),su=Fr,A=su,cu=P("textarea"),re=wn("type"),fu=wn("value"),ee=fu,vu=c(function(n,r){return n?$([r]):h}),$u=function(n){return l(Ea,$([l(Tn,"padding","1em")]),$([l(Nl,h,$([A("Phrase Generator")])),l(br,h,$([l(pr,h,$([A("Corpus")])),l(z,h,$([A("A corpus is the list of words and phrases that the model will learn from, and try to emulate.")])),l(z,h,$([l(Pn,$([Fn("presets")]),$([A("Select an existing corpus: ")])),l(tu,$([Rn("presets"),ne(va)]),l(Mn,function(r){var e=r.a,a=r.b,t=a.a;return l(eu,$([ee(e),ou(qn(e,n.ag))]),$([A(t)]))},ur(da)))])),l(z,h,$([l(Pn,$([Fn("load-from-file")]),$([A("Or load one from a file: ")])),l(Ha,$([Rn("load-from-file"),Sr(Tl)]),$([A("Load corpus from file")]))])),l(z,h,$([l(Pn,$([Fn("corpus")]),$([A("Or modify the current one right here: ")])),l(Jl,h,h),l(cu,$([Rn("corpus"),au(7),ne($a),ee(n.V)]),h)]))])),l(br,h,$([l(pr,h,$([A("Model (N-Gram)")])),l(z,h,$([A("This model generates phrases character-by-character.  It uses the previous "),l(Zr,h,$([A("N")])),A(" characters to make a decision about the next one, based on what it learnt from the corpus.")])),l(z,h,$([l(Pn,$([Fn("param-n")]),$([l(Zr,h,$([A("N")])),A(" = ")])),l(xr,$([Rn("param-n"),re("number"),l(Tn,"width","2.5em"),l(Tn,"text-align","right"),zl("1"),ee(n.af),ne(Gl)]),h)])),l(z,h,$([A("Smaller "),l(Zr,h,$([A("N")])),A(" gives more diversity, but the results will also be more nonsensical.")]))])),l(br,h,$([l(pr,h,$([A("Post-processing")])),l(z,h,$([l(xr,$([Rn("param-capitalize"),re("checkbox"),La(n.W),Sr(Wl)]),h),l(Pn,$([Fn("param-capitalize")]),$([A(" Capitalize results")]))])),l(z,h,$([l(xr,$([Rn("param-exclude-corpus"),re("checkbox"),La(n.X),Sr(Vl)]),h),l(Pn,$([Fn("param-exclude-corpus")]),$([A(" Exclude results that exist in the corpus")]))]))])),l(br,h,Yn($([l(pr,h,$([A("Results")])),l(z,h,$([l(Ha,$([Sr(kl)]),$([A("Generate!")]))]))]),Yn(l(vu,n.al,l(z,$([l(Tn,"color","darkred")]),$([A("Could not generate something not in the corpus.  Maybe try a less constrained model?")]))),l(Mn,l(Nn,l(Nn,Ea(h),iu),A),n.an)))),l(z,$([l(Tn,"font-size","0.9em"),l(Tn,"text-align","right")]),$([l(Ol,$([jl("https://github.com/xlambein/phrase-generator"),uu("_blank")]),$([A("Source code on GitHub :>")]))]))]))},mu=Bi({bV:El,ch:Pl,cm:Ma,cn:$u});Zt({Main:{init:mu(Nr(0))(0)}})})(this);

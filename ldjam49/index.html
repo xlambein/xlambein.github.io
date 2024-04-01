@@ -1,33 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><style>:where(img){height:auto}</style>
+  
   <title>Ludum Dare 49: Chevalchemy: A Hoof of Concept — Xavier Lambein's
   website</title>
-  <meta name="description" content=
-  "My submission to the Ludum Dare 49 game jam, along with a making of and the hurdles of porting a Bevy game to the web.">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="My submission to the Ludum Dare 49 game jam, along with a making of and the hurdles of porting a Bevy game to the web.">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="icon" type="image/png" href="/assets/img/favicon.png">
   <link rel="stylesheet" href="/assets/css/style.css">
-  <link rel="preload" href=
-  "https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
-  integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin=
-  "anonymous" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
-  <link rel="stylesheet" href=
-  "https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
-  integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin=
-  "anonymous"></noscript>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous"></noscript>
   <link rel="me" href="https://sunny.garden/@xavier">
 </head>
 <body>
   <nav>
-    <a href="/" tabindex="-1" aria-hidden="true"><img src=
-    "/assets/img/logo.svg" width="61.2" height="61.2" alt="website logo" id=
-    "logo" style="float: left;"></a>
+    <a href="/" tabindex="-1" aria-hidden="true"><img src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3e%3cpath fill='%23ff8080' stroke='black' stroke-width='5.4' d='m112.728 100 76.367-76.368v25.456L138.184 100l25.456 25.456h-25.456ZM100 112.728l76.368 76.367h-25.456L100 138.184 74.544 163.64v-25.456ZM87.272 100l-76.367 76.368v-25.456L61.816 100 36.36 74.544h25.456ZM100 87.272 23.632 10.905h25.456L100 61.816l25.456-25.456v25.456Z'/%3e%3c/svg%3e" width="61.2" height="61.2" alt="website logo" id="logo" style="float:left" fetchpriority="high"></a>
     <div id="links">
-      <a href="/">Home</a> <a href="/about/">About</a> <a href=
-      "/music/">Music</a> <a href="/recipes/">Recipes</a>
+      <a href="/">Home</a> <a href="/about/">About</a> <a href="/music/">Music</a> <a href="/recipes/">Recipes</a>
     </div>
   </nav>
   <article>
@@ -42,44 +30,37 @@
         </ul>
       </div>
     </header>
-    <p>Once again, I spent my weekend making a game for the bi-annual <a href=
-    "https://ldjam.com">Ludum Dare game jam</a>. The theme for this jam was
+    <p>Once again, I spent my weekend making a game for the bi-annual <a href="https://ldjam.com">Ludum Dare game jam</a>. The theme for this jam was
     “Unstable”, so of course I went for horse puns. In the game, you play as a
     horse alchemist (a “Chevalchemist”) working for the great Neighcolas
     Flamel. Your task is to mix together ingredients into increasingly complex
     recipes.</p>
     <figure>
-      <img src="chevalchemy01.png">
+      <img src="chevalchemy01.png.webp" alt="" fetchpriority="high" decoding="async" width="802" height="601">
     </figure>
     <p>It’s essentially a physics sandbox, in which the fun stems from how
     awful the controls are. It’s silly and stupid, and I’m extremely happy with
     how it turned out 😊</p>
-    <p>The game can be played over on <a href=
-    "https://xlambein.itch.io/chevalchemy-a-hoof-of-concept">itch.io</a>. Being
+    <p>The game can be played over on <a href="https://xlambein.itch.io/chevalchemy-a-hoof-of-concept">itch.io</a>. Being
     a jam game, it cruelly lacks polish, but it’s totally playable. I recommend
     reading the (short) instructions below the game before starting. Or don’t,
     I won’t tell you how to live your life.</p>
-    <p>Source code can be found on <a href=
-    "https://github.com/xlambein/ldjam49">GitHub</a>.</p>
+    <p>Source code can be found on <a href="https://github.com/xlambein/ldjam49">GitHub</a>.</p>
     <h1 id="making-of">Making Of</h1>
     <p>As always with these “-athon” sorts of projects, it was an intense and
-    stressful, but ultimately rewarding experience. Thanks to my new <a href=
-    "https://github.com/xlambein/temps">time tracker</a>, I know that I spent
+    stressful, but ultimately rewarding experience. Thanks to my new <a href="https://github.com/xlambein/temps">time tracker</a>, I know that I spent
     just under 23 hours working on the game over the weekend, which is, uhh, a
     lot. Also, shout out to <a href="https://mandooks.com">Mandooks</a> who
     helped me brainstorm this idea, and who came up with great stuff that I
     didn’t have time to implement.</p>
     <p>Continuing what seems to be a tradition now, I used different tools from
-    <a href="/ldjam48">last time</a>, choosing the <a href=
-    "https://bevyengine.org">Bevy</a> Rust game engine with <a href=
-    "https://rapier.rs">Rapier</a> for the physics. The experience was overall
+    <a href="/ldjam48">last time</a>, choosing the <a href="https://bevyengine.org">Bevy</a> Rust game engine with <a href="https://rapier.rs">Rapier</a> for the physics. The experience was overall
     pleasant, although you can definitely feel the rough edges in these two
     projects. In particular, I kept running into bugs and obscure things with
     Rapier, which greatly slowed me down. Faced with broken collisions on
     Sunday morning, I almost gave up, until I managed to figure out a hack.</p>
     <p>In the past I’ve almost always made games with “code-oriented”
-    frameworks, and my experience with <a href=
-    "https://godotengine.org">Godot</a> in April was a big realization of how
+    frameworks, and my experience with <a href="https://godotengine.org">Godot</a> in April was a big realization of how
     great visual tools can be for game-making (yeah no shit). While it’s in the
     plans, Bevy currently lacks any tooling of the sort, so I ended up baking
     very primitive tools to help me place entities in a level and trace the
@@ -88,8 +69,7 @@
     <h1 id="porting-to-the-web">Porting to the Web</h1>
     <p>I developed the game without thinking about WASM support at all, but
     when I was done, I found myself regretting that the game could not be
-    played in the browser. Bevy has a great <a href=
-    "https://bevy-cheatbook.github.io">cheat book</a> with a section on how to
+    played in the browser. Bevy has a great <a href="https://bevy-cheatbook.github.io">cheat book</a> with a section on how to
     compile to WASM, using a drop-in replacement for the rendering pipeline.
     Everything worked mostly as expected, but for some reason I could not
     control the size of the <code>canvas</code> element.</p>
@@ -121,5 +101,6 @@
     <p>Feedback and ideas are welcome! Don’t hesitate to <a href="/about">get
     in touch</a>.</p>
   </article>
-</body>
-</html>
+
+
+</body></html>

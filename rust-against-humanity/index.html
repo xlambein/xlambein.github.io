@@ -1,32 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><style>:where(img){height:auto}</style>
+  
   <title>Rust Against Humanity — Xavier Lambein's website</title>
-  <meta name="description" content=
-  "A replica of Cards Against Humanity, written in Rust with warp and yew.">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A replica of Cards Against Humanity, written in Rust with warp and yew.">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="icon" type="image/png" href="/assets/img/favicon.png">
   <link rel="stylesheet" href="/assets/css/style.css">
-  <link rel="preload" href=
-  "https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
-  integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin=
-  "anonymous" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
-  <link rel="stylesheet" href=
-  "https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
-  integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin=
-  "anonymous"></noscript>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous"></noscript>
   <link rel="me" href="https://sunny.garden/@xavier">
 </head>
 <body>
   <nav>
-    <a href="/" tabindex="-1" aria-hidden="true"><img src=
-    "/assets/img/logo.svg" width="61.2" height="61.2" alt="website logo" id=
-    "logo" style="float: left;"></a>
+    <a href="/" tabindex="-1" aria-hidden="true"><img src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3e%3cpath fill='%23ff8080' stroke='black' stroke-width='5.4' d='m112.728 100 76.367-76.368v25.456L138.184 100l25.456 25.456h-25.456ZM100 112.728l76.368 76.367h-25.456L100 138.184 74.544 163.64v-25.456ZM87.272 100l-76.367 76.368v-25.456L61.816 100 36.36 74.544h25.456ZM100 87.272 23.632 10.905h25.456L100 61.816l25.456-25.456v25.456Z'/%3e%3c/svg%3e" width="61.2" height="61.2" alt="website logo" id="logo" style="float:left" fetchpriority="high"></a>
     <div id="links">
-      <a href="/">Home</a> <a href="/about/">About</a> <a href=
-      "/music/">Music</a> <a href="/recipes/">Recipes</a>
+      <a href="/">Home</a> <a href="/about/">About</a> <a href="/music/">Music</a> <a href="/recipes/">Recipes</a>
     </div>
   </nav>
   <article>
@@ -41,15 +29,13 @@
         </ul>
       </div>
     </header>
-    <p>A small web replica of the party game <a href=
-    "https://www.cardsagainsthumanity.com">Cards Against Humanity</a>. It’s
+    <p>A small web replica of the party game <a href="https://www.cardsagainsthumanity.com">Cards Against Humanity</a>. It’s
     mainly a learning project, to try and build a full-stack web app in Rust.
-    The backend is based on <a href=
-    "https://github.com/seanmonstar/warp">warp</a>, and the front-end is made
+    The backend is based on <a href="https://github.com/seanmonstar/warp">warp</a>, and the front-end is made
     with <a href="https://yew.rs">Yew</a>. The two communicate via web
     sockets.</p>
     <figure>
-      <img src="rah-end-round.png">
+      <img src="rah-end-round.png.jpg" alt="" fetchpriority="high" decoding="async" width="423" height="461">
     </figure>
     <p>It’s been a fun project to make, but my general conclusion is that Yew
     is not a good framework for making games—it’s really designed for web apps.
@@ -69,25 +55,24 @@
     cards are never deleted, but afaik there’s no way to support this at
     compile-time.</p>
     <p>Another fun part of this project was writing the cards. Many of them
-    were taken directly from the original board game, but <a href=
-    "https://mandooks.com">Mandooks</a> and I spent part of an evening coming
+    were taken directly from the original board game, but <a href="https://mandooks.com">Mandooks</a> and I spent part of an evening coming
     up with original ones, mostly based on our friend group’s inside jokes and
     references. This made testing the game extremely funny.</p>
-    <p>As always, <a href=
-    "https://github.com/xlambein/rust-against-humanity">source code is
+    <p>As always, <a href="https://github.com/xlambein/rust-against-humanity">source code is
     available on GitHub</a>.</p>
     <figure>
-      <img src="rah-player.png">
+      <img src="rah-player.png.jpg" alt="" fetchpriority="high" decoding="async" width="620" height="512">
       <figcaption>
         Card selection screen, for the players.
       </figcaption>
     </figure>
     <figure>
-      <img src="rah-czar.png">
+      <img src="rah-czar.png.jpg" alt="" fetchpriority="high" decoding="async" width="423" height="510">
       <figcaption>
         Judgement screen, for the Card Czar.
       </figcaption>
     </figure>
   </article>
-</body>
-</html>
+
+
+</body></html>

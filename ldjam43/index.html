@@ -1,32 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><style>:where(img){height:auto}</style>
+  
   <title>Ludum Dare 43: Sacrifice This Game — Xavier Lambein's website</title>
-  <meta name="description" content=
-  "My submission to the Ludum Dare 43 game jam.">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="My submission to the Ludum Dare 43 game jam.">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="icon" type="image/png" href="/assets/img/favicon.png">
   <link rel="stylesheet" href="/assets/css/style.css">
-  <link rel="preload" href=
-  "https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
-  integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin=
-  "anonymous" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
-  <link rel="stylesheet" href=
-  "https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
-  integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin=
-  "anonymous"></noscript>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous"></noscript>
   <link rel="me" href="https://sunny.garden/@xavier">
 </head>
 <body>
   <nav>
-    <a href="/" tabindex="-1" aria-hidden="true"><img src=
-    "/assets/img/logo.svg" width="61.2" height="61.2" alt="website logo" id=
-    "logo" style="float: left;"></a>
+    <a href="/" tabindex="-1" aria-hidden="true"><img src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3e%3cpath fill='%23ff8080' stroke='black' stroke-width='5.4' d='m112.728 100 76.367-76.368v25.456L138.184 100l25.456 25.456h-25.456ZM100 112.728l76.368 76.367h-25.456L100 138.184 74.544 163.64v-25.456ZM87.272 100l-76.367 76.368v-25.456L61.816 100 36.36 74.544h25.456ZM100 87.272 23.632 10.905h25.456L100 61.816l25.456-25.456v25.456Z'/%3e%3c/svg%3e" width="61.2" height="61.2" alt="website logo" id="logo" style="float:left" fetchpriority="high"></a>
     <div id="links">
-      <a href="/">Home</a> <a href="/about/">About</a> <a href=
-      "/music/">Music</a> <a href="/recipes/">Recipes</a>
+      <a href="/">Home</a> <a href="/about/">About</a> <a href="/music/">Music</a> <a href="/recipes/">Recipes</a>
     </div>
   </nav>
   <article>
@@ -61,11 +49,10 @@
     <p>I decided to go for the third one because the other two were too
     gruesome, and I wasn’t sure what to do with them anyway.</p>
     <p>The final result is a game which I called “Sacrifice This Game”. You can
-    find it <a href=
-    "https://ldjam.com/events/ludum-dare/43/sacrifice-this-game">on the ldjam
+    find it <a href="https://ldjam.com/events/ludum-dare/43/sacrifice-this-game">on the ldjam
     website</a>. It looks like this:</p>
     <figure>
-      <img src="ludum-dare-43-001.png">
+      <img src="ludum-dare-43-001.png.webp" alt="" fetchpriority="high" decoding="async" width="512" height="540">
     </figure>
     <p>The game is a basic platformer. You play with the directional arrows.
     <code>Enter</code> selects an item in the menus. <code>Tab</code> shows the
@@ -74,15 +61,14 @@
     <p>Well, except that, when you enter a new level, you are faced with this
     screen:</p>
     <figure>
-      <img src="ludum-dare-43-002.png">
+      <img src="ludum-dare-43-002.png.webp" alt="" fetchpriority="high" decoding="async" width="512" height="540">
     </figure>
     <p>Before continuing, you <em>have</em> to sacrifice one feature of the
     game. It can be anything, from animations, to moving left, to gravity. Once
     a feature is sacrificed, it stays that way for the following levels. If you
     are stuck, you need to go back and change the choices you made earlier.</p>
     <h1 id="technical-aspects">Technical Aspects</h1>
-    <p>The game was made with Python and the <a href=
-    "https://github.com/kitao/pyxel">Pyxel retro game engine</a>. In
+    <p>The game was made with Python and the <a href="https://github.com/kitao/pyxel">Pyxel retro game engine</a>. In
     retrospect, I would’ve preferred to make the game in JavaScript, because
     Python is a pain to distribute. However, using Pyxel was a great
     experience, and it allowed me to fast-prototype the game. With another
@@ -97,5 +83,6 @@
     the Github repository</a>. I would <em>not</em> recommend looking at it,
     though.</p>
   </article>
-</body>
-</html>
+
+
+</body></html>

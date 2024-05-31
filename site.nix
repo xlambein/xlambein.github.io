@@ -4,6 +4,7 @@
   callPackage,
   pandoc,
   runCommandLocal,
+  librsvg,
 }: let
   nixtEnv = final: prev: {
     figure = src: caption: let
@@ -40,13 +41,29 @@
   in
     css;
 
+  pngLogo = size: let
+    w = builtins.toString size.w;
+    h = builtins.toString size.h;
+  in
+    runCommandLocal "logo-${w}x${h}.png" {buildInputs = [librsvg];} ''
+      rsvg-convert -w ${w} -h ${h} ${./assets/img/logo.svg} -o $out
+    '';
+
   # Combine the assets directory with the code highlight CSS
   assets = nixss.util.derivation {
     filename = "assets";
     drv = runCommandLocal "assets" {} ''
-      mkdir -p $out/css
+      mkdir -p $out/{css,img}
       cp -drs ${./assets}/. $out
       ln -s ${codeCss} $out/css/code.css
+      ln -s ${pngLogo {
+        w = 32;
+        h = 32;
+      }} $out/img/favicon.png
+      ln -s ${pngLogo {
+        w = 200;
+        h = 200;
+      }} $out/img/logo.png
     '';
   };
 

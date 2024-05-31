@@ -14,7 +14,11 @@ ${
 "" # I might also be available for freelance/part time jobs, so if you'd like to work with me, do get in touch.
 }
 
-## Projects
+## Blog
+
+${
+"" # At some point it would make sense to group projects by some tags, e.g. PAW
+}
 
 ${foreach projects (project: with project; ''
 <div class="page-ref">

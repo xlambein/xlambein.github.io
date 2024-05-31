@@ -141,19 +141,35 @@ blockquote {
 
 pre,
 code {
-  background-color: #ffe0e0;
-  font-family: "Fira Code", monospace;
-  font-weight: 500;
+  font-family: monospace;
   hyphens: none;
 }
 
+code.sourceCode,
+pre code {
+  font-weight: normal;
+  background-color: transparent;
+}
+
+code {
+  font-weight: 500;
+  background-color: #ffe0e0;
+}
+
+div.sourceCode {
+  max-width: calc(640px + 9em);
+}
+
 pre {
+  background-color: #fff1f1;
+  border-radius: 10px;
   max-width: calc(640px + 8em);
   padding: 0.5em;
 }
 
 code {
   padding: 0 0.1em;
+  border-radius: 5px;
 }
 
 pre code {
@@ -164,13 +180,15 @@ a:hover code {
   background-color: transparent;
 }
 
+p:has(> img),
+p:has(> video),
 img,
 video {
-  max-width: min(640px, 100%);
+  max-width: min(calc(640px + 9em), 100%);
 }
 
 figure {
-  max-width: min(640px, 100%);
+  max-width: min(calc(640px + 9em), 100%);
   padding: 0;
   text-align: center;
 }

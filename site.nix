@@ -2,6 +2,8 @@
   lib,
   nixss,
   callPackage,
+  pandoc,
+  runCommandLocal,
 }: let
   nixtEnv = final: prev: {
     figure = src: caption: let
@@ -23,6 +25,32 @@
     shift-heading-level-by = -1;
     wrap = "preserve";
   } (nixss.util.replaceExt "md" "html");
+
+  # Get the code highlight CSS from pandoc
+  codeCss = let
+    template = builtins.toFile "highlighting-css.template" "$highlighting-css$";
+    sample = builtins.toFile "sample.md" ''
+      ```rust
+      fn main() {}
+      ```
+    '';
+    css = runCommandLocal "code.css" {buildInputs = [pandoc];} ''
+      pandoc --template=${template} ${sample} | grep 'code span' > $out
+    '';
+  in
+    css;
+
+  # Combine the assets directory with the code highlight CSS
+  assets = nixss.util.derivation {
+    filename = "assets";
+    drv = runCommandLocal "assets" {} ''
+      mkdir -p $out/css
+      cp -drs ${./assets}/. $out
+      ln -s ${codeCss} $out/css/code.css
+    '';
+  };
+
+  feed = nixss.template.process {inherit projects;} ./pages/atom.xml.nix;
 
   renderInTemplate = nixss.template.instantiate ./templates/base.html.nix {};
 
@@ -125,8 +153,9 @@ in
     filename = "www";
     src =
       [
-        ./assets
+        assets
         index
+        feed
         (nixss.util.text {
           filename = ".nojekyll";
           text = "";

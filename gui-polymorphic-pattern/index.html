@@ -1,0 +1,512 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><style>:where(img){height:auto}</style>
+  
+  <title>A design pattern for GUIs based on polymorphism — Xavier Lambein's
+  website</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/code.css">
+  <link href="/atom.xml" rel="alternate" title="Xavier Lambein’s blog" type="application/atom+xml">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous"></noscript>
+  <link rel="me" href="https://sunny.garden/@xavier">
+</head>
+<body>
+  <nav>
+    <a href="/" tabindex="-1" aria-hidden="true"><img src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3e%3cpath fill='%23ff8080' stroke='black' stroke-width='5.4' d='m112.728 100 76.367-76.368v25.456L138.184 100l25.456 25.456h-25.456ZM100 112.728l76.368 76.367h-25.456L100 138.184 74.544 163.64v-25.456ZM87.272 100l-76.367 76.368v-25.456L61.816 100 36.36 74.544h25.456ZM100 87.272 23.632 10.905h25.456L100 61.816l25.456-25.456v25.456Z'/%3e%3c/svg%3e" width="61.2" height="61.2" alt="website logo" id="logo" style="float:left" fetchpriority="high"></a>
+    <div id="links">
+      <a href="/">Home</a> <a href="/about/">About</a> <a href="/music/">Music</a> <a href="/recipes/">Recipes</a>
+    </div>
+  </nav>
+  <article>
+    <header>
+      <h1>A design pattern for GUIs based on polymorphism</h1>
+      <div class="article-info">
+        <time class="pubdate">2024-05-31</time>
+        <ul class="tags">
+          <li>GUI</li>
+          <li>rust</li>
+        </ul>
+      </div>
+    </header>
+    <p>I’d like to share a pattern I’ve been exploring for a GUI library I’m
+    working on. It’s a sort of compromise between retained and immediate
+    GUIs.</p>
+    <h1 id="immediate-versus-retained">Immediate versus retained</h1>
+    <p>In a typical immediate GUI (imGUI) framework, you’d write a button
+    kind-of like that:</p>
+    <div class="sourceCode" id="cb1">
+      <pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> button(ctx<span class="op">:</span> <span class="op">&amp;</span><span class="kw">mut</span> Context<span class="op">,</span> text<span class="op">:</span> <span class="op">&amp;</span><span class="dt">str</span>) <span class="op">-&gt;</span> <span class="dt">bool</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// If you're wondering, `TextLayouter` is some sort of</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// thread-local cache for text layouts, keyed by string</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> text_layout <span class="op">=</span> <span class="pp">TextLayouter::</span>layout_text(text)<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> size <span class="op">=</span> text_layout<span class="op">.</span>size()<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> rect <span class="op">=</span> <span class="pp">Rect::</span>new(ctx<span class="op">.</span>position()<span class="op">,</span> size)<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> hovered <span class="op">=</span> rect<span class="op">.</span>contains(ctx<span class="op">.</span>mouse())<span class="op">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> bg_color <span class="op">=</span> <span class="cf">if</span> hovered <span class="op">{</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        HOVER_COLOR</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        BG_COLOR</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">};</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">.</span>draw_box(rect<span class="op">,</span> bg_color)<span class="op">;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">.</span>draw_text(text_layout)<span class="op">;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ctx<span class="op">.</span>clicked() <span class="op">&amp;&amp;</span> hovered <span class="op">{</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        ctx<span class="op">.</span>capture_click()<span class="op">;</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        <span class="cn">true</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        <span class="cn">false</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+    </div>
+    <p>Which means, you do the layouting, rendering and event handling all in
+    one function. This contrasts with the way retained GUIs (retGUI) usually
+    work, where they typically use objects rather than functions. Something
+    like:</p>
+    <div class="sourceCode" id="cb2">
+      <pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Button <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    text<span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    on_click<span class="op">:</span> <span class="dt">Option</span><span class="op">&lt;</span><span class="dt">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="bu">FnMut</span>()<span class="op">&gt;&gt;,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> Button <span class="op">{</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> new(text<span class="op">:</span> <span class="dt">String</span>) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>            text<span class="op">,</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>            text_layout<span class="op">:</span> <span class="cn">None</span><span class="op">,</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>            on_click<span class="op">:</span> <span class="cn">None</span><span class="op">,</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> on_click(<span class="kw">self</span><span class="op">,</span> on_click<span class="op">:</span> <span class="kw">impl</span> <span class="bu">FnMut</span>()) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>            on_click<span class="op">:</span> <span class="cn">Some</span>(<span class="dt">Box</span><span class="pp">::</span>new(on_click))<span class="op">,</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>            <span class="op">..</span><span class="kw">self</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> Widget <span class="cf">for</span> Button <span class="op">{</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> layout(<span class="op">&amp;</span><span class="kw">mut</span> <span class="kw">self</span><span class="op">,</span> ctx<span class="op">:</span> <span class="op">&amp;</span><span class="kw">mut</span> LayoutContext) <span class="op">-&gt;</span> Size <span class="op">{</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> text_layout <span class="op">=</span> <span class="pp">TextLayouter::</span>layout_text(text)<span class="op">;</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        text_layout<span class="op">.</span>size()</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> draw(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> ctx<span class="op">:</span> <span class="op">&amp;</span><span class="kw">mut</span> RenderContext) <span class="op">{</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> rect <span class="op">=</span> ctx<span class="op">.</span>available_rect()<span class="op">;</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        ctx<span class="op">.</span>draw_box(rect)<span class="op">;</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> text_layout <span class="op">=</span> <span class="pp">TextLayouter::</span>layout_text(text)<span class="op">;</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        ctx<span class="op">.</span>draw_text(text_layout)<span class="op">;</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> event(<span class="op">&amp;</span><span class="kw">mut</span> <span class="kw">self</span><span class="op">,</span> ctx<span class="op">:</span> <span class="op">&amp;</span><span class="kw">mut</span> EventContext<span class="op">,</span> event<span class="op">:</span> <span class="op">&amp;</span>Event) <span class="op">{</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> rect <span class="op">=</span> ctx<span class="op">.</span>available_rect()<span class="op">;</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">let</span> <span class="pp">Event::</span>MouseButtonUp <span class="op">=</span> event <span class="op">{</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> rect<span class="op">.</span>contains(ctx<span class="op">.</span>mouse()) <span class="op">{</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="kw">let</span> <span class="cn">Some</span>(on_click) <span class="op">=</span> <span class="kw">self</span><span class="op">.</span>on_click<span class="op">.</span>as_mut() <span class="op">{</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>                    on_click()<span class="op">;</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+    </div>
+    <p>When comparing the two, we see a bit more separation of concerns in the
+    retGUI, but this comes at the cost of some redundant bits, more
+    boilerplate, and additional state management. This becomes worse as widgets
+    get more complex. In particular with nested widgets, you typically end up
+    copy-pasting a <code>for</code> loop several times.</p>
+    <p>That being said, there’s plenty of good reasons to <em>not</em> use an
+    imGUI framework. With an imGUI, many tasks become awkward, and some things
+    are pretty much impossible. For example, since they perform layouting “as
+    they go” (i.e., along with rendering), layouts like flexbox that adapt to
+    their content cannot be implemented with imGUI.</p>
+    <p>Like Hannah Montana, I want the best of both worlds. To that end, I’ve
+    started using a pattern that lets me write code which looks like imGUI, but
+    which behaves more like retGUI. As we’ll see, it relies on making the
+    <code>button</code> function polymorphic.</p>
+    <h1 id="the-polymorphic-immediate-gui-pattern">The polymorphic immediate
+    GUI pattern</h1>
+    <p>Let’s return to the example of the imGUI button from above, which I’ll
+    update with a few changes:</p>
+    <div class="sourceCode" id="cb3">
+      <pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> button<span class="op">&lt;</span>C<span class="op">:</span> Phase<span class="op">&gt;</span>(ctx<span class="op">:</span> <span class="op">&amp;</span><span class="kw">mut</span> C<span class="op">,</span> text<span class="op">:</span> <span class="op">&amp;</span><span class="dt">str</span>) <span class="op">-&gt;</span> <span class="dt">bool</span> <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> text_layout <span class="op">=</span> <span class="pp">TextLayouter::</span>layout_text(text)<span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">.</span>set_size(text_layout<span class="op">.</span>size())<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> rect <span class="op">=</span> ctx<span class="op">.</span>rect()<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> hovered <span class="op">=</span> rect<span class="op">.</span>contains(ctx<span class="op">.</span>mouse())<span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">.</span>render(<span class="op">|</span>painter<span class="op">|</span> <span class="op">{</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> bg_color <span class="op">=</span> <span class="cf">if</span> hovered <span class="op">{</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>            <span class="pp">Color::</span>LESS_DARK</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            <span class="pp">Color::</span>DARK</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">};</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        painter<span class="op">.</span>draw_box(rect<span class="op">,</span> bg_color)<span class="op">;</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        painter<span class="op">.</span>draw_text(<span class="op">&amp;</span>text_layout)<span class="op">;</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span>)<span class="op">;</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ctx<span class="op">.</span>clicked() <span class="op">&amp;&amp;</span> hovered <span class="op">{</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        ctx<span class="op">.</span>capture_click()<span class="op">;</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>        <span class="cn">true</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        <span class="cn">false</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+    </div>
+    <p>The code is mostly the same as before, except for a few things. First,
+    <code>button</code> is now a generic function which accepts some type
+    <code>C</code> implementing <code>Phase</code>. Next, in the body, I’m
+    calling <code>set_size</code> to signal the layout size to the context, and
+    I’m using a function <code>rect</code> to get the button’s position and
+    size to draw and check for events. Finally, I’m doing all the rendering in
+    a call to <code>render</code>, which takes a closure.</p>
+    <p>The idea here is that, through polymorphism, this single function
+    actually ends up implementing all three methods <code>layout</code>,
+    <code>draw</code> and <code>event</code> of the <code>Button</code> object
+    from the retGUI example. The actual variant is selected by passing a
+    different <code>C: Phase</code> as the first argument, monomorphizing
+    <code>button</code> into one of the three retGUI functions.</p>
+    <p>For example, if I wanted to execute the layouting phase of this widget,
+    I would do something like this:</p>
+    <div class="sourceCode" id="cb4">
+      <pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> ctx <span class="op">=</span> <span class="pp">LayoutPhase::</span>new()<span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>button(<span class="op">&amp;</span><span class="kw">mut</span> ctx<span class="op">,</span> <span class="st">"Click me!"</span>)</span></code></pre>
+    </div>
+    <p>and similarly with <code>RenderPhase</code> and
+    <code>EventPhase</code>.</p>
+    <p>Note that this pattern handles nesting very well, which means I can
+    define a custom GUI element that uses <code>button</code> as follows:</p>
+    <div class="sourceCode" id="cb5">
+      <pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> counter<span class="op">&lt;</span>C<span class="op">:</span> Phase<span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> ctx<span class="op">:</span> C) <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="kw">mut</span> count <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// We'll see why we need `ctx.nested()` later</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> button(<span class="op">&amp;</span><span class="kw">mut</span> ctx<span class="op">.</span>nested()<span class="op">,</span> <span class="st">"Increment"</span>) <span class="op">{</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        count <span class="op">+=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> button(<span class="op">&amp;</span><span class="kw">mut</span> ctx<span class="op">.</span>nested()<span class="op">,</span> <span class="st">"Decrement"</span>) <span class="op">{</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        count <span class="op">-=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+    </div>
+    <p>and then lay out the whole UI with <code>counter(&amp;mut
+    LayoutPhase::new())</code>.</p>
+    <h1 id="implementing-the-pattern">Implementing the pattern</h1>
+    <p>To understand how this works, let’s look at the <code>Phase</code> trait
+    and each of its implementors, starting with <code>LayoutPhase</code>:</p>
+    <div class="sourceCode" id="cb6">
+      <pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">trait</span> Phase <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Specify the desired size of the current GUI node.</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> set_size(<span class="op">&amp;</span><span class="kw">mut</span> <span class="kw">self</span><span class="op">,</span> _size<span class="op">:</span> Size) <span class="op">{}</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// The rectangle of the current GUI node.</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> rect(<span class="op">&amp;</span><span class="kw">mut</span> <span class="kw">self</span>) <span class="op">-&gt;</span> Rect <span class="op">{</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Rect::</span>EMPTY</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// The current position of the mouse.</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> mouse(<span class="op">&amp;</span><span class="kw">self</span>) <span class="op">-&gt;</span> Vec2 <span class="op">{</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        Vec2 <span class="op">{</span> x<span class="op">:</span> <span class="dv">0.0</span><span class="op">,</span> y<span class="op">:</span> <span class="dv">0.0</span> <span class="op">}</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Rendering.</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> render(<span class="op">&amp;</span><span class="kw">mut</span> <span class="kw">self</span><span class="op">,</span> _paint<span class="op">:</span> <span class="kw">impl</span> <span class="bu">FnOnce</span>(<span class="op">&amp;</span><span class="kw">mut</span> Painter)) <span class="op">{}</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Whether the mouse was just clicked.</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> clicked(<span class="op">&amp;</span><span class="kw">self</span>) <span class="op">-&gt;</span> <span class="dt">bool</span> <span class="op">{</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="cn">false</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Signal that the current mouse click was captured, and</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// shouldn't bubble.</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> capture_click(<span class="op">&amp;</span><span class="kw">mut</span> <span class="kw">self</span>) <span class="op">{}</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Create a phase context for a nested GUI node.</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> nested(<span class="op">&amp;</span><span class="kw">mut</span> <span class="kw">self</span>) <span class="op">-&gt;</span> <span class="dt">Self</span><span class="op">;</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Probably a bunch of other things.</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> LayoutPhase <span class="op">{</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// ID of this GUI node.</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    node_id<span class="op">:</span> NodeId<span class="op">,</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Deterministic source of node IDs.</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    node_id_source<span class="op">:</span> Rc<span class="op">&lt;</span>NodeIdSource<span class="op">&gt;,</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Desired size of each GUI node.</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    constraints<span class="op">:</span> Rc<span class="op">&lt;</span>LayoutConstraints<span class="op">&gt;,</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Snip.</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> Phase <span class="cf">for</span> LayoutPhase <span class="op">{</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> set_size(<span class="op">&amp;</span><span class="kw">mut</span> <span class="kw">self</span><span class="op">,</span> size<span class="op">:</span> Size) <span class="op">{</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>        <span class="kw">self</span><span class="op">.</span>constraints<span class="op">.</span>set_size(<span class="kw">self</span><span class="op">.</span>node_id<span class="op">,</span> size)<span class="op">;</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> nested(<span class="op">&amp;</span><span class="kw">mut</span> <span class="kw">self</span>) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> node_id <span class="op">=</span> <span class="kw">self</span><span class="op">.</span>node_id_source<span class="op">.</span>next_id()<span class="op">;</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>        <span class="kw">self</span><span class="op">.</span>constraints<span class="op">.</span>add_child(<span class="kw">self</span><span class="op">.</span>node_id<span class="op">,</span> node_id)<span class="op">;</span></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>        <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>            node_id<span class="op">,</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>            constraints<span class="op">:</span> <span class="kw">self</span><span class="op">.</span>constraints<span class="op">.</span>clone()<span class="op">,</span></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+    </div>
+    <p>As you can see, <code>Phase</code> has many default implementations for
+    its methods, and <code>LayoutPhase</code> only provides a couple of
+    required methods. This means any call to e.g. <code>render</code> or
+    <code>capture_click</code>, once they’re monomorphized, will be inlined
+    into nothing. Even better, calls to <code>click</code> will inline to
+    <code>false</code>, which means the compiler will get rid of whole
+    <code>if</code> blocks. More things can be eliminated transitively, and as
+    a result, we get the following monomorphized version of the polymorphic
+    <code>button&lt;C: Phase&gt;</code> from above:</p>
+    <div class="sourceCode" id="cb7">
+      <pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> button_layout(ctx<span class="op">:</span> <span class="op">&amp;</span><span class="kw">mut</span> LayoutPhase<span class="op">,</span> text<span class="op">:</span> <span class="op">&amp;</span><span class="dt">str</span>) <span class="op">-&gt;</span> <span class="dt">bool</span> <span class="op">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> text_layout <span class="op">=</span> <span class="pp">TextLayouter::</span>layout_text(text)<span class="op">;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">.</span>set_size(text_layout<span class="op">.</span>size())<span class="op">;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// `rect` and `hover` are unused, so they're optimized out by</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// the compiler</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// No render block</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// No event handling</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="cn">false</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+    </div>
+    <p>which is pretty much equivalent to the retGUI method <code>layout</code>
+    from above.</p>
+    <p>Before continuing, I’ll do a quick parenthesis into a few details of the
+    implementation of <code>LayoutPhase</code>. This is not crucial to
+    understanding the pattern, but it’s helpful if you wanna know how we bridge
+    the gap from imGUI to retGUI.</p>
+    <p>First, there’s these <code>node_id</code> and
+    <code>node_id_source</code> fields in <code>LayoutPhase</code>. The former
+    is used to identify a specific node in the GUI tree, while the latter is a
+    shared deterministic source of such node IDs. This implies that a specific
+    <code>LayoutPhase</code> object, and indeed in general a specific
+    <code>Phase</code> object, is bound to a given GUI node.</p>
+    <p>Then there’s this shared object <code>constraints</code>: this is an
+    accumulator which collects all the layout constraints for all the GUI nodes
+    we’re traversing. This means once we’re done with the layouting phase,
+    <code>constraints</code> will know the desired sizes of various nodes,
+    which it can use to “solve” the layout globally and assign a position and
+    size to each GUI node. The node ID source being deterministic, we can reset
+    it and re-use it in the following phases, in order to assign the correct
+    position and size to each node.</p>
+    <p>Finally, we need a way to actually create a new <code>Phase</code>
+    instance for a nested element, and bind it to a given GUI node. This is
+    what the <code>nested</code> method does. In the case of
+    <code>LayoutPhase</code>, it gets the next node ID from the source, marks
+    it as child of the current node, and creates a new <code>LayoutPhase</code>
+    instance with it.</p>
+    <p>End of parenthesis! Let’s move on to the next phase, rendering:</p>
+    <div class="sourceCode" id="cb8">
+      <pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> RenderPhase <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// ID of this GUI node.</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    node_id<span class="op">:</span> NodeId<span class="op">,</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Deterministic source of node IDs.</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    node_id_source<span class="op">:</span> Rc<span class="op">&lt;</span>NodeIdSource<span class="op">&gt;,</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Position and size of all laid out node.</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    layout<span class="op">:</span> Rc<span class="op">&lt;</span>Layout<span class="op">&gt;,</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Object used for painting to the screen.</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    painter<span class="op">:</span> Rc<span class="op">&lt;</span>RefCell<span class="op">&lt;</span>Painter<span class="op">&gt;&gt;,</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Current position of the mouse.</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    mouse<span class="op">:</span> Vec2<span class="op">,</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Snip.</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> Phase <span class="cf">for</span> RenderPhase <span class="op">{</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> rect(<span class="op">&amp;</span><span class="kw">mut</span> <span class="kw">self</span>) <span class="op">-&gt;</span> Rect <span class="op">{</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        <span class="kw">self</span><span class="op">.</span>layout<span class="op">.</span>get(<span class="kw">self</span><span class="op">.</span>node_id)</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> mouse(<span class="op">&amp;</span><span class="kw">self</span>) <span class="op">-&gt;</span> Vec2 <span class="op">{</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>        <span class="kw">self</span><span class="op">.</span>mouse</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> render(<span class="op">&amp;</span><span class="kw">mut</span> <span class="kw">self</span><span class="op">,</span> paint<span class="op">:</span> <span class="kw">impl</span> <span class="bu">FnOnce</span>(<span class="op">&amp;</span><span class="kw">mut</span> Painter)) <span class="op">{</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>        paint(<span class="kw">self</span><span class="op">.</span>painter<span class="op">.</span>borrow_mut())</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> nested(<span class="op">&amp;</span><span class="kw">mut</span> <span class="kw">self</span>) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> node_id <span class="op">=</span> <span class="kw">self</span><span class="op">.</span>node_id_source<span class="op">.</span>next_id()<span class="op">;</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>        <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>            node_id<span class="op">,</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>            <span class="op">..</span><span class="kw">self</span><span class="op">.</span>clone()</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+    </div>
+    <p>Here we implement different methods of <code>Phase</code>:
+    <code>rect</code>, which returns the position and size that have been
+    computed during a previous layout phase, along with <code>mouse</code>,
+    which may be useful when drawing hovers, and of course <code>render</code>.
+    As before, there’s also the <code>nested</code> method, which is mostly the
+    same. Note that here we don’t implement <code>set_size</code>, since it
+    isn’t used by the rendering phase.</p>
+    <p>Given all that, the function <code>button</code> now monomorphizes with
+    <code>RenderPhase</code> to:</p>
+    <div class="sourceCode" id="cb9">
+      <pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> button_render(ctx<span class="op">:</span> <span class="op">&amp;</span><span class="kw">mut</span> RenderPhase<span class="op">,</span> text<span class="op">:</span> <span class="op">&amp;</span><span class="dt">str</span>) <span class="op">-&gt;</span> <span class="dt">bool</span> <span class="op">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> text_layout <span class="op">=</span> <span class="pp">TextLayouter::</span>layout_text(text)<span class="op">;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// No `set_size`</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> rect <span class="op">=</span> ctx<span class="op">.</span>rect()<span class="op">;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> hovered <span class="op">=</span> rect<span class="op">.</span>contains(ctx<span class="op">.</span>mouse())<span class="op">;</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">.</span>render(<span class="op">|</span>painter<span class="op">|</span> <span class="op">{</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> bg_color <span class="op">=</span> <span class="cf">if</span> hovered <span class="op">{</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>            <span class="pp">Color::</span>LESS_DARK</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>            <span class="pp">Color::</span>DARK</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">};</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        painter<span class="op">.</span>draw_box(rect<span class="op">,</span> bg_color)<span class="op">;</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        painter<span class="op">.</span>draw_text(<span class="op">&amp;</span>text_layout)<span class="op">;</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span>)<span class="op">;</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// No event handling</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    <span class="cn">true</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+    </div>
+    <p>Nothing’s very different about the <code>EventPhase</code>, so I’ll just
+    provide an implementation and skip the monomorphization:</p>
+    <div class="sourceCode" id="cb10">
+      <pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> EventPhase <span class="op">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// ID of this GUI node.</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    node_id<span class="op">:</span> NodeId<span class="op">,</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Deterministic source of node IDs.</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    node_id_source<span class="op">:</span> Rc<span class="op">&lt;</span>NodeIdSource<span class="op">&gt;,</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Position and size of all laid out node.</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    layout<span class="op">:</span> Rc<span class="op">&lt;</span>Layout<span class="op">&gt;,</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Current position of the mouse.</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    mouse<span class="op">:</span> Vec2<span class="op">,</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Current event being handled, or `None` if a widget</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// captured it.</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    event<span class="op">:</span> <span class="dt">Option</span><span class="op">&lt;</span>Event<span class="op">&gt;,</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Snip.</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> Phase <span class="cf">for</span> EventPhase <span class="op">{</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> rect(<span class="op">&amp;</span><span class="kw">mut</span> <span class="kw">self</span>) <span class="op">-&gt;</span> Rect <span class="op">{</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>        <span class="kw">self</span><span class="op">.</span>layout<span class="op">.</span>get(<span class="kw">self</span><span class="op">.</span>node_id)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> mouse(<span class="op">&amp;</span><span class="kw">self</span>) <span class="op">-&gt;</span> Vec2 <span class="op">{</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>        <span class="kw">self</span><span class="op">.</span>mouse</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> clicked(<span class="op">&amp;</span><span class="kw">self</span>) <span class="op">-&gt;</span> <span class="dt">bool</span> <span class="op">{</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>        <span class="pp">matches!</span>(<span class="kw">self</span><span class="op">.</span>event<span class="op">,</span> <span class="cn">Some</span>(<span class="pp">Event::</span>MouseButtonUp))</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> capture_click(<span class="op">&amp;</span><span class="kw">mut</span> <span class="kw">self</span>) <span class="op">{</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">self</span><span class="op">.</span>clicked() <span class="op">{</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>            <span class="kw">self</span><span class="op">.</span>event<span class="op">.</span>take()<span class="op">;</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> nested(<span class="op">&amp;</span><span class="kw">mut</span> <span class="kw">self</span>) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Same as `RenderPhase`</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+    </div>
+    <p>Note that this <code>EventPhase</code> only handles a single event. This
+    contrasts with regular imGUI frameworks, which group together all the
+    events of a given frame and handle them all at once (along with rendering
+    that same frame).</p>
+    <h1 id="a-practical-example">A practical example</h1>
+    <p>Here’s an example of using a library based on this pattern to make the
+    traditional to-do app:</p>
+    <div class="sourceCode" id="cb11">
+      <pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> AppData <span class="op">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    form_input<span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    tasks<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">String</span><span class="op">&gt;,</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> ui<span class="op">&lt;</span>C<span class="op">:</span> Phase<span class="op">&gt;</span>(ctx<span class="op">:</span> <span class="op">&amp;</span><span class="kw">mut</span> C<span class="op">,</span> data<span class="op">:</span> <span class="op">&amp;</span><span class="kw">mut</span> AppData) <span class="op">-&gt;</span> <span class="dt">bool</span> <span class="op">{</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="kw">mut</span> should_relayout <span class="op">=</span> <span class="cn">false</span><span class="op">;</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    column(<span class="op">&amp;</span><span class="kw">mut</span> ctx<span class="op">.</span>nested()<span class="op">,</span> <span class="op">|</span>ctx<span class="op">|</span> <span class="op">{</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Title</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        label(<span class="op">&amp;</span><span class="kw">mut</span> ctx<span class="op">.</span>nested()<span class="op">,</span> <span class="st">"To-do"</span>)<span class="op">;</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Add task button</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>        row(<span class="op">&amp;</span><span class="kw">mut</span> ctx<span class="op">.</span>nested()<span class="op">,</span> <span class="op">|</span>ctx<span class="op">|</span> <span class="op">{</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>            text_input(<span class="op">&amp;</span><span class="kw">mut</span> ctx<span class="op">.</span>nested()<span class="op">,</span> <span class="op">&amp;</span><span class="kw">mut</span> data<span class="op">.</span>form_input)<span class="op">;</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> button(<span class="op">&amp;</span><span class="kw">mut</span> ctx<span class="op">.</span>nested()<span class="op">,</span> <span class="st">"Add task"</span>) <span class="op">{</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>                <span class="kw">let</span> task <span class="op">=</span> <span class="pp">std::mem::</span>take(data<span class="op">.</span>form_input)<span class="op">;</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>                data<span class="op">.</span>tasks<span class="op">.</span>push(task)<span class="op">;</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>                should_relayout <span class="op">=</span> <span class="cn">true</span><span class="op">;</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span>)<span class="op">;</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Task list</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> <span class="kw">mut</span> to_remove <span class="op">=</span> <span class="cn">None</span><span class="op">;</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> (i<span class="op">,</span> task) <span class="kw">in</span> data<span class="op">.</span>tasks<span class="op">.</span>iter()<span class="op">.</span>enumerate() <span class="op">{</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>            row(<span class="op">&amp;</span><span class="kw">mut</span> ctx<span class="op">.</span>nested()<span class="op">,</span> <span class="op">|</span>ctx<span class="op">|</span> <span class="op">{</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>                label(<span class="op">&amp;</span><span class="kw">mut</span> ctx<span class="op">.</span>nested()<span class="op">,</span> task)<span class="op">;</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> button(<span class="op">&amp;</span><span class="kw">mut</span> ctx<span class="op">.</span>nested()<span class="op">,</span> <span class="st">"❌"</span>) <span class="op">{</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>                    to_remove <span class="op">=</span> <span class="cn">Some</span>(i)<span class="op">;</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span>)<span class="op">;</span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">let</span> <span class="cn">Some</span>(i) <span class="op">=</span> to_remove <span class="op">{</span></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>            data<span class="op">.</span>tasks<span class="op">.</span>remove(i)<span class="op">;</span></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>            should_relayout <span class="op">=</span> <span class="cn">true</span><span class="op">;</span></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span>)<span class="op">;</span></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>    should_relayout</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+    </div>
+    <p>The function <code>ui</code> can now be used to layout, render and
+    handle events. In particular, I introduced a <code>should_relayout</code>
+    boolean return value, which can be used to signal that the data has changed
+    and the layout needs to be recomputed. We could use it as follows:</p>
+    <div class="sourceCode" id="cb12">
+      <pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> should_relayout <span class="op">=</span> ui(<span class="op">&amp;</span><span class="kw">mut</span> <span class="pp">EventPhase::</span>new(<span class="op">...</span>)<span class="op">,</span> <span class="op">&amp;</span><span class="kw">mut</span> data)<span class="op">;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> should_relayout <span class="op">{</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    ui(<span class="op">&amp;</span><span class="kw">mut</span> <span class="pp">LayoutPhase::</span>new(<span class="op">...</span>)<span class="op">,</span> <span class="op">&amp;</span><span class="kw">mut</span> data)<span class="op">;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+    </div>
+    <p>In a real GUI library, I’d probably add a method
+    <code>signal_layout_change</code> in <code>Phase</code>.</p>
+    <p>There’s still lots of room for improvement, but I like the general feel
+    of this API. It’s direct and imperative, very much like an imGUI, which I
+    personally find quite intuitive to use. However, it has the
+    <code>column</code> and <code>row</code> layouting widgets we expect from
+    retGUI libraries, and in theory at least it can be made more efficient than
+    an imGUI.</p>
+    <p>That being said, there is a major pitfall with this pattern: since we
+    write code as a single function that gets split three ways and executed
+    differently, it’s possible to write code that fails in non-obvious
+    ways.</p>
+    <p>For example, if your layouting phase does things that depend on
+    <code>ctx.rect()</code>, you’re in for a bad time, since the rect is not
+    yet available during layouting. A solution to that problem would be to make
+    <code>ctx.rect()</code> return <code>Option&lt;Rect&gt;</code>, but this
+    comes at the cost of a worse API.</p>
+    <p>Another example is if you do non-deterministic stuff inside a widget,
+    which might lead to discrepancies in the GUI tree between the layouting and
+    subsequent phases.</p>
+    <p>This is definitely a leaky abstraction, and more experiments are needed
+    for me to better understand what this pattern’s practical strengths and
+    limitations are.</p>
+  </article>
+
+
+</body></html>

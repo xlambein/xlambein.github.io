@@ -262,14 +262,14 @@
 <span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
     </div>
     <p>As you can see, <code>Phase</code> has many default implementations for
-    its methods, and <code>LayoutPhase</code> only provides a couple of
-    required methods. This means any call to e.g. <code>render</code> or
-    <code>capture_click</code>, once they’re monomorphized, will be inlined
-    into nothing. Even better, calls to <code>click</code> will inline to
-    <code>false</code>, which means the compiler will get rid of whole
-    <code>if</code> blocks. More things can be eliminated transitively, and as
-    a result, we get the following monomorphized version of the polymorphic
-    <code>button&lt;C: Phase&gt;</code> from above:</p>
+    its methods, and <code>LayoutPhase</code> only implements a couple. This
+    means any call to e.g. <code>render</code> or <code>capture_click</code>,
+    once they’re monomorphized, will be inlined into nothing. Even better,
+    calls to <code>click</code> will inline to <code>false</code>, which means
+    the compiler will get rid of whole <code>if</code> blocks. More things can
+    be eliminated transitively, and as a result, we get the following
+    monomorphized version of the polymorphic <code>button&lt;C:
+    Phase&gt;</code> from above:</p>
     <div class="sourceCode" id="cb7">
       <pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> button_layout(ctx<span class="op">:</span> <span class="op">&amp;</span><span class="kw">mut</span> LayoutPhase<span class="op">,</span> text<span class="op">:</span> <span class="op">&amp;</span><span class="dt">str</span>) <span class="op">-&gt;</span> <span class="dt">bool</span> <span class="op">{</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> text_layout <span class="op">=</span> <span class="pp">TextLayouter::</span>layout_text(text)<span class="op">;</span></span>
@@ -489,7 +489,7 @@
     <code>signal_layout_change</code> in <code>Phase</code>.</p>
     <p>There’s still lots of room for improvement, but I like the general feel
     of this API. It’s direct and imperative, very much like an imGUI, which I
-    personally find quite intuitive to use. However, it has the
+    personally find quite intuitive to use. At the same time, it has the
     <code>column</code> and <code>row</code> layouting widgets we expect from
     retGUI libraries, and in theory at least it can be made more efficient than
     an imGUI.</p>

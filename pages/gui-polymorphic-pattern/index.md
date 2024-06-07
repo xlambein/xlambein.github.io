@@ -224,7 +224,7 @@ impl Phase for LayoutPhase {
 }
 ```
 
-As you can see, `Phase` has many default implementations for its methods, and `LayoutPhase` only provides a couple of required methods. This means any call to e.g. `render` or `capture_click`, once they're monomorphized, will be inlined into nothing. Even better, calls to `click` will inline to `false`, which means the compiler will get rid of whole `if` blocks. More things can be eliminated transitively, and as a result, we get the following monomorphized version of the polymorphic `button<C: Phase>` from above:
+As you can see, `Phase` has many default implementations for its methods, and `LayoutPhase` only implements a couple. This means any call to e.g. `render` or `capture_click`, once they're monomorphized, will be inlined into nothing. Even better, calls to `click` will inline to `false`, which means the compiler will get rid of whole `if` blocks. More things can be eliminated transitively, and as a result, we get the following monomorphized version of the polymorphic `button<C: Phase>` from above:
 
 ```rust
 fn button_layout(ctx: &mut LayoutPhase, text: &str) -> bool {
@@ -426,7 +426,7 @@ if should_relayout {
 
 In a real GUI library, I'd probably add a method `signal_layout_change` in `Phase`.
 
-There's still lots of room for improvement, but I like the general feel of this API. It's direct and imperative, very much like an imGUI, which I personally find quite intuitive to use. However, it has the `column` and `row` layouting widgets we expect from retGUI libraries, and in theory at least it can be made more efficient than an imGUI.
+There's still lots of room for improvement, but I like the general feel of this API. It's direct and imperative, very much like an imGUI, which I personally find quite intuitive to use. At the same time, it has the `column` and `row` layouting widgets we expect from retGUI libraries, and in theory at least it can be made more efficient than an imGUI.
 
 That being said, there is a major pitfall with this pattern: since we write code as a single function that gets split three ways and executed differently, it's possible to write code that fails in non-obvious ways.
 

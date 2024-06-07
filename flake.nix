@@ -24,7 +24,7 @@
 
           [[ -n $(git status -s) ]] && echo 'Repository is dirty, aborting' && exit 1
 
-          path=$(nix build --no-link --print-out-paths)
+          path=$(nix build --no-link --print-out-paths --impure)
           message=$(git log -1 --format=format:%s)
 
           cd ../gh-pages

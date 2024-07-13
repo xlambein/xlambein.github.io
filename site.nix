@@ -151,7 +151,7 @@
       pubdate = drv.metadata.pubdate or "";
       tags = drv.metadata.tags or [];
     })
-    (lib.filter (page: !(builtins.elem page.name ["about" "music" "recipes" "books"])) pages);
+    (lib.filter (page: !(builtins.elem page.name ["about" "music" "recipes" "books" "poems"])) pages);
 
   # Projects sorted by pubdate
   projects =

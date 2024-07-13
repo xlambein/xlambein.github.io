@@ -7,11 +7,11 @@ html {
 body {
   margin: 0;
   padding: 0;
+  padding-bottom: 20rem;
 }
 
 article {
   padding: 0 1rem;
-  padding-bottom: 20rem;
 }
 
 article>* {
@@ -160,7 +160,7 @@ div.sourceCode {
   max-width: calc(640px + 9em);
 }
 
-pre {
+pre.sourceCode {
   background-color: #fff1f1;
   border-radius: 10px;
   max-width: calc(640px + 8em);
@@ -320,4 +320,26 @@ article a[href^='http']:not([href*='lambein.xyz']):after {
 
 .mini-zine :last-child>img {
   width: 50%;
+}
+
+article.poem {
+  max-width: 480px;
+  padding: 0;
+}
+
+article.poem>p {
+  text-indent: 5em each-line hanging;
+}
+
+article.poem>pre {
+  font-family: "Noto Serif", serif;
+}
+
+article.poem:not(:first-of-type) {
+  margin-top: 8em;
+}
+
+article.poem>h2>a {
+  opacity: 0.5;
+  text-decoration: none;
 }

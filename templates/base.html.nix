@@ -39,6 +39,7 @@
         <a href="/">Home</a>
         <a href="/about/">About</a>
         <a href="/music/">Music</a>
+        <a href="/poems/">Poems</a>
         <a href="/recipes/">Recipes</a>
       </div>
     </nav>

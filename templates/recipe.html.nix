@@ -27,7 +27,7 @@
     ${
     if sources != []
     then ''
-      <h2>Sources</h2>
+      <h1>Sources</h1>
       <ul>
         ${foreach sources (source: "<li>${source}</li>")}
       </ul>

@@ -69,7 +69,7 @@ Atop the window is a play/pause button. When pressed, the program is run on an a
 
 [^recompile]: In practice, recompiling each time a value changes is needlessly slow and computationally intensive. Instead, the PAW compiler actually produces a shared library with symbols corresponding to each interactive value, and manipulating the widgets updates these symbols in the shared library.
 
-## The DSL
+### The DSL
 
 PAW's DSL is a simple imperative programming language compiled with LLVM. Its syntax is close to Lua's, and its type system is similar to Elm's. It was designed with the goal of being relatively fast and not garbage-collected, in order to be usable for sample-level audio programming.
 
@@ -89,7 +89,7 @@ let volume = $slider(0.5)(0.01, 2.0)
 
 Which would display a slider with a current value of `0.5`, and a range of `0.01` to `2.0`.
 
-## A track editor.
+### A track editor.
 
 Such widgets can have arbitrary complexity. As mentioned above, a common feature of DAWs is the track editor, where horizontal tracks display audio and MIDI clips along the time axis. In PAW's DSL, we represent audio and MIDI tracks as follows:
 
@@ -125,7 +125,7 @@ This is the power of using code as a primary medium. Anything the user wants to 
 There's a long history of augmenting programming with various forms of visual and interactive elements. I'll now look into a few selected projects in that space, all of which have influenced my work, and compare them to PAW.
 
 
-## Program synthesis and Sketch-n-Sketch
+### Program synthesis and Sketch-n-Sketch
 
 ![Screenshot of Sketch-n-Sketch, showing the source code on the left, and the drawing it produces on the right.](sns.png)
 
@@ -140,7 +140,7 @@ This approach does not translate directly to music, because the output, an audio
 Compared to these projects, the logic behind PAW is relatively simple: it doesn't do program synthesis, and interactivity is syntactically restricted to specify areas of the code. However, I don't think this is necessarily a bad thing: because of it, PAW's "mental model" is simpler to grasp, and the user has full control over what is interactive, and in which ways. Complex Sketch-n-Sketch programs generate equally complex nested layers of signifiers, and managing this sprawl is a major concern that PAW doesn't suffer from nearly as much.
 
 
-## Hazel's livelits and Andersen's visual syntax
+### Hazel's livelits and Andersen's visual syntax
 
 Probably the closest project to PAW, and another major source of inspiration[^dollar-notation], is Hazel's [livelits][livelits]. These are syntactic elements that expand to a literal, and which generate a GUI widget inside the Hazel editor for manipulating that literal. Livelits are "live", meaning they generate closures that are re-evaluated as the GUI changes, in order to provide direct feedback of these changes. They are also composable: livelits can embed text fields which may contain any Hazel source code, including other livelits. They can be user-defined and partially applied.
 
@@ -155,7 +155,7 @@ A major difference from livelits is that they lack the "live" element. They are 
 In its current form, PAW is closer to Andersen's work than to livelits. The semantics of PAW's interactives is that they modify the source code itself, and don't affect running programs. It just so happens that audio processing requires running a signal processing function in a loop, which means it's easy to hot-swap one program for another between two function calls, giving the impression of liveness.
 
 
-## Faust
+### Faust
 
 Unlike the previous works I discussed, Faust is not a bidirectional programming project. Instead, it's a programming language and development environment for sound synthesis and audio processing.
 
@@ -174,7 +174,7 @@ process = no.noise : fi.resonlp(ctFreq,q,gain);
 However, unlike PAW and other similar projects, these widgets are not based on code analysis and synthesis: it's a domain-specific library for writing GUIs for audio plugins.
 
 
-## The Roc programming language
+### The Roc programming language
 
 Finally, in terms of both PAW's structure and its DSL, a major source of inspiration has been the novel [Roc][roc] programming language, which is an extension of the model of [Elm][elm] and its [famous architecture][elm-tea]. Roc is a work-in-progress programming language for writing applications in which the domain-specific complexity is abstracted away into a "platform", which is written in some other language (Rust, C, etc.), and users of a platform get to write their application in the simpler Roc language.
 
@@ -190,14 +190,14 @@ Once I feel reasonably comfortable with the stability and usability of PAW, I'd 
 In the longer term, I'm also particularly interested in pushing forward the expressiveness of this system. To that effect, I have several ideas for future improvements, which I'll detail below.
 
 
-## Language improvements
+### Language improvements
 
 The PAW DSL currently leaves a lot to be desired. Being very young, the language is still a bit broken, hard to debug, and not always pleasant to use. It also suffers from complex and sometimes conflicting requirements: because I'm aiming to write as much as possible in this one language, the DSL needs to be able to handle low-level, performant audio processing code, as well as the higher-level structural code connecting parts together.
 
 So far, this has lead me to making the DSL mostly imperative, but I'm hoping to move closer to a functional language in the future. Recent developments, such as automatic memory management with [Perceus][perceus], might be helpful to achieve high performance while being safer and more declarative.
 
 
-## Embedded text editor
+### Embedded text editor
 
 The current setup of using an external editor connected to PAW through the LSP was mainly chosen so I wouldn't have to make a whole text editor, which would further blow up the scope of this project[^editor]. While it does have the advantage of letting users choose their text editor, I don't love this split between the code and the GUI it induces. In the future, it might be worth looking into embedding an editor directly into PAW, which could display widgets inline like livelits.
 
@@ -206,7 +206,7 @@ The current setup of using an external editor connected to PAW through the LSP w
 Some text editors, like Vim and Kakoune, can be used in a client/server fashion, where a client sends keypresses to a server and receives text to display. PAW could embed such a client into a text area, turning it into a powerful text editor with very little effort.
 
 
-## Bespoke widgets written in the PAW DSL
+### Bespoke widgets written in the PAW DSL
 
 Currently, all interactive widgets are hard-coded into the Rust runtime. A major long-term goal for PAW is to let users write their own widgets directly in the PAW DSL, such that they may be packaged alongside libraries to provide domain-specific UI.
 
@@ -240,7 +240,7 @@ Note that, unlike a macro, this function does not take an AST as input, and inst
 Code for these widgets is not relevant to the actual audio runtime of PAW, and conversely audio processing code is not needed for the GUI. Therefore, the two should ideally be separated in both their scoping and their compilation targets. Racket's [phase system][racket-phases] looks to be a good solution to this problem---it's indeed the one used by Andersen in her "visual syntax", mentioned above.
 
 
-## Improve the syntax for interactive expressions
+### Improve the syntax for interactive expressions
 
 My experience with the current interactive expressions is that they are quite heavy in terms of syntax. The user is asked to specify what needs to be interactive, the widget to use, and the parameters to apply. To illustrate, here's a simple low-pass filter which is applied to a sample. The filter is parameterized by two values, `f` and `q`, which are interactive:
 
@@ -307,7 +307,7 @@ let sample = lp_apply(lp_state, params, sample)
 and it would group the low-pass filter's parameters together, display them as sliders (if these are the defaults in scope), and label them with "f" and "q".
 
 
-## Generic track editor
+### Generic track editor
 
 I'll conclude with an application of the concepts introduced in the previous sections, in order to make a generic track editor. This, I believe, illustrates well how the composability of programs can translate to GUIs, increasing their modularity.
 

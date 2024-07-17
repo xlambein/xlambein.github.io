@@ -167,7 +167,7 @@
     user presses play, and music starts playing. They tweak some widgets, which
     changes the music. They edit the source file and save, which changes the
     music as well.</a></video></p>
-    <h1 id="the-dsl">The DSL</h1>
+    <h2 id="the-dsl">The DSL</h2>
     <p>PAW’s DSL is a simple imperative programming language compiled with
     LLVM. Its syntax is close to Lua’s, and its type system is similar to
     Elm’s. It was designed with the goal of being relatively fast and not
@@ -183,7 +183,7 @@
     <pre><code>let volume = $slider(0.5)(0.01, 2.0)</code></pre>
     <p>Which would display a slider with a current value of <code>0.5</code>,
     and a range of <code>0.01</code> to <code>2.0</code>.</p>
-    <h1 id="a-track-editor">A track editor.</h1>
+    <h2 id="a-track-editor">A track editor.</h2>
     <p>Such widgets can have arbitrary complexity. As mentioned above, a common
     feature of DAWs is the track editor, where horizontal tracks display audio
     and MIDI clips along the time axis. In PAW’s DSL, we represent audio and
@@ -222,8 +222,8 @@
     visual and interactive elements. I’ll now look into a few selected projects
     in that space, all of which have influenced my work, and compare them to
     PAW.</p>
-    <h1 id="program-synthesis-and-sketch-n-sketch">Program synthesis and
-    Sketch-n-Sketch</h1>
+    <h2 id="program-synthesis-and-sketch-n-sketch">Program synthesis and
+    Sketch-n-Sketch</h2>
     <p><img src="sns.png.webp" alt="Screenshot of Sketch-n-Sketch, showing the source code on the left, and the drawing it produces on the right." loading="lazy" decoding="async" width="816" height="546"></p>
     <p>My initial source of inspiration, <a href="https://ravichugh.github.io/sketch-n-sketch/">Sketch-n-Sketch</a> is a
     direct manipulation programming system for creating HTML and SVG documents.
@@ -256,8 +256,8 @@
     ways. Complex Sketch-n-Sketch programs generate equally complex nested
     layers of signifiers, and managing this sprawl is a major concern that PAW
     doesn’t suffer from nearly as much.</p>
-    <h1 id="hazels-livelits-and-andersens-visual-syntax">Hazel’s livelits and
-    Andersen’s visual syntax</h1>
+    <h2 id="hazels-livelits-and-andersens-visual-syntax">Hazel’s livelits and
+    Andersen’s visual syntax</h2>
     <p>Probably the closest project to PAW, and another major source of
     inspiration<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>, is Hazel’s <a href="https://hazel.org/papers/livelits-paper.pdf">livelits</a>. These are
     syntactic elements that expand to a literal, and which generate a GUI
@@ -293,7 +293,7 @@
     processing requires running a signal processing function in a loop, which
     means it’s easy to hot-swap one program for another between two function
     calls, giving the impression of liveness.</p>
-    <h1 id="faust">Faust</h1>
+    <h2 id="faust">Faust</h2>
     <p>Unlike the previous works I discussed, Faust is not a bidirectional
     programming project. Instead, it’s a programming language and development
     environment for sound synthesis and audio processing.</p>
@@ -313,7 +313,7 @@ process = no.noise : fi.resonlp(ctFreq,q,gain);</code></pre>
     <p>However, unlike PAW and other similar projects, these widgets are not
     based on code analysis and synthesis: it’s a domain-specific library for
     writing GUIs for audio plugins.</p>
-    <h1 id="the-roc-programming-language">The Roc programming language</h1>
+    <h2 id="the-roc-programming-language">The Roc programming language</h2>
     <p>Finally, in terms of both PAW’s structure and its DSL, a major source of
     inspiration has been the novel <a href="https://www.roc-lang.org/">Roc</a>
     programming language, which is an extension of the model of <a href="https://elm-lang.org/">Elm</a> and its <a href="https://guide.elm-lang.org/architecture/">famous architecture</a>. Roc is
@@ -344,7 +344,7 @@ process = no.noise : fi.resonlp(ctFreq,q,gain);</code></pre>
     <p>In the longer term, I’m also particularly interested in pushing forward
     the expressiveness of this system. To that effect, I have several ideas for
     future improvements, which I’ll detail below.</p>
-    <h1 id="language-improvements">Language improvements</h1>
+    <h2 id="language-improvements">Language improvements</h2>
     <p>The PAW DSL currently leaves a lot to be desired. Being very young, the
     language is still a bit broken, hard to debug, and not always pleasant to
     use. It also suffers from complex and sometimes conflicting requirements:
@@ -356,7 +356,7 @@ process = no.noise : fi.resonlp(ctFreq,q,gain);</code></pre>
     developments, such as automatic memory management with <a href="https://www.microsoft.com/en-us/research/uploads/prod/2020/11/perceus-tr-v1.pdf">
     Perceus</a>, might be helpful to achieve high performance while being safer
     and more declarative.</p>
-    <h1 id="embedded-text-editor">Embedded text editor</h1>
+    <h2 id="embedded-text-editor">Embedded text editor</h2>
     <p>The current setup of using an external editor connected to PAW through
     the LSP was mainly chosen so I wouldn’t have to make a whole text editor,
     which would further blow up the scope of this project<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. While it
@@ -368,8 +368,8 @@ process = no.noise : fi.resonlp(ctFreq,q,gain);</code></pre>
     fashion, where a client sends keypresses to a server and receives text to
     display. PAW could embed such a client into a text area, turning it into a
     powerful text editor with very little effort.</p>
-    <h1 id="bespoke-widgets-written-in-the-paw-dsl">Bespoke widgets written in
-    the PAW DSL</h1>
+    <h2 id="bespoke-widgets-written-in-the-paw-dsl">Bespoke widgets written in
+    the PAW DSL</h2>
     <p>Currently, all interactive widgets are hard-coded into the Rust runtime.
     A major long-term goal for PAW is to let users write their own widgets
     directly in the PAW DSL, such that they may be packaged alongside libraries
@@ -408,8 +408,8 @@ end</code></pre>
     their compilation targets. Racket’s <a href="https://docs.racket-lang.org/guide/phases.html">phase system</a> looks to
     be a good solution to this problem—it’s indeed the one used by Andersen in
     her “visual syntax”, mentioned above.</p>
-    <h1 id="improve-the-syntax-for-interactive-expressions">Improve the syntax
-    for interactive expressions</h1>
+    <h2 id="improve-the-syntax-for-interactive-expressions">Improve the syntax
+    for interactive expressions</h2>
     <p>My experience with the current interactive expressions is that they are
     quite heavy in terms of syntax. The user is asked to specify what needs to
     be interactive, the widget to use, and the parameters to apply. To
@@ -489,7 +489,7 @@ let sample = lp_apply(lp_state, params, sample)</code></pre>
     <p>and it would group the low-pass filter’s parameters together, display
     them as sliders (if these are the defaults in scope), and label them with
     “f” and “q”.</p>
-    <h1 id="generic-track-editor">Generic track editor</h1>
+    <h2 id="generic-track-editor">Generic track editor</h2>
     <p>I’ll conclude with an application of the concepts introduced in the
     previous sections, in order to make a generic track editor. This, I
     believe, illustrates well how the composability of programs can translate

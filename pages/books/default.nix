@@ -1,5 +1,6 @@
 {
   nixss,
+  lib,
   processFile,
   ...
 }: let
@@ -18,7 +19,7 @@
     };
 
   booksSrc = (builtins.fromTOML (builtins.readFile ./books.toml)).book;
-  books = map ({isbn, ...} @ b: (book isbn) // b) booksSrc;
+  books = lib.reverseList (map ({isbn, ...} @ b: (book isbn) // b) booksSrc);
 
   index = processFile ((nixss.util.wrap ./index.md.nxt).withMetadata {
     inherit books;

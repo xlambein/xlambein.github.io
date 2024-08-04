@@ -3,13 +3,20 @@
 
   <title>Xavier Lambein's website</title>
   <link href="https://lambein.xyz" />
-  <updated>2024-05-31T00:00:00Z</updated>
+  <updated>2024-08-04T00:00:00Z</updated>
   <author>
     <name>Xavier Lambein</name>
   </author>
   <id>https://lambein.xyz</id>
   <icon>/assets/img/favicon.png</icon>
   
+  <entry>
+    <title>Abstract away HTTP with serialized closures</title>
+    <link href="http-serialized-closures" />
+    <id>http-serialized-closures</id>
+    <updated>2024-08-04T00:00:00Z</updated>
+  </entry>
+
   <entry>
     <title>A design pattern for GUIs based on polymorphism</title>
     <link href="https://lambein.xyz/gui-polymorphic-pattern" />

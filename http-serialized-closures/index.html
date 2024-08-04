@@ -1,0 +1,293 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><style>:where(img){height:auto}</style>
+  
+  <title>Abstract away HTTP with serialized closures — Xavier Lambein's
+  website</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/logo.svg">
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/code.css">
+  <link href="/atom.xml" rel="alternate" title="Xavier Lambein’s blog" type="application/atom+xml">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous"></noscript>
+  <link rel="me" href="https://sunny.garden/@xavier">
+  <meta property="og:image" content="/assets/img/logo.png">
+</head>
+<body>
+  <nav>
+    <a href="/" tabindex="-1" aria-hidden="true"><img src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3e%3cpath fill='%23ff8080' stroke='black' stroke-width='5.4' d='m112.728 100 76.367-76.368v25.456L138.184 100l25.456 25.456h-25.456ZM100 112.728l76.368 76.367h-25.456L100 138.184 74.544 163.64v-25.456ZM87.272 100l-76.367 76.368v-25.456L61.816 100 36.36 74.544h25.456ZM100 87.272 23.632 10.905h25.456L100 61.816l25.456-25.456v25.456Z'/%3e%3c/svg%3e" width="61.2" height="61.2" alt="website logo" id="logo" style="float:left" fetchpriority="high"></a>
+    <div id="links">
+      <a href="/">Home</a> <a href="/about/">About</a> <a href="/music/">Music</a> <a href="/poems/">Poems</a> <a href="/recipes/">Recipes</a>
+    </div>
+  </nav>
+  <article>
+    <header>
+      <h1>Abstract away HTTP with serialized closures</h1>
+      <div class="article-info">
+        <time class="pubdate">2024-08-04</time>
+        <ul class="tags">
+          <li>clojure</li>
+        </ul>
+      </div>
+    </header>
+    <p>I was playing around with Clojure the other day—a language I’m not very
+    familiar with—and found an interesting design pattern for writing a web app
+    with server-side rendering. I haven’t seen this used elsewhere, but I
+    didn’t look super hard. Chances are, there’s a library or framework which
+    already does something similar, in which case I’d love to know.</p>
+    <h1 id="problem-statement">Problem statement</h1>
+    <p>Let’s say I’m writing a to-do app. I’m using <a href="https://github.com/ring-clojure/ring">ring</a> to write HTTP request
+    handlers, and <a href="https://github.com/weavejester/hiccup">hiccup</a> to
+    produce HTML. Here’s a basic index page, which has a form for adding a new
+    task, and a list of tasks:</p>
+    <div class="sourceCode" id="cb1">
+      <pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">; Inner state. In a real app, this would be a database.</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>(<span class="bu">def</span><span class="fu"> </span>^<span class="at">:dynamic</span> todos (<span class="kw">atom</span> [{<span class="at">:desc</span> <span class="st">"Take out the trash"</span>, <span class="at">:done</span> <span class="va">false</span>}</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                            {<span class="at">:desc</span> <span class="st">"Buy groceries"</span>, <span class="at">:done</span> <span class="va">true</span>}]))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> todos-add-new </span>[desc]</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">swap!</span> todos <span class="kw">conj</span> {<span class="at">:desc</span> desc, <span class="at">:done</span> <span class="va">false</span>}))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> todos-toggle-done </span>[<span class="kw">index</span>]</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">swap!</span> todos</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>         (<span class="kw">fn</span> [todos]</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>           (<span class="kw">let</span> [{desc <span class="at">:desc</span>, done <span class="at">:done</span>} (<span class="kw">nth</span> todos <span class="kw">index</span>)]</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>             (<span class="kw">assoc</span> todos <span class="kw">index</span> {<span class="at">:desc</span> desc, <span class="at">:done</span> (<span class="kw">not</span> done)})))))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">; Index route. Not shown: the actual router, mapping `/` to it.</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> index </span>[request]</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  (h/html</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>   [<span class="at">:h1</span> <span class="st">"To-do"</span>]</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>   <span class="co">; Create a task</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>   [<span class="at">:form</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    [<span class="at">:p</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>     [<span class="at">:input</span> {<span class="at">:type</span> <span class="st">"text"</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>              <span class="at">:name</span> <span class="st">"desc"</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>              <span class="at">:placeholder</span> <span class="st">"Description"</span>}]</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>     [<span class="at">:button</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>      {<span class="at">:type</span> <span class="st">"submit"</span>}</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Create task"</span>]]]</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>   <span class="co">; List of tasks</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>   [<span class="at">:ul</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">for</span> [{desc <span class="at">:desc</span>, done <span class="at">:done</span>} <span class="at">@todos</span>]</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>      [<span class="at">:li</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>       [<span class="at">:label</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>        [<span class="at">:input</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>         {<span class="at">:type</span> <span class="st">"checkbox"</span>, <span class="at">:checked</span> done}</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>         desc]]])]))</span></code></pre>
+    </div>
+    <p>In order to make this app work, we need an endpoint for creating a task,
+    and an endpoint for (un)marking a task as done. In most HTTP frameworks
+    I’ve used, we’d create two new functions and add them as routes to our HTTP
+    router. Something like:</p>
+    <div class="sourceCode" id="cb2">
+      <pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> router</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  (route</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>   <span class="st">"/"</span> <span class="kw">index</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>   <span class="st">"/tasks/create"</span> create-task</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>   <span class="st">"/task/:id/mark"</span> mark-task))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> create-task </span>[request]</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">; Not shown: extracting the description from the POST request body</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">let</span> [desc (extract-desc-from-request-body request)]</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    (todos-add-new desc)))</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> mark-task </span>[request]</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">; Not shown: extracting the task index from the URL</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">let</span> [<span class="kw">index</span> (extract-index-from-url request)]</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    (todos-toggle-done <span class="kw">index</span>)))</span></code></pre>
+    </div>
+    <p>Then we can hook this up to our form and our checkboxes (with a sprinkle
+    of javascript for the latter). Or if we want something a bit more reactive,
+    we can use <a href="https://htmx.org/">HTMX</a>, and make the functions
+    <code>create-task</code> and <code>mark-task</code> return the updated,
+    server-side-rendered HTML:</p>
+    <div class="sourceCode" id="cb3">
+      <pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> index </span>[request]</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  (h/html</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>   [<span class="at">:h1</span> <span class="st">"To-do"</span>]</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>   [<span class="at">:form</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">; NEW: attributes for HTMX</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    {<span class="at">:hx-post</span> <span class="st">"/tasks/create"</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">:hx-swap</span> <span class="st">"outerHTML"</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">:hx-target</span> <span class="st">"#todos"</span>}</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    [<span class="at">:p</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>     [<span class="at">:input</span> {<span class="at">:type</span> <span class="st">"text"</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">:name</span> <span class="st">"desc"</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>              <span class="at">:placeholder</span> <span class="st">"Description"</span>}]</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>     [<span class="at">:button</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>      {<span class="at">:type</span> <span class="st">"submit"</span>}</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Create to-do"</span>]]]</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>   <span class="co">; NEW: we moved the task list to separate functions</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>   (show-tasks)))</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> show-tasks </span>[]</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  [<span class="at">:ul</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>   {<span class="at">:id</span> <span class="st">"todos"</span>} <span class="co">; HTML id, to use as target with HTMX</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>   (<span class="kw">for</span> [<span class="kw">index</span> (<span class="kw">range</span> (<span class="kw">count</span> <span class="at">@todos</span>))]</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>     (show-task <span class="kw">index</span>))])</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> show-task </span>[<span class="kw">index</span>]</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">let</span> [{desc <span class="at">:desc</span>, done <span class="at">:done</span>} (<span class="kw">nth</span> <span class="at">@todos</span> <span class="kw">index</span>)]</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    [<span class="at">:li</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>     {<span class="at">:id</span> (<span class="kw">str</span> <span class="st">"todo-"</span> <span class="kw">index</span>)}</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>     [<span class="at">:label</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>      [<span class="at">:input</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>       {<span class="at">:type</span> <span class="st">"checkbox"</span>, <span class="at">:checked</span> done</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>        <span class="at">:hx-post</span> (<span class="kw">str</span> <span class="st">"/task/"</span> <span class="kw">index</span> <span class="st">"/mark"</span>)</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>        <span class="at">:hx-swap</span> <span class="st">"outerHTML"</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>        <span class="at">:hx-target</span> (<span class="kw">str</span> <span class="st">"todo-"</span> <span class="kw">index</span>)}</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>       desc]]]))</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> create-task </span>[request]</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>  <span class="co">; Snip: same as above</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>  <span class="co">; Return the (updated) task list HTML, to be substituted by HTMX</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>  (show-tasks))</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> mark-task </span>[request]</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>  <span class="co">; Snip: same as above</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>  <span class="co">; Return the (updated) task HTML, to be substituted by HTMX</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>  (show-task <span class="kw">index</span>))</span></code></pre>
+    </div>
+    <p>While this works well, it feels like too much boilerplate for what we’re
+    doing. If this were a native app, or even a fully browser-based app without
+    a server, we could instead do something like:</p>
+    <div class="sourceCode" id="cb4">
+      <pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> index </span>[request]</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  (h/html</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">; Snip</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>   [<span class="at">:form</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    {<span class="at">:on-submit</span> (<span class="kw">fn</span> [desc] (todos-add-new desc))}]</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">; Snip</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>   ))</span></code></pre>
+    </div>
+    <p>Essentially, connect the form to a callback, which performs the action
+    we want when submitting. Why can’t we do this with a client-server setting,
+    and abstract away the HTTP layer? Well, turns out this is fairly easy to do
+    by serializing closures.</p>
+    <h1 id="serializing-closures">Serializing closures</h1>
+    <p>Clojure has a nice serialization library called <a href="https://github.com/taoensso/nippy">nippy</a>, and there’s a specific
+    extention to that library called <a href="https://github.com/redplanetlabs/nippy-serializable-fns">nippy-serializable-fn</a>
+    which allows you to do exactly what’s on the tin:</p>
+    <div class="sourceCode" id="cb5">
+      <pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(<span class="bu">def</span><span class="fu"> y </span><span class="dv">1</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>(<span class="bu">def</span><span class="fu"> ser-fn </span>(nippy/freeze-to-string (<span class="kw">fn</span> [x] (<span class="kw">+</span> x y))))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>(<span class="bu">def</span><span class="fu"> add-one </span>(nippy/thaw-from-string ser-fn))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">; true</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>(<span class="kw">=</span> (add-one <span class="dv">2</span>) <span class="dv">3</span>)</span></code></pre>
+    </div>
+    <p>The way this works is rather simple: in Clojure, you can reflect on a
+    function to retrieve its compiled name and all its captured
+    variables.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Then, it’s just a matter of serializing
+    both.</p>
+    <p>So with a little bit of plumbing, I can write a <code>route</code>
+    function which takes any function <code>f</code> and produces an endpoint
+    for my server, such that sending an HTTP request to that endpoint will call
+    <code>f</code>.</p>
+    <p>Given that, here’s the updated code for creating a new task:</p>
+    <div class="sourceCode" id="cb6">
+      <pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> index </span>[request]</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  (h/html</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>   [<span class="at">:h1</span> <span class="st">"To-do"</span>]</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>   [<span class="at">:form</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">; NEW: route generated from a closure</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    {<span class="at">:hx-post</span> (route (<span class="kw">fn</span> [request]</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                       (<span class="kw">let</span> [desc (extract-desc-from-request-body request)]</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                         (todos-add-new desc)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>                         (show-tasks))))</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">:hx-swap</span> <span class="st">"outerHTML"</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">:hx-target</span> <span class="st">"#todos"</span>}</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    [<span class="at">:p</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>     [<span class="at">:input</span> {<span class="at">:type</span> <span class="st">"text"</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>              <span class="at">:name</span> <span class="st">"desc"</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>              <span class="at">:placeholder</span> <span class="st">"Description"</span>}]</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>     [<span class="at">:button</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>      {<span class="at">:type</span> <span class="st">"submit"</span>}</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Create to-do"</span>]]]</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>   (show-tasks)))</span></code></pre>
+    </div>
+    <p>Everything works in the same way as above, except that before the form
+    would POST to <code>/tasks/create</code>, and now it POSTs to an endpoint
+    generated from the closure passed to <code>route</code>. This means we’ve
+    moved our logic to the exact place where it’s used, similarly to adding an
+    <code>onclick</code> event handler to a button in a JavaScript app.</p>
+    <p>Where this gets slightly more interesting is when we look at the “mark
+    as done” action:</p>
+    <div class="sourceCode" id="cb7">
+      <pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> show-task </span>[<span class="kw">index</span>]</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">let</span> [{desc <span class="at">:desc</span>, done <span class="at">:done</span>} (<span class="kw">nth</span> <span class="at">@todos</span> <span class="kw">index</span>)]</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    [<span class="at">:li</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>     {<span class="at">:id</span> (<span class="kw">str</span> <span class="st">"todo-"</span> <span class="kw">index</span>)}</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>     [<span class="at">:label</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>      [<span class="at">:input</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>       {<span class="at">:type</span> <span class="st">"checkbox"</span>, <span class="at">:checked</span> done</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">; NEW: route generated from a closure</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">:hx-post</span> (route (<span class="kw">fn</span> [_]</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>                          (todos-toggle-done <span class="kw">index</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>                          (show-task <span class="kw">index</span>)))</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">:hx-swap</span> <span class="st">"outerHTML"</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">:hx-target</span> (<span class="kw">str</span> <span class="st">"todo-"</span> <span class="kw">index</span>)}</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>       desc]]]))</span></code></pre>
+    </div>
+    <p>Here, the closure passed to <code>route</code> <em>captures the
+    index</em> of the task. Hence, unlike in the previous implementation,
+    there’s no need to put that index into the route and decode it in the
+    router: this is already taken care of by the (de)serialization of the
+    closure.</p>
+    <p>Two concerns you might have about this idea: first, this sounds
+    <em>wildly</em> unsecure, and you’d be right! Malicious actors could
+    reverse-engineer the serialization mechanism and reveal secrets, alter the
+    closure’s captures, or even try and call a different function that you
+    didn’t intend to expose. It’s not a dealbreaker though, as there are easy
+    solutions. For example: 1) you could store each generated route in a
+    dictionary, and check for each HTTP request that the route did come from
+    you, 2) you could encrypt routes, and/or 3) you could sign routes to ensure
+    they haven’t been tempered with. Of these, encryption seems like the most
+    effective.</p>
+    <p>A second concern is that those endpoints aren’t very “friendly”.
+    Instead, they are base-64 horrors like:</p>
+    <pre><code>/TlBZAFJbuWkeY2xqbXgudG9kbyRzaG93X3RvZG8kZm5fXzEzODE2KgAAAAFpBnRvZG8tMQg=</code></pre>
+    <p>However, I don’t think this is too important. Unless you need to make a
+    user-facing API—which isn’t really the goal here—it doesn’t actually matter
+    that the routes are so ugly. Furthermore, if you did want prettier
+    endpoints (e.g., to make debugging easier), you could put in a bit of work
+    and roll your own serialization scheme that e.g. exposes the function name
+    and captured values. Then you could end up with an endpoint like this:</p>
+    <pre><code>/main.core$index$fn__24595@24f63771?capture1=123&amp;capture2=foo</code></pre>
+    <h1 id="conclusion">Conclusion</h1>
+    <p>I haven’t poked at this idea enough to ensure it’s not full of holes,
+    but with my limited experience I quite enjoy it. Do let me know what
+    blatant limitations I overlooked, and/or send me all the major framework I
+    missed that already do this.</p>
+    <p>Also, for my own taste, a major limitation of this idea is that it’s so
+    aggressively “non-local-first”. It’s a proper client-server app, and if
+    your internet connection goes down, well, tough luck. So I’m wondering
+    whether it would be possible to abstract away the client/server
+    delimitation here. Since this is Clojure, an app could be compiled to both
+    Java for the server, and JavaScript for the client. And since all
+    interactive elements are implemented as regular callbacks, we could have
+    one implementation use serialized closures &amp; HTMX, and another use
+    JavaScript events. Then it’s a matter of synchronizing data between the
+    client and the server when they’re connected—this is probably the hard
+    part. Anyway, it’s something to think about, perhaps for a future blog
+    post.</p>
+    <p>Also also, I do know about <a href="https://github.com/hyperfiddle/electric">Electric</a>, but AFAIU it’s a
+    much larger, reactive web framework. It probably does most of what this
+    blogpost offers, but it’s also quite a different beast to tame.</p>
+    <aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+      <hr>
+      <ol>
+        <li id="fn1">
+          <p>Note that this can work in any language that offers such
+          facilities. As far as I could tell, JavaScript is not one of
+          them.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p>
+        </li>
+      </ol>
+    </aside>
+  </article>
+
+
+</body></html>

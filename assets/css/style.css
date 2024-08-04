@@ -164,7 +164,8 @@ div.sourceCode {
   max-width: calc(640px + 9em);
 }
 
-pre.sourceCode {
+pre.sourceCode,
+pre:has(code) {
   background-color: #fff1f1;
   border-radius: 10px;
   max-width: calc(640px + 8em);

@@ -7,11 +7,11 @@
   root = "https://${domain}";
   toDatetime = date: "${date}T00:00:00Z";
   urlToAbsolute = url:
-    if builtins.match "^http.*" url == null
+    if builtins.match "^https?://.*" url == null
     then "${root}/${url}"
     else url;
   makeId = url: pubdate:
-    if builtins.match "^http.*" url == null
+    if builtins.match "^https?://.*" url == null
     then "tag:${domain},${pubdate}:/${url}"
     else url;
 in ''

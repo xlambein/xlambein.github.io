@@ -1,0 +1,136 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><style>:where(img){height:auto}</style>
+  
+  <title>Syntax errors for to-do lists — Xavier Lambein's website</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/logo.svg">
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/code.css">
+  <link href="/atom.xml" rel="alternate" title="Xavier Lambein’s blog" type="application/atom+xml">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous"></noscript>
+  <link rel="me" href="https://sunny.garden/@xavier">
+  <meta property="og:image" content="/assets/img/logo.png">
+  <style>.widget{cursor:grab;padding:5px;position:absolute}.widget:hover{background-color:#f9f9f9;border:1px solid #ccc;padding:4.5px}.checked{color:#888;text-decoration:line-through}#universe{border:1px solid #ccc;width:100%;height:400px;padding:2px;position:relative}[data-error]:after{content:attr(data-error);opacity:.9;z-index:1;background-color:#fff;border:2px dashed red;padding:5px;font-size:.8em}#universe[data-error]:after{position:absolute;top:0;right:0}.widget[data-error]:after{min-width:100px;position:absolute;top:100%;left:0}</style>
+</head>
+<body>
+  <nav>
+    <a href="/" tabindex="-1" aria-hidden="true"><img src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3e%3cpath fill='%23ff8080' stroke='black' stroke-width='5.4' d='m112.728 100 76.367-76.368v25.456L138.184 100l25.456 25.456h-25.456ZM100 112.728l76.368 76.367h-25.456L100 138.184 74.544 163.64v-25.456ZM87.272 100l-76.367 76.368v-25.456L61.816 100 36.36 74.544h25.456ZM100 87.272 23.632 10.905h25.456L100 61.816l25.456-25.456v25.456Z'/%3e%3c/svg%3e" width="61.2" height="61.2" alt="website logo" id="logo" style="float:left" fetchpriority="high"></a>
+    <div id="links">
+      <a href="/">Home</a> <a href="/about/">About</a> <a href="/music/">Music</a> <a href="/poems/">Poems</a> <a href="/recipes/">Recipes</a>
+    </div>
+  </nav>
+  <article>
+    <header>
+      <h1>Syntax errors for to-do lists</h1>
+      <div class="article-info">
+        <time class="pubdate">2024-10-15</time>
+        <ul class="tags">
+          <li>GUI</li>
+          <li>experiment</li>
+        </ul>
+      </div>
+    </header>
+    <script src="todo.js"></script>
+    <p>I love syntax errors. The lil red squiggles in my text editor that let
+    me know I forgot a semicolon. The obscure messages when the parser doesn’t
+    have a good error recovery mechanism. Syntax errors make me feel like a
+    true programmer. None of this “structural editing” bullshit. No Scratch
+    boxes. Not even parinfer. Learning to overcome the obtuseness of syntaxes
+    and finding things like <code>foo::&lt;T&gt;()</code> beautiful is part of
+    becoming a proper hacker.</p>
+    <p>Anyway, this begs the question: if syntax errors are so great, how can
+    we bring them to other domains? Case in point: how do I introduce syntax
+    errors to, say, <a href="https://todomvc.com/">TodoMVC</a>?</p>
+    <h1 id="syntaxes">Syntaxes</h1>
+    <p>Well in order to get syntax errors, first we need <em>syntax</em>. A
+    simple way to do that is to take what I call the “terminal” route, and
+    simply forgo the very concept of graphical user interface. If you pretend
+    everything is a piece of text and can be interacted with through a buffer,
+    turns out you can get very far in terms of brutalist UI. Your to-do list
+    app becomes something like this:</p>
+    <pre><code># Day plan
+
+[ ] Do the laundry
+[x] Buy groceries
+[ ] Write a stupid blog post about syntax errors in to-do lists
+[ ] Call my parents</code></pre>
+    <p>And then you get to enjoy the fun of syntax errors, for example by
+    writing <code>Call my parents [x]</code> or <code>[[] Do the
+    laundry</code>. Beautiful.</p>
+    <p>By the way, if you want fancy-ass features such as “pressing a button to
+    add a task” or “filtering tasks by status”, you can implement them as, I
+    don’t know, an Emacs major mode or a language server. Have fun.</p>
+    <p>I for one like GUIs, and so I’d prefer to keep my little checkboxes and
+    variable-width fonts. So I’ll ask myself: what’s the syntax of a GUI to-do
+    app? Does that question even make sense?</p>
+    <p>Well I’d argue that there <em>is</em> a syntax to a to-do list app, but
+    it’s not for a parser: it’s for the user. It’s the syntax that says “a
+    to-do list is a list of tasks” and “each task has a checkbox on the left
+    and a description”, and “a checkbox can be ticked or not”. If the UI
+    designer breaks this syntax, for example by removing the checkbox of a
+    task, the user will perceive this as a “syntax error”. Note that users are
+    intelligent and so they might be able to work with mild syntax errors that
+    would confuse most parsers—for example, if the layouting engine has a
+    breakdown and puts the checkbox above the text rather than to its left.</p>
+    <p><img src="bad-layout.png.jpg" alt="A to-do list in which a checkbox is above its text because the text has overflown." fetchpriority="high" decoding="async" width="812" height="146"></p>
+    <h1 id="a-graphical-grammar">A graphical grammar</h1>
+    <p>Speaking of parsers: can we transform this “user syntax” for a to-do
+    list into a “parser syntax” that a program could execute? Again: we aren’t
+    interested in text-based “interfaces”. Instead, let’s define a sort of
+    “graphical grammar”.</p>
+    <p>First we’ll need some general principles. Skip those if you’re too cool
+    for boring lists.</p>
+    <ul>
+      <li>Widgets are things like text and checkboxes on a 2D plane. They have
+      a position and size.</li>
+      <li>Widgets can be put together in (potentially nested) groups, which
+      have the position and size of their bounding box.</li>
+      <li>We use “item” as meaning both widgets and groups.</li>
+      <li>The grammar is a set of rules describing how items are grouped
+      together into new groups.</li>
+      <li>The rules of the grammar group items according to their relative
+      positions. If there are multiple candidates, the closest one is
+      picked.</li>
+      <li>Each item must be part of exactly one group, except for the
+      “universe” item which describes the whole thing we’re trying to
+      parse.</li>
+      <li>The grammar is provided “as is”, without warranty of any kind,
+      express or implied. In no event shall the author of this blog post be
+      liable for any claim, psychic damage or other liability arising from the
+      subject of this post.</li>
+    </ul>
+    <p>Now for our actual rules:</p>
+    <ul>
+      <li>The universe is a <em>to-do list</em>.</li>
+      <li>A <em>to-do list</em> is a <em>title</em> and a <em>list of
+      tasks</em> below it.</li>
+      <li>A <em>title</em> is a piece of text in large font size.</li>
+      <li>A <em>list of tasks</em> is zero or more <em>tasks</em>, arranged
+      vertically.</li>
+      <li>A <em>task</em> is a checkbox and a <em>description</em> to its
+      right.</li>
+      <li>A <em>description</em> is a piece of text in regular font size.</li>
+    </ul>
+    <h1 id="demo">Demo</h1>
+    <p>Based on the aforementioned rules, I’ve implemented a prototype of our
+    improved to-do list web app, which you can try out below.</p>
+    <div style="text-align:center;padding:5px">
+      <button onclick="addCheckboxElement()">Add Checkbox</button>
+      <button onclick="addTextElement('16px')">Add Text</button>
+      <button onclick="addTextElement('24px')" style="font-size:24px">Add
+      Large Text</button>
+    </div>
+    <div id="universe"></div>
+    <p>If for some reason this doesn’t work on your device, or you lack the
+    hacker grit needed to roll your own to-do list with this tool, here’s a
+    little video I made:</p>
+    <p><video src="demo.webm" controls=""><a href="demo.webm">Video</a></video></p>
+    <h1 id="okay-but-why">Okay but why</h1>
+    <p>I’m not sure yet.</p>
+  </article>
+
+
+</body></html>

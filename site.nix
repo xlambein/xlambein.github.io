@@ -15,7 +15,7 @@
     in ''<figure><img src="${src}">${caption'}</figure>'';
   };
 
-  assetExts = ["css" "gif" "jpg" "pdf" "png" "svg" "webm"];
+  assetExts = ["css" "gif" "jpg" "pdf" "png" "svg" "webm" "js"];
 
   md2html = nixss.pandoc.process {
     # TODO: +implicit_figures, which makes [caption](image.png) into a figure

@@ -22,7 +22,8 @@
   books = lib.reverseList (map ({isbn, ...} @ b: (book isbn) // b) booksSrc);
 
   index = processFile ((nixss.util.wrap ./index.md.nxt).withMetadata {
-    inherit books;
+    books = [];
+    # inherit books;
   });
 in
   nixss.util.directory {

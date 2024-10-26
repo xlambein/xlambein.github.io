@@ -1,0 +1,61 @@
+{
+    "books": {
+        "9781250301130": {
+            "title": "The Past Is Red",
+            "authors": [
+                {
+                    "key": "/authors/OL7851727A"
+                }
+            ],
+            "number_of_pages": 176,
+            "publish_date": "Jul 20, 2021"
+        },
+        "9781529115543": {
+            "title": "Tomorrow, and Tomorrow, and Tomorrow",
+            "authors": [
+                {
+                    "key": "/authors/OL1394023A"
+                }
+            ],
+            "number_of_pages": null,
+            "publish_date": "2023"
+        },
+        "9780316556330": {
+            "title": "Circe",
+            "authors": [
+                {
+                    "key": "/authors/OL1926056A"
+                }
+            ],
+            "number_of_pages": 400,
+            "publish_date": "2018-04"
+        },
+        "9780062319654": {
+            "title": "Galatea",
+            "authors": [
+                {
+                    "key": "/authors/OL9958254A"
+                }
+            ],
+            "number_of_pages": null,
+            "publish_date": "2013"
+        },
+        "9780143039983": {
+            "title": "The Haunting of Hill House",
+            "authors": [
+                {
+                    "key": "/authors/OL507165A"
+                }
+            ],
+            "number_of_pages": 182,
+            "publish_date": "2006"
+        }
+    },
+    "authors": {
+        "/authors/OL7851727A": "Catherynne M. Valente",
+        "/authors/OL1394023A": "Gabrielle Zevin",
+        "/authors/OL1926056A": "Madeline Miller",
+        "/authors/OL9958254A": "Madeline Miller",
+        "/authors/OL507165A": "Shirley Jackson"
+    }
+}

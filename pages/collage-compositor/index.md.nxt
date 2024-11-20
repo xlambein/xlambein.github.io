@@ -1,0 +1,22 @@
+---
+pubdate: 2024-11-20
+tags:
+  - idea
+---
+
+# Collage compositor
+
+While at [Causal Islands Berlin](https://berlin.causalislands.com/) in 2024, I saw a talk by [Arbor](https://www.derrekchow.com/), where he presented an art tool for making collages from things on your desktop. It's a bit hard to describe and the video's not online yet, but basically in his demo Arbor would use his mouse to "cut" pieces of images, GUIs, etc. on his desktop, and paste them onto a canvas. Then he cut them further and assembled them into "collages" of GUIs and other things. It seemed quite fun to use, and created interesting art pieces. However, because I'm too serious for my own good, I immediately started thinking beyond the art collage aspect, straight to the possible semantics of this thing.
+
+I started wondering: what if I could do this on my desktop, but the pieces I cut were still "connected" to their original window, letting events through and updating the visuals of the window. This could be done with a custom [compositing window manager](https://en.wikipedia.org/wiki/Compositing_window_manager) ("compositor"), e.g. for Wayland.
+
+I briefly looked into it (with [smithay](https://smithay.github.io/)), and I do think it's doable. Writing compositors seems like a lot of work though, beyond the energy I have in me for this idea, so I'm not sure I'll ever get around to it.
+
+---
+
+What's even the point of this? Well, aside from just being cool, I think there might be some value in allowing users to easily create an interface to suit their needs by "collageing" multiple apps together. For example, maybe I could make a collage with a few settings I often change, like my audio inputs & outputs, my bluetooth devices, and other things. I could cut up just the player controls of my music app and put them somewhere on my desktop, so I can easily pause or skip a song. I could collage together several web pages on the research I'm currently doing.
+
+${figure "collage.png" ''
+An example of a GUI collage, with a music player, a sound output control, and a Bluetooth toggle and device list.''}
+
+Technically all or most of these examples could be done on Linux through various forms of scripting. I could write a little GUI app with selected settings on it, which would apply those settings by using some lower-level API. However, this would be a tremendous amount of work. The idea of just "cutting" the pieces you want directly from the GUI is so appealing.

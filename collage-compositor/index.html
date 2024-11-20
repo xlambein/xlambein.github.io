@@ -1,0 +1,76 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><style>:where(img){height:auto}</style>
+  
+  <title>Collage compositor — Xavier Lambein's website</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/logo.svg">
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/code.css">
+  <link href="/atom.xml" rel="alternate" title="Xavier Lambein’s blog" type="application/atom+xml">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous"></noscript>
+  <link rel="me" href="https://sunny.garden/@xavier">
+  <meta property="og:image" content="/assets/img/logo.png">
+</head>
+<body>
+  <nav>
+    <a href="/" tabindex="-1" aria-hidden="true"><img src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3e%3cpath fill='%23ff8080' stroke='black' stroke-width='5.4' d='m112.728 100 76.367-76.368v25.456L138.184 100l25.456 25.456h-25.456ZM100 112.728l76.368 76.367h-25.456L100 138.184 74.544 163.64v-25.456ZM87.272 100l-76.367 76.368v-25.456L61.816 100 36.36 74.544h25.456ZM100 87.272 23.632 10.905h25.456L100 61.816l25.456-25.456v25.456Z'/%3e%3c/svg%3e" width="61.2" height="61.2" alt="website logo" id="logo" style="float:left" fetchpriority="high"></a>
+    <div id="links">
+      <a href="/">Home</a> <a href="/about/">About</a> <a href="/music/">Music</a> <a href="/poems/">Poems</a> <a href="/recipes/">Recipes</a>
+    </div>
+  </nav>
+  <article>
+    <header>
+      <h1>Collage compositor</h1>
+      <div class="article-info">
+        <time class="pubdate">2024-11-20</time>
+        <ul class="tags">
+          <li>idea</li>
+        </ul>
+      </div>
+    </header>
+    <p>While at <a href="https://berlin.causalislands.com/">Causal Islands
+    Berlin</a> in 2024, I saw a talk by <a href="https://www.derrekchow.com/">Arbor</a>, where he presented an art tool for
+    making collages from things on your desktop. It’s a bit hard to describe
+    and the video’s not online yet, but basically in his demo Arbor would use
+    his mouse to “cut” pieces of images, GUIs, etc. on his desktop, and paste
+    them onto a canvas. Then he cut them further and assembled them into
+    “collages” of GUIs and other things. It seemed quite fun to use, and
+    created interesting art pieces. However, because I’m too serious for my own
+    good, I immediately started thinking beyond the art collage aspect,
+    straight to the possible semantics of this thing.</p>
+    <p>I started wondering: what if I could do this on my desktop, but the
+    pieces I cut were still “connected” to their original window, letting
+    events through and updating the visuals of the window. This could be done
+    with a custom <a href="https://en.wikipedia.org/wiki/Compositing_window_manager">compositing
+    window manager</a> (“compositor”), e.g. for Wayland.</p>
+    <p>I briefly looked into it (with <a href="https://smithay.github.io/">smithay</a>), and I do think it’s doable.
+    Writing compositors seems like a lot of work though, beyond the energy I
+    have in me for this idea, so I’m not sure I’ll ever get around to it.</p>
+    <hr>
+    <p>What’s even the point of this? Well, aside from just being cool, I think
+    there might be some value in allowing users to easily create an interface
+    to suit their needs by “collageing” multiple apps together. For example,
+    maybe I could make a collage with a few settings I often change, like my
+    audio inputs &amp; outputs, my bluetooth devices, and other things. I could cut
+    up just the player controls of my music app and put them somewhere on my
+    desktop, so I can easily pause or skip a song. I could collage together
+    several web pages on the research I’m currently doing.</p>
+    <figure>
+      <img src="collage.png.jpg" alt="" fetchpriority="high" decoding="async" width="739" height="507">
+      <figcaption>
+        An example of a GUI collage, with a music player, a sound output
+        control, and a Bluetooth toggle and device list.
+      </figcaption>
+    </figure>
+    <p>Technically all or most of these examples could be done on Linux through
+    various forms of scripting. I could write a little GUI app with selected
+    settings on it, which would apply those settings by using some lower-level
+    API. However, this would be a tremendous amount of work. The idea of just
+    “cutting” the pieces you want directly from the GUI is so appealing.</p>
+  </article>
+
+
+</body></html>

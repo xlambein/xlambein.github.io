@@ -109,7 +109,8 @@ const styles=`
   color: #ca8f04;
 }
 `;class MastodonComments extends HTMLElement{constructor(){super(),this.host=this.getAttribute("host"),this.user=this.getAttribute("user"),this.tootId=this.getAttribute("toot-id"),this.commentsLoaded=!1;const t=document.createElement("style");t.innerHTML=styles,document.head.appendChild(t)}connectedCallback(){this.innerHTML=`
-      <h2>Fediverse comments</h2>
+      <hr>
+      <h1>Fediverse comments</h1>
 
       <noscript>
         <em>Enable JavaScript to view Fediverse comments</em>

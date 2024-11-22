@@ -20,6 +20,14 @@ article>* {
   margin-right: auto;
 }
 
+mastodon-comments {
+  max-width: calc(640px + 3em);
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 3em;
+  display: block;
+}
+
 body>nav {
   max-width: calc(640px + 3em);
   margin: 1.1rem auto;
@@ -218,12 +226,14 @@ pre {
   overflow: auto;
 }
 
-article a {
+article a,
+mastodon-comments a {
   color: #b00000;
   text-decoration: underline;
 }
 
-article a:hover {
+article a:not(:has(img)):hover,
+mastodon-comments a:not(:has(img)):hover {
   color: white;
   background-color: #b00000;
   text-decoration: none;
@@ -231,7 +241,7 @@ article a:hover {
 
 article :where(a, a:hover) .fa {
   color: #b00000;
-  background-color: white;
+  background-color: inherit;
 }
 
 /* external links */

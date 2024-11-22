@@ -4,6 +4,7 @@ pubdate: 2024-05-31
 tags:
   - GUI
   - rust
+fediverse: https://sunny.garden/@xavier/112536425706721302
 ---
 
 # A design pattern for GUIs based on polymorphism

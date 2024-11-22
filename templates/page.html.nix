@@ -3,6 +3,7 @@
   content,
   pubdate ? null,
   tags ? [],
+  fediverse ? "",
   escape,
   foreach,
   ifdef,
@@ -25,4 +26,14 @@
 
     ${content}
   </article>
+
+  ${
+    if fediverse == null
+    then ""
+    else
+      with fediverse; ''
+        <script type="module" src="/assets/js/mastodon-comments.js"></script>
+        <mastodon-comments host="${host}" user="${user}" toot-id="${tootId}"></mastodon-comments>
+      ''
+  }
 ''

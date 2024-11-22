@@ -7,6 +7,7 @@ tags:
   - music
 description: >-
   My submission to the LIVE 2023 workshop, detailing a project I've been working on.
+fediverse: https://sunny.garden/@xavier/111294532997712793
 ---
 
 # PAW: a programmable and visual audio workstation (submission to LIVE 2023)

@@ -3,6 +3,7 @@ template: page
 pubdate: 2024-08-04
 tags:
   - clojure
+fediverse: https://sunny.garden/@xavier/112906064538635891
 ---
 
 # Abstract away HTTP with serialized closures

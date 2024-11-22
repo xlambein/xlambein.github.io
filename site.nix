@@ -21,7 +21,7 @@
     # TODO: +implicit_figures, which makes [caption](image.png) into a figure
     # TODO: +link_attributes, which allows [foo](bar.html){#id .class width=50%}
     # TODO: +emoji for :emojis:
-    from = "gfm+smart";
+    from = "gfm+smart-autolink_bare_uris";
     to = "html";
     shift-heading-level-by = -1;
     wrap = "preserve";
@@ -53,7 +53,7 @@
   assets = nixss.util.derivation {
     filename = "assets";
     drv = runCommandLocal "assets" {} ''
-      mkdir -p $out/{css,img}
+      mkdir -p $out/{css,img,js}
       cp -drs ${./assets}/. $out
       ln -s ${codeCss} $out/css/code.css
       ln -s ${pngLogo {
@@ -69,6 +69,15 @@
 
   feed = nixss.template.process {inherit projects;} ./pages/atom.xml.nix;
 
+  parseFediverse = drv: let
+    parts = builtins.match "^https?://([^/]+)/@([^/]+)/([[:digit:]]+)/?$" (drv.metadata.fediverse or "");
+    fediverse =
+      if parts == null
+      then null
+      else lib.listToAttrs (lib.zipListsWith lib.nameValuePair ["host" "user" "tootId"] parts);
+  in
+    drv.withMetadata {inherit fediverse;};
+
   renderInTemplate = nixss.template.instantiate ./templates/base.html.nix {};
 
   tidyHtml = nixss.html-tidy.process {
@@ -76,6 +85,8 @@
     wrap = "80";
     # forkawesome uses empty elements for icons, so we need to keep those
     drop-empty-elements = "no";
+    # for mastodon-comments
+    custom-tags = "blocklevel";
   };
 
   processFile =
@@ -97,6 +108,7 @@
         processFile
       ];
       "html" = nixss.util.chain [
+        parseFediverse
         renderInTemplate
         tidyHtml
       ];

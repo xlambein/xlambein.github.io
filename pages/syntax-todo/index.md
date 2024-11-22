@@ -3,6 +3,7 @@ pubdate: 2024-10-15
 tags:
   - GUI
   - experiment
+fediverse: https://sunny.garden/@xavier/113312420747513189
 ---
 
 # Syntax errors for to-do lists

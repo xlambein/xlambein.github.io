@@ -128,7 +128,8 @@ class MastodonComments extends HTMLElement {
 
   connectedCallback() {
     this.innerHTML = `
-      <h2>Fediverse comments</h2>
+      <hr>
+      <h1>Fediverse comments</h1>
 
       <noscript>
         <em>Enable JavaScript to view Fediverse comments</em>

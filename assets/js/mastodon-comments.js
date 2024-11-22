@@ -3,6 +3,7 @@ const styles = `
 :root {
   --font-size: 1.0rem;
   --block-background-color: #fff1f1;
+  --block-border-radius: 5px;
   --comment-indent: 20px;
 }
 
@@ -19,7 +20,7 @@ const styles = `
   background-color: var(--block-background-color);
   border-radius: var(--block-border-radius);
   border: var(--block-border-width) var(--block-border-color) solid;
-  padding: 20px;
+  padding: 1.5rem;
   margin-bottom: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -72,11 +73,10 @@ const styles = `
 }
 
 .mastodon-comment .attachments {
-  margin: 10px 0px 0px 0px;
 }
 
 .mastodon-comment .attachments > * {
-  margin: 0px 0px;
+  margin: 10px 0px 0px 0px;
 }
 
 .mastodon-comment .attachments img {
@@ -142,7 +142,7 @@ class MastodonComments extends HTMLElement {
         comment on this post</a>.
       </p>
       
-      <p id="mastodon-comments-list"></p>
+      <div id="mastodon-comments-list"></div>
     `;
 
     const comments = document.getElementById("mastodon-comments-list");
@@ -249,7 +249,7 @@ class MastodonComments extends HTMLElement {
     if (this.commentsLoaded) return;
 
     document.getElementById("mastodon-comments-list").innerHTML =
-      "Loading comments from the Fediverse...";
+      '<p class="no-comments"><em>Loading comments from the Fediverse...</em></p>';
 
     let _this = this;
 
@@ -267,7 +267,7 @@ class MastodonComments extends HTMLElement {
           _this.render_toots(data["descendants"], _this.tootId, 0);
         } else {
           document.getElementById("mastodon-comments-list").innerHTML =
-            "<p><em>Be the first to leave a comment</em> 😌</p>";
+            '<p class="no-comments"><em>Be the first to leave a comment</em> 😌</p>';
         }
 
         _this.commentsLoaded = true;

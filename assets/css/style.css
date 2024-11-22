@@ -28,6 +28,22 @@ mastodon-comments {
   display: block;
 }
 
+mastodon-comments>* {
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+mastodon-comments>#mastodon-comments-list {
+  max-width: 100%;
+}
+
+#mastodon-comments-list>.no-comments {
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 body>nav {
   max-width: calc(640px + 3em);
   margin: 1.1rem auto;
@@ -184,7 +200,7 @@ div.sourceCode {
 pre.sourceCode,
 pre:has(code) {
   background-color: #fff1f1;
-  border-radius: 10px;
+  border-radius: 5px;
   max-width: calc(640px + 8em);
   padding: 0.5em;
 }

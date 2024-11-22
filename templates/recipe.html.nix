@@ -29,7 +29,7 @@
     then ''
       <h1>Sources</h1>
       <ul>
-        ${foreach sources (source: "<li>${source}</li>")}
+        ${foreach sources (source: ''<li><a href="${source}">${source}</a></li>'')}
       </ul>
     ''
     else ""

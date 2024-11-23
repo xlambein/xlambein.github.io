@@ -1,0 +1,69 @@
+---
+pubdate: 2024-11-23
+---
+
+# My keyboard
+
+In my early twenties I started suffering from really bad RSI in my upper body, particularly in my wrists. Eventually it became a perfectly manageable part of my life, thanks to two big changes. First, and most importantly, I began exercising more regularly. Second, I became serious about the ergonomics of my work station. In particular, switching to an ergonomic keyboard helped a lot.
+
+This is a little write-up about my current mechanical keyboard. I explain why I switched to it, what I like about it, how I've set up its layout, and some ideas I have for future improvements.
+
+## The quest for a keyboard
+
+Until a few years ago, the main ergonomic keyboard I used was the Microsoft Sculpt, which looks like this:
+
+${figure "microsoft-sculpt.png" ""}
+
+It's a great keyboard and I recommend it. However, in late 2020, I decided I wanted to upgrade to one of these mechanical keyboards people have been talking about. Mostly, I wanted to have a truly split keyboard (as opposed to the "split-but-joint" Sculpt above), because I didn't like my posture when using a more traditional one.
+
+To paint a picture, I wanted to spread both halves of the keyboard so they're essentially as far apart as my hands are when resting, leaving space in the middle for a mouse or whatever else. In my case I put a mouse and a trackball there, or sometimes a drawing tablet[^food]. It's very comfortable and convenient.
+
+[^food]: Or if I'm eating at my computer this is where I'll put my plate. 🫣
+
+The big names of the time were UHK and Ergodox, but I found them both expensive and unconvincing. Eventually, having learnt more about the subject, decided I wanted a minimalist keyboard (to minimize finger movements, better for RSI) with column stagger[^column-stagger]. And I wanted to solder it myself, because it's fun to do!
+
+[^column-stagger]: This is when the keys are aligned in columns, but not in rows. This is done to match the length of your fingers, such that each one rests naturally on a home row key. Once I learnt about those, traditional keyboards started to seem just plain wrong.
+
+Eventually I found the [Kyria](https://splitkb.com/collections/keyboard-kits/products/kyria-rev3), sold by [splitkb.com](https://splitkb.com), a (then relatively new) Dutch company making keyboards PCBs and selling kits and accessories. The Kyria had a [convincing pitch](https://blog.splitkb.com/introducing-the-kyria/) that spoke to me, and you could even print a test sheet to see if the layout was comfortable for your fingers. My decision was made quickly, and I ordered the parts.
+
+I got a bunch of the components from splitkb.com itself (mainly the PCB, screens, microcontrollers, and case), while the rest I ordered from a different place where it was cheaper. Overall, I think I just made my life more complicated, and I'd recommend buying everything directly from splitkb.com.
+
+I bought a soldering kit and assembled the thing pretty quickly, with some help from my partner who'd never soldered before, and who found it pretty easy and fun. I found pastel blue and pink keycaps in a local second-hand shop, but you can buy those online easily.
+
+${figure "kyria.jpg" ''
+My mechanical keyboard on my desk. Usually, the two halves are spread apart to align with my arms. Also, the key labels are not 100% accurate.
+''}
+
+Overall I'm very happy with my Kyria, and I'd recommend it to anyone with similar needs as me. That being said, as I'll explain at the end, I'm considering getting a new keyboard in the future, based on my experience with this one.
+
+## Keyboard layout
+
+The keyboard is fairly minimalist: it has a total of 50 keys, but at this point I use only about 37 of them. I have the 30 keys of the main Dvorak layout (`A-Z` and `',.;`) and then tab, space, enter, escape, backspace, "CCCV", and a "super" key. I'll get to these two later.
+
+As is typical with small keyboards like this one, the way you access other keys is with layers. A layer is basically a toggleable switch to a different set of keys for your keyboard. I have three main layers: my default, Dvorak layer, then a "symbols" layer with ASCII symbols, and a "numbers/fn/movement" layer with, you guessed it, numbers, Fn keys, and movement keys.
+
+I can temporarily access these layers by holding specific keys on the default layer. For example, if I hold the Space key on the left, I switch to the symbols layer, while if I press the Enter key on the right, I switch to the numbers layer. This works because layer keys are like modifier keys, and are only useful when held, not tapped. So tapping the Space key sends a space character, but holding it changes the layer.
+
+I also have two more layers that I use less often: a "French accented letters" layer (when I hold both layer keys at the same time) and a "gaming" layer with WASD and other things on the left side (which I toggle by tapping a key I don't use otherwise).
+
+There's still something missing though: what about the control, alt, shift and super keys? Well, remember how a key can be two things, depending on whether it's tapped or held? Same thing again here: these four keys are on my home row (`AOEU HTNS` on Dvorak, `ASDF HJKL` on Qwerty), and activate when held. So if I want to do, say, `Ctrl+Z`, I hold the `U` key (or the `H` key), then tap the `Z` key.
+
+This _seems_ weird and confusing, but it's actually great and pretty quick to learn. The trade-off is that you cannot type _too_ fast, otherwise you risk triggering a shortcut. In my experience, this was a problem at first, until I tweaked the timing. These days I never have that issue anymore.
+
+Earlier I mentioned a "CCCV" key. This is a key that, when held for a few milliseconds, sends `Ctrl+C`, and when tapped, sends `Ctrl+V`. It's very convenient when using the mouse, since on Dvorak the `C` and `V` keys are on the right side, which is also the hand that holds my mouse. I put the CCCV key on the left side, so I can quickly select something with the mouse, copy it, and paste it somewhere else.
+
+Finally, I have an extra "super" tap key (in addition to the hold action for the `A` and `S` keys), which I use to trigger `wlr-which-key` in Sway.
+
+All of this is managed by microcontrollers on the keyboard, one per side. They are programmed by writing C code with a library called [QMK](https://qmk.fm/). It takes care of both the low-level stuff, as well as the fancier features I mentioned above like the hold-tap keys. In my experience it's not too hard to use, especially as you can steal bits of C code from other people's configs. The main downside is that any time you want to change something, you need to recompile the source code and flash it onto the controllers, which is a small but noticeable feedback delay.
+
+## Future improvements
+
+Overall I'm quite happy with my setup. I do have a few annoyances that might lead me to buying a new keyboard in the future.
+
+First, I miss the numbers row. Right now, my top row becomes a numbers row in a different layer. It works well enough, but I never fully got used to it, and so I type numbers slower than I would on, say, my laptop's keyboard. So I'm considering getting a new keyboard with less keys elsewhere, but with these 10 additional keys at the top. The model I'm eyeing is the [Elora](https://splitkb.com/collections/keyboard-kits/products/elora), which is essentially a Kyria with a numbers row.
+
+Second, I have a relatively thick keyboard, with high keys. It's roughly 2.5cm high, which is not too bad, but I think I'd prefer a thinner model, with low-profile keys.
+
+Third, the microcontrollers I have are not particularly fast, and with the overhead of the firmware, there's a noticeable latency when typing. Eventually I got used to it, but it's clearly not ideal. I'd like to either get faster microcontrollers, or somehow manage to increase the polling rate in the firmware.
+
+Finally, I still use my laptop keyboard regularly (otherwise, why have a laptop?), and so I often switch between those two ways of operating my keyboard. I'm considering stripping down my fancy QMK config, and instead setting up a custom layout as software (e.g., with [kmonad](https://github.com/kmonad/kmonad) or [keyd](https://github.com/rvaiya/keyd)). This might help with polling rate too, and it has the advantage of not needing to compile and flash the firmware every time I want to try a small layout change.

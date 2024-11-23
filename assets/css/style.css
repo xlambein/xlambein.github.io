@@ -21,7 +21,8 @@ article>* {
 }
 
 mastodon-comments {
-  max-width: calc(640px + 3em);
+  padding: 1rem;
+  max-width: calc(640px + 2em);
   margin-left: auto;
   margin-right: auto;
   margin-top: 3em;

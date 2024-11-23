@@ -20,12 +20,13 @@ const styles = `
   background-color: var(--block-background-color);
   border-radius: var(--block-border-radius);
   border: var(--block-border-width) var(--block-border-color) solid;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
   color: var(--font-color);
   font-size: var(--font-size);
+  overflow: scroll;
 }
 
 .mastodon-comment p {
@@ -50,6 +51,14 @@ const styles = `
 
 .mastodon-comment .author .details {
   display: flex;
+  align-items: start;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.mastodon-comment .author .details-left {
+  display: flex;
   flex-direction: column;
   align-items: start;
 }
@@ -63,20 +72,19 @@ const styles = `
   font-size: medium;
 }
 
-.mastodon-comment .author .date {
-  margin-left: auto;
+.mastodon-comment .author .details .date {
   font-size: small;
 }
 
 .mastodon-comment .content {
-  margin: 15px 0px 0px 0px;
+  margin-top: 15px;
 }
 
 .mastodon-comment .attachments {
 }
 
 .mastodon-comment .attachments > * {
-  margin: 10px 0px 0px 0px;
+  margin-top: 10px;
 }
 
 .mastodon-comment .attachments img {
@@ -198,19 +206,21 @@ class MastodonComments extends HTMLElement {
             )}" height=60 width=60 alt="">
           </div>
           <div class="details">
-            <a class="name" href="${toot.account.url}" rel="nofollow">${
-              toot.account.display_name
-            }</a>
-            <a class="user" href="${
-              toot.account.url
-            }" rel="nofollow">${this.user_account(toot.account)}</a>
+            <div class="details-left">
+              <a class="name" href="${toot.account.url}" rel="nofollow">${
+                toot.account.display_name
+              }</a>
+              <a class="user" href="${
+                toot.account.url
+              }" rel="nofollow">${this.user_account(toot.account)}</a>
+            </div>
+            <a class="date" href="${
+              toot.url
+            }" rel="nofollow">${toot.created_at.substr(
+              0,
+              10,
+            )} ${toot.created_at.substr(11, 8)}</a>
           </div>
-          <a class="date" href="${
-            toot.url
-          }" rel="nofollow">${toot.created_at.substr(
-            0,
-            10,
-          )} ${toot.created_at.substr(11, 8)}</a>
         </div>
         <div class="content">${toot.content}</div>
         <div class="attachments">

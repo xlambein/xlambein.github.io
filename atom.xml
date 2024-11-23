@@ -3,13 +3,20 @@
 
   <title>Xavier Lambein's website</title>
   <link href="https://lambein.xyz" />
-  <updated>2024-11-20T00:00:00Z</updated>
+  <updated>2024-11-23T00:00:00Z</updated>
   <author>
     <name>Xavier Lambein</name>
   </author>
   <id>https://lambein.xyz</id>
   <icon>/assets/img/favicon.png</icon>
   
+  <entry>
+    <title>My keyboard</title>
+    <link href="https://lambein.xyz/keyboard" />
+    <id>tag:lambein.xyz,2024-11-23:/keyboard</id>
+    <updated>2024-11-23T00:00:00Z</updated>
+  </entry>
+
   <entry>
     <title>Collage compositor</title>
     <link href="https://lambein.xyz/collage-compositor" />

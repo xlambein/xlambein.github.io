@@ -5,6 +5,7 @@ import requests
 import json
 import toml
 import os
+import sys
 
 TOML_FILE = "books.toml"
 OUTPUT_FILE = "openlibrary.json"
@@ -26,16 +27,20 @@ def load_existing_data(output_file):
 
 # Function to fetch book data from OpenLibrary API
 def fetch_book_data(isbn):
+    print(f"fetching book data for '{isbn}'", file=sys.stderr)
     url = f"https://openlibrary.org/isbn/{isbn}.json"
     response = requests.get(url)
-    return response.json() if response.status_code == 200 else None
+    response.raise_for_status()
+    return response.json()
 
 
 # Function to fetch author data from OpenLibrary API
 def fetch_author_data(author_id):
+    print(f"fetching book data for '{author_id}'", file=sys.stderr)
     url = f"https://openlibrary.org{author_id}.json"
     response = requests.get(url)
-    return response.json()["name"] if response.status_code == 200 else None
+    response.raise_for_status()
+    return response.json()["name"]
 
 
 # Main function to fetch and merge data

@@ -49,6 +49,16 @@
             ],
             "number_of_pages": 182,
             "publish_date": "2006"
+        },
+        "9780739358047": {
+            "title": "Into the Wild",
+            "authors": [
+                {
+                    "key": "/authors/OL237257A"
+                }
+            ],
+            "number_of_pages": null,
+            "publish_date": "August 21, 2007"
         }
     },
     "authors": {
@@ -56,6 +66,7 @@
         "/authors/OL1394023A": "Gabrielle Zevin",
         "/authors/OL1926056A": "Madeline Miller",
         "/authors/OL9958254A": "Madeline Miller",
-        "/authors/OL507165A": "Shirley Jackson"
+        "/authors/OL507165A": "Shirley Jackson",
+        "/authors/OL237257A": "Jon Krakauer"
     }
 }

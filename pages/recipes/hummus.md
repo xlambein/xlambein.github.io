@@ -2,25 +2,32 @@
 tags:
   - side
 servings: 4
+sources:
+  - https://www.reddit.com/r/Cooking/comments/mc4rs5/comment/gs1p8b0/
 ---
 
 # Hummus
 
 ## Ingredients
 
-- 1 can or 240g cooked chickpeas, drained
-- 1 clove garlic, minced
-- 60g tahini paste
-- 40g olive oil
-- 3/4 lemon, juiced
+- 1 can chickpeas, or 100g dry chickpeas
+- 4 tbsp tahini
+- 1 clove garlic
+- 1 lemon, juiced
 - 1/4 tsp salt
-- water
+- 1/4 tsp cumin
+- cold water
 
 ## Directions
 
-1. Blend all the ingredients together, adding more or less water to adjust the consistency.
+1. If using dry chickpeas, soak them overnight, then cook them for 60--90 minutes.
 
-## Notes
+2. In a blender or food processor, blend together the garlic, lemon juice, cumin, and salt. Afterwards, let everything sit for 10 minutes. The lemon will take the pungency off the garlic.
 
-- Not the best hummus, I'm still looking for a simple recipe that gives better results.
-- If you have dried chickpeas, 100g should give you about 240g cooked.
+3. Add the tahini and let everything process for a few more minutes, until the tahini turns a bright white color. If necessary, add some cold water to loosen the mix.
+
+4. Drain the chickpeas, reserving the liquid (aquafaba), then add them to the blender.
+
+5. Blend everything for a long time, until light and smooth. Depending on the consistency, add some more cold water and/or aquafaba. The latter will help the hummus get very light and fluffy.
+
+6. Adjust to taste with more tahini, lemon juice, or salt.

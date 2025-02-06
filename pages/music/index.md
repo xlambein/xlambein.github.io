@@ -8,7 +8,10 @@ description: >-
 I make music under my own name, you can buy it on [Mirlo](https://mirlo.space/xavier-lambein/releases) or on [Bandcamp](https://xavierlambein.bandcamp.com/):
 
 <div class="music-list">
+  <iframe class="music-item" style="border: 0;" src="https://bandcamp.com/EmbeddedPlayer/track=1285630886/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/transparent=true/" seamless><a href="https://xavierlambein.bandcamp.com/track/rains-will-rise">Rains Will Rise by Xavier Lambein</a></iframe>
   <iframe class="music-item" style="border: 0;" src="https://bandcamp.com/EmbeddedPlayer/track=3867658800/size=large/bgcol=ffffff/linkcol=b00000/minimal=true/transparent=true/" seamless><a href="https://xavierlambein.bandcamp.com/track/plastic-white-pearls">Plastic White Pearls by Xavier Lambein</a></iframe>
+</div>
+<div class="music-list">
   <iframe class="music-item" style="border: 0;" src="https://bandcamp.com/EmbeddedPlayer/track=2626406134/size=large/bgcol=ffffff/linkcol=b00000/minimal=true/transparent=true/" seamless><a href="https://xavierlambein.bandcamp.com/track/mittens">mittens by Xavier Lambein</a></iframe>
   <iframe class="music-item" style="border: 0;" src="https://bandcamp.com/EmbeddedPlayer/album=4167300451/size=large/bgcol=ffffff/linkcol=b00000/tracklist=false/minimal=true/transparent=true/" seamless><a href="https://xavierlambein.bandcamp.com/album/non-breaking-space">Non-breaking Space by Xavier Lambein</a></iframe>
 </div>
@@ -22,5 +25,5 @@ I'm also one half of Helpless Saps, a duo with [Mandooks](https://www.mandooks.c
 
 My music's also on various streaming platforms, if you search for my name.
 
-Everything I make is produced with free software---mainly [Ardour](https://ardour.org).
+Most of what I make is produced with free software---mainly [Ardour](https://ardour.org).
 

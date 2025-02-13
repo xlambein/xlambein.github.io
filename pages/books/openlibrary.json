@@ -69,6 +69,16 @@
             ],
             "number_of_pages": 239,
             "publish_date": "January 9, 2001"
+        },
+        "9780241988275": {
+            "title": "Thursday Murder Club : (the Thursday Murder Club 1)",
+            "authors": [
+                {
+                    "key": "/authors/OL7973935A"
+                }
+            ],
+            "number_of_pages": null,
+            "publish_date": "2020"
         }
     },
     "authors": {
@@ -78,6 +88,7 @@
         "/authors/OL9958254A": "Madeline Miller",
         "/authors/OL507165A": "Shirley Jackson",
         "/authors/OL237257A": "Jon Krakauer",
-        "/authors/OL2631291A": "Bell Hooks"
+        "/authors/OL2631291A": "Bell Hooks",
+        "/authors/OL7973935A": "Richard Osman"
     }
 }

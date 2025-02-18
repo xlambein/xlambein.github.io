@@ -6,7 +6,7 @@ score = 4
 [[book]]
 isbn = "9781529115543"
 readDate = "2024-07-22"
-score = 4
+score = 3
 
 [[book]]
 isbn = "9780316556330"
@@ -21,7 +21,7 @@ score = 5
 [[book]]
 isbn = "9780143039983"
 readDate = "2024-08-30"
-score = 3
+score = 2
 
 [[book]]
 # isbn = "9780736674980"

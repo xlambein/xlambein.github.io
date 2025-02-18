@@ -79,6 +79,16 @@
             ],
             "number_of_pages": null,
             "publish_date": "2020"
+        },
+        "9782981912855": {
+            "title": "Utown",
+            "authors": [
+                {
+                    "key": "/authors/OL10433546A"
+                }
+            ],
+            "number_of_pages": null,
+            "publish_date": null
         }
     },
     "authors": {
@@ -89,6 +99,7 @@
         "/authors/OL507165A": "Shirley Jackson",
         "/authors/OL237257A": "Jon Krakauer",
         "/authors/OL2631291A": "Bell Hooks",
-        "/authors/OL7973935A": "Richard Osman"
+        "/authors/OL7973935A": "Richard Osman",
+        "/authors/OL10433546A": "Cab"
     }
 }

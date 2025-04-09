@@ -6,14 +6,14 @@ sources:
   - https://simple-veganista.com/roasted-vegetables-chickpeas-with-lemon/
 ---
 
-# Roasted winter veggies with cannellini sauce
+# Roasted Winter Veggies with Cannellini Sauce
 
 ## Ingredients
 
 ### Roasted veggies
 
 - 1 large sweet potato, cubed
-- 1 small broccoli or half a large, cut into florets
+- 1 broccoli, cut into florets
 - 2 carrots, sliced
 - 2 cups Brussels sprouts, halved
 - 1 red onion, sliced
@@ -37,11 +37,11 @@ sources:
 
 2. Cut the veggies and toss them in a large bowl with olive oil, salt and pepper. Lay them on a baking tray, and put them in the oven for about 30 minutes, until they're cooked through.
 
-3. Combine all the sauce ingredients in a blender, putting only part of the veggie broth. Blend the mix together into a thick sauce, then heat it up in a saucepan. If it's too thick, dilute it with more broth.
+3. Combine all the sauce ingredients in a blender, putting only part of the veggie broth. Blend the mix together into a thick sauce, then heat it up in a saucepan. If it's too thick, dilute it with more water.
 
 4. Serve the roasted veggies topped with sauce and a side of your choice.
 
 ## Notes
 
-- For the herbs, basil works well, but you can use whatever you have or strikes your fancy
-- In terms of sides, you'll want something that'll soak up the sauce and pair with the veggies. I've tried couscous, but bread or greek pasta would be nice too.
+- For the herbs, I recommend dill, but you can use whatever you have or strikes your fancy.
+- In terms of sides, you'll want something that'll soak up the sauce and pair with the veggies. I typically go with couscous, but bread or greek pasta would be nice too.

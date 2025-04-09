@@ -17,7 +17,7 @@ sources:
 - 3 tbsp olive oil
 - 1 tsp ground cumin
 - 1 tsp black pepper
-- 1.5l water
+- 1 1/2l water
 - 1 tbsp veggie stock powder
 - 2 tbsp zaatar, or more to taste
 

@@ -1,23 +1,25 @@
 ---
 tags:
   - soup
-servings: 4
+servings: 6
 ---
 
 # Split Peas and Leek Soup
 
 ## Ingredients
 
-- 300g split peas
-- 4 leeks, chopped
+- 200g split peas
+- 3 leeks, chopped
 - 4 carrots, roughly chunked
-- 1L vegetable stock
+- 1 1/2 tbsp veggie stock powder
 - milk
 
 ## Directions
 
-1. Heat half the vegetable stock in a large pot, then cook the peas for about 20 minutes.
+1. In a large pot, cover the peas with boiling water and let them simmer until cooked through, for about 30 minutes. To speed up cooking time, you can pre-soak the peas a few hours in advance.
 
-2. Add the white part of the leeks, along with the carrots and the remaining stock. Cook for 20 more minutes, or until everything is cooked through.
+2. Add the chopped veggies, alongside the veggie stock, and add hot water until nearly covered. Simmer for an additional 20 minutes, until the carrots are fork-tender.
 
-3. Blend the soup and add milk and/or water until the consistency is right.
+3. Blend the soup, adding milk and/or water until the consistency is right. Season to taste with salt and pepper.
+
+4. Serve with croutons and/or toasted bread and butter.

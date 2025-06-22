@@ -99,6 +99,26 @@
             ],
             "number_of_pages": 311,
             "publish_date": "2004"
+        },
+        "9780765397539": {
+            "title": "All Systems Red: The Murderbot Diaries",
+            "authors": [
+                {
+                    "key": "/authors/OL221294A"
+                }
+            ],
+            "number_of_pages": 158,
+            "publish_date": "5/2/2017"
+        },
+        "9781250186935": {
+            "title": "Artificial Condition",
+            "authors": [
+                {
+                    "key": "/authors/OL221294A"
+                }
+            ],
+            "number_of_pages": 149,
+            "publish_date": "2018"
         }
     },
     "authors": {
@@ -111,6 +131,7 @@
         "/authors/OL2631291A": "Bell Hooks",
         "/authors/OL7973935A": "Richard Osman",
         "/authors/OL10433546A": "Cab",
-        "/authors/OL35895A": "Daniel Keyes"
+        "/authors/OL35895A": "Daniel Keyes",
+        "/authors/OL221294A": "Martha Wells"
     }
 }

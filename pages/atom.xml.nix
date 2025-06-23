@@ -28,7 +28,7 @@ in ''
     <icon>/assets/img/favicon.png</icon>
     ${foreach projects (project:
     with project; ''
-      ''\
+      ${""}
         <entry>
           <title>${escape title}</title>
           <link href="${urlToAbsolute url}" />

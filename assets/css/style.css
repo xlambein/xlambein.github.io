@@ -266,7 +266,8 @@ article :where(a, a:hover) .fa {
 }
 
 /* external links */
-article a[href^='http']:not([href*='lambein.xyz']):after {
+article a[href^='http://']:not([href*='lambein.xyz']):after,
+article a[href^='https://']:not([href*='lambein.xyz']):after {
   content: '';
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
   background-repeat: no-repeat;

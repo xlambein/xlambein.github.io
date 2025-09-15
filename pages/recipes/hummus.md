@@ -11,7 +11,7 @@ sources:
 ## Ingredients
 
 - 1 can chickpeas, or 100g dry chickpeas
-- 4 tbsp tahini
+- 1/2 cup tahini
 - 1 clove garlic
 - 1 lemon, juiced
 - 1/4 tsp salt

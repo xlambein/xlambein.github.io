@@ -27,6 +27,10 @@
       <div class="article-info">
         Serves 4.
       </div>
+      <div class="article-info">
+        Scale ingredients: <label><input type="radio" name="scale" onclick="scaleAll(1)" checked="">1</label> <label><input type="radio" name="scale" onclick="scaleAll(2)">2</label>
+        <label><input type="radio" name="scale" onclick="scaleAll(3)">3</label> <label><input type="radio" name="scale" onclick="scaleAll(4)">4</label>
+      </div>
     </header>
     <h1 id="ingredients">Ingredients</h1>
     <ul>
@@ -69,6 +73,8 @@
       </li>
     </ol>
   </article>
+  <script>const reQuantity=/^\d+(?:\/\d+)?/d;function gcd(t,e){if(t=Math.abs(t),e=Math.abs(e),e>t){const i=t;t=e,e=i}for(;;){if(e==0)return t;if(t%=e,t==0)return e;e%=t}}function scale(t,e){const i=reQuantity.exec(t);if(i===null)return;const n=i[0];let r;if(Number.isNaN(+n)){let[l,c]=n.split("/");l=+l*e,c=+c;const o=gcd(l,c);l=l/o,c=c/o,r=""+l,c!=1&&(r=r+"/"+c)}else r=""+e*+n;return r+t.substr(n.length)}const lis=document.querySelector("article").querySelectorAll("ul>li");function prepareForScale(){for(const t of lis)t.setAttribute("data-text",t.textContent)}prepareForScale();function scaleLi(t,e){const i=t.getAttribute("data-text"),n=scale(i,e);n!==void 0&&(t.textContent=n)}function scaleAll(t){for(const e of lis)scaleLi(e,t)}
+</script>
 
 
 </body></html>

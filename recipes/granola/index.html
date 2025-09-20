@@ -1,0 +1,88 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><style>:where(img){height:auto}</style>
+  
+  <title>Granola — Xavier Lambein's website</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/logo.svg">
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/code.css">
+  <link href="/atom.xml" rel="alternate" title="Xavier Lambein’s blog" type="application/atom+xml">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous"></noscript>
+  <link rel="me" href="https://sunny.garden/@xavier">
+  <meta property="og:image" content="/assets/img/logo.png">
+</head>
+<body>
+  <nav>
+    <a href="/" tabindex="-1" aria-hidden="true"><img src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3e%3cpath fill='%23ff8080' stroke='black' stroke-width='5.4' d='m112.728 100 76.367-76.368v25.456L138.184 100l25.456 25.456h-25.456ZM100 112.728l76.368 76.367h-25.456L100 138.184 74.544 163.64v-25.456ZM87.272 100l-76.367 76.368v-25.456L61.816 100 36.36 74.544h25.456ZM100 87.272 23.632 10.905h25.456L100 61.816l25.456-25.456v25.456Z'/%3e%3c/svg%3e" width="61.2" height="61.2" alt="website logo" id="logo" style="float:left" fetchpriority="high"></a>
+    <div id="links">
+      <a href="/">Home</a> <a href="/about/">About</a> <a href="/music/">Music</a> <a href="/poems/">Poems</a> <a href="/recipes/">Recipes</a>
+    </div>
+  </nav>
+  <article>
+    <header>
+      <h1>Granola</h1>
+      <div class="article-info">
+        Serves 6–8.
+      </div>
+      <div class="article-info">
+        Scale ingredients: <label><input type="radio" name="scale" onclick="scaleAll(1)" checked="">1</label> <label><input type="radio" name="scale" onclick="scaleAll(2)">2</label>
+        <label><input type="radio" name="scale" onclick="scaleAll(3)">3</label> <label><input type="radio" name="scale" onclick="scaleAll(4)">4</label>
+      </div>
+    </header>
+    <h1 id="ingredients">Ingredients</h1>
+    <ul>
+      <li>2 cups rolled oats</li>
+      <li>1/2 cup buckwheat</li>
+      <li>1/2 cup walnuts, crushed or chunked</li>
+      <li>1/2 cup cashew nuts, crushed or chunked</li>
+      <li>1/2 cup coconut flakes</li>
+      <li>2 tbsp chia seeds</li>
+      <li>1/4 cup sugar</li>
+      <li>1/4 cup maple syrup</li>
+      <li>1/4 cup olive oil</li>
+      <li>1/2 tsp salt, more to taste</li>
+      <li>1 tsp vanilla extract</li>
+    </ul>
+    <h1 id="directions">Directions</h1>
+    <ol type="1">
+      <li>
+        <p>Pre-heat the oven to 125C in convection mode.</p>
+      </li>
+      <li>
+        <p>Combine all ingredients in a large bowl and mix well. Give it a
+        taste and adjust the salt and sugar.</p>
+      </li>
+      <li>
+        <p>On a baking tray lined with parchment paper, pour the mixture and
+        lay it flat with a spatula.</p>
+      </li>
+      <li>
+        <p>Bake it in the oven for 25 minutes. Take it out, shuffle the granola
+        around, and then bake it for another 25 minutes.</p>
+      </li>
+      <li>
+        <p>Take the tray out of the oven and let the granola cool down
+        thoroughly before storing it in a sealed container in the fridge.</p>
+      </li>
+    </ol>
+    <h1 id="notes">Notes</h1>
+    <ul>
+      <li>The ingredients are a mere suggestion. You should customize this to
+      your liking. I recommend keeping roughly these proportions of various
+      “kinds” of ingredients.</li>
+      <li>Granola burns <em>very</em> easily. If it’s your first time with a
+      given oven, keep an eye on it and give it a taste every ~10 minutes. If
+      it’s getting bitter, stop baking at once, and use a lower temperature
+      next time.</li>
+      <li>Using granulated sugar with a syrup works a lot better than just
+      sugar.</li>
+    </ul>
+  </article>
+  <script>const reQuantity=/^\d+(?:\/\d+)?/d;function gcd(t,e){if(t=Math.abs(t),e=Math.abs(e),e>t){const i=t;t=e,e=i}for(;;){if(e==0)return t;if(t%=e,t==0)return e;e%=t}}function scale(t,e){const i=reQuantity.exec(t);if(i===null)return;const n=i[0];let r;if(Number.isNaN(+n)){let[l,c]=n.split("/");l=+l*e,c=+c;const o=gcd(l,c);l=l/o,c=c/o,r=""+l,c!=1&&(r=r+"/"+c)}else r=""+e*+n;return r+t.substr(n.length)}const lis=document.querySelector("article").querySelectorAll("ul>li");function prepareForScale(){for(const t of lis)t.setAttribute("data-text",t.textContent)}prepareForScale();function scaleLi(t,e){const i=t.getAttribute("data-text"),n=scale(i,e);n!==void 0&&(t.textContent=n)}function scaleAll(t){for(const e of lis)scaleLi(e,t)}
+</script>
+
+
+</body></html>

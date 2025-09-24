@@ -27,7 +27,7 @@ A problem with `theseus` is that it's a bit old and loud. It uses more electrici
 
 The solution I settled with is relies on WOL (wake-on-LAN), autosuspend, and a Raspberry Pi acting as reverse proxy.
 
-The Raspberry PI, an old model I had gathering dust in a drawer, now runs an Nginx reverse proxy that forwards traffic to `theseus`. The RPI is named `girlboss`. So, if you browse `http://<GIRLBOSS URL>:8096`, `girlboss` will forward you to `http://<THESEUS URL>:8096`, which hosts Jellyfin.
+The Raspberry Pi, an old model I had gathering dust in a drawer, now runs an Nginx reverse proxy that forwards traffic to `theseus`. I named it `girlboss`. So, if you browse `http://<GIRLBOSS URL>:8096`, `girlboss` will forward you to `http://<THESEUS URL>:8096`, which hosts Jellyfin.
 
 Most of the time, `theseus` is asleep, and so the request quickly times out. However, instead of failing, `girlboss` detects this and sends a WOL packet. Wake-on-LAN is a mechanism you can use to---you guessed it---wake another computer in the same local area network. `theseus` and `girlboss` are on the same network, so the packet reaches the former and wakes it.
 

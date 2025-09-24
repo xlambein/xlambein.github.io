@@ -3,13 +3,20 @@
 
   <title>Xavier Lambein's website</title>
   <link href="https://lambein.xyz" />
-  <updated>2024-11-23T00:00:00Z</updated>
+  <updated>2025-09-24T00:00:00Z</updated>
   <author>
     <name>Xavier Lambein</name>
   </author>
   <id>https://lambein.xyz</id>
   <icon>/assets/img/favicon.png</icon>
   
+  <entry>
+    <title>My home media server is suspended most of the time</title>
+    <link href="https://lambein.xyz/home-server-wol" />
+    <id>tag:lambein.xyz,2025-09-24:/home-server-wol</id>
+    <updated>2025-09-24T00:00:00Z</updated>
+  </entry>
+
   <entry>
     <title>My keyboard</title>
     <link href="https://lambein.xyz/keyboard" />

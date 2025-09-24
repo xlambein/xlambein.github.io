@@ -1,0 +1,175 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><style>:where(img){height:auto}</style>
+  
+  <title>My home media server is suspended most of the time — Xavier Lambein's
+  website</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/logo.svg">
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/code.css">
+  <link href="/atom.xml" rel="alternate" title="Xavier Lambein’s blog" type="application/atom+xml">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous"></noscript>
+  <link rel="me" href="https://sunny.garden/@xavier">
+  <meta property="og:image" content="/assets/img/logo.png">
+</head>
+<body>
+  <nav>
+    <a href="/" tabindex="-1" aria-hidden="true"><img src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3e%3cpath fill='%23ff8080' stroke='black' stroke-width='5.4' d='m112.728 100 76.367-76.368v25.456L138.184 100l25.456 25.456h-25.456ZM100 112.728l76.368 76.367h-25.456L100 138.184 74.544 163.64v-25.456ZM87.272 100l-76.367 76.368v-25.456L61.816 100 36.36 74.544h25.456ZM100 87.272 23.632 10.905h25.456L100 61.816l25.456-25.456v25.456Z'/%3e%3c/svg%3e" width="61.2" height="61.2" alt="website logo" id="logo" style="float:left" fetchpriority="high"></a>
+    <div id="links">
+      <a href="/">Home</a> <a href="/about/">About</a> <a href="/music/">Music</a> <a href="/poems/">Poems</a> <a href="/recipes/">Recipes</a>
+    </div>
+  </nav>
+  <article>
+    <header>
+      <h1>My home media server is suspended most of the time</h1>
+      <div class="article-info">
+        <time class="pubdate">2025-09-24</time>
+        <ul class="tags">
+          <li>nixos</li>
+          <li>self-hosting</li>
+        </ul>
+      </div>
+    </header>
+    <p>I thought I’d write about my home media server, since I have a peculiar
+    setup I haven’t seen elsewhere.</p>
+    <p>I have an old desktop computer, which used to be my main PC before I got
+    to university and switched to using laptops. So, it’s pretty old, but it
+    still works well. After I got into NixOS, I decided I wanted to own a NAS,
+    and maybe self-host some services on it. I quickly settled on using that
+    old computer for it. I set it up with a couple of 4TB HDDs in RAID for
+    data, and a 512GB SSD for the OS. I named the machine
+    <code>theseus</code>.</p>
+    <p>To give you an idea of what I use it for, here’s some of the services I
+    have on it:</p>
+    <ul>
+      <li>
+        <a href="https://jellyfin.org/">Jellyfin</a>, a media server, which my
+        partner and I use to watch movies and TV shows on our TV
+      </li>
+      <li>
+        <a href="https://immich.app/">Immich</a>, a photo server, which stores
+        the photos I took with my phone
+      </li>
+      <li>
+        <a href="https://www.navidrome.org/">Navidrome</a>, a music server,
+        which I use mostly with <a href="https://symfonium.app/">Symphonium</a>
+        on my phone to listen to music on the go
+      </li>
+      <li>
+        <a href="https://transmissionbt.com/">Transmisson</a>, a BitTorrent
+        client, which we use to download <em>public domain content</em>
+      </li>
+      <li>
+        <a href="https://www.borgbackup.org/">Borg</a>, a backup service, where
+        <code>theseus</code> acts both as a server (backing up my laptop) and a
+        client (backing up some of its data to the cloud)
+      </li>
+    </ul>
+    <h1 id="wake-up-jack">Wake up Jack</h1>
+    <p>A problem with <code>theseus</code> is that it’s a bit old and loud. It
+    uses more electricity than I’d like, and the noise can be annoying.
+    Furthermore, we don’t actually need it to be running 24/7, since it’s
+    mostly there to store various kinds of data.</p>
+    <p>The solution I settled with is relies on WOL (wake-on-LAN), autosuspend,
+    and a Raspberry Pi acting as reverse proxy.</p>
+    <p>The Raspberry PI, an old model I had gathering dust in a drawer, now
+    runs an Nginx reverse proxy that forwards traffic to <code>theseus</code>.
+    The RPI is named <code>girlboss</code>. So, if you browse
+    <code>http://&lt;GIRLBOSS URL&gt;:8096</code>, <code>girlboss</code> will
+    forward you to <code>http://&lt;THESEUS URL&gt;:8096</code>, which hosts
+    Jellyfin.</p>
+    <p>Most of the time, <code>theseus</code> is asleep, and so the request
+    quickly times out. However, instead of failing, <code>girlboss</code>
+    detects this and sends a WOL packet. Wake-on-LAN is a mechanism you can use
+    to—you guessed it—wake another computer in the same local area network.
+    <code>theseus</code> and <code>girlboss</code> are on the same network, so
+    the packet reaches the former and wakes it.</p>
+    <p>At this point, <code>girlboss</code> is still serving the HTTP request,
+    waiting a few seconds for <code>theseus</code> to come online. When it
+    does, the request is properly forwarded, and I see Jellyfin appear on my
+    browser. Further requests are answered immediately, since
+    <code>theseus</code> is no longer suspended.</p>
+    <p>I’d like for <code>theseus</code> to go back to sleep when I’m done with
+    it. For this, I use <a href="https://autosuspend.readthedocs.io/en/v9.0.0/">autosuspend</a>, a Python
+    daemon that automatically suspends (and wakes up) a computer. Most
+    importantly, it lets you specify conditions under which a system should
+    <em>not</em> suspend—for example, if there’s an active network connection
+    on a given port, or if a user is logged in.</p>
+    <p>I have configured autosuspend to keep <code>theseus</code> running
+    whenever:</p>
+    <ul>
+      <li>one of the web services has an active HTTP connection;</li>
+      <li>someone is using Samba to access files on it;</li>
+      <li>Transmisson is downloading;</li>
+      <li>a Borg backup is running;</li>
+      <li>someone is connected via SSH.</li>
+    </ul>
+    <p>Otherwise, it’ll stay on for a couple of minutes, and then go to
+    sleep.</p>
+    <p>The result is that most of the time, this computer is suspended, using
+    less electricity, and is completely silent. Whenever we actually need it,
+    the server comes alive, and then eventually goes back into suspension.
+    Technically, I could even have it shutdown automatically, since WOL also
+    works for machines that are completely off, but of course waking up from
+    that takes more time.</p>
+    <h1 id="downside-nothing-is-built-for-this">Downside: nothing is built for
+    this</h1>
+    <p>There are definite drawbacks to this setup, mostly due to the fact that
+    applications expect everything to be always on.</p>
+    <p>For example, Symphonium, the Android music player I use with Navidrome,
+    regularly does a health check to make sure the server is still reachable.
+    This request is not long enough to keep <code>theseus</code> on, so it
+    automatically suspends after a couple of minutes, only to be woken back
+    when the next health check comes in, a few seconds later. This only occurs
+    when actively using Symphonium, but it’s still quite annoying.</p>
+    <p>Another issue is that the Jellyfin app on our TV has a built-in timeout
+    that is quite short. When it cannot reach the server after a couple of
+    seconds, it gives up, requiring us to try again once <code>theseus</code>
+    is done waking up.</p>
+    <p>Still, I’m quite happy with this. We’ve been using this server for well
+    over two years, and for us the benefits far outweigh the drawbacks.</p>
+    <h1 id="how-its-done-done-done">How it’s done done done</h1>
+    <p>Of course, everything is configured with NixOS. I wouldn’t administer a
+    Linux machine without it. The full code is in <a href="https://codeberg.org/xlambein/nixos">my NixOS repo</a>.</p>
+    <p>The core WOL mechanism on <code>girlboss</code> is implemented in a
+    <a href="https://codeberg.org/xlambein/nixos/src/commit/44dff16e61b711dc4a6ed3262965b3295c744d1f/machines/girlboss/mkWol.nix">
+    <code>mkWol</code> function</a> which extends a given Nginx location to
+    send the WOL packet and wait whenever there’s a timeout. <a href="https://codeberg.org/xlambein/nixos/src/commit/44dff16e61b711dc4a6ed3262965b3295c744d1f/machines/girlboss/jellyfin.nix#L23">
+    Here’s an example</a> of how I use it with Jellyfin. It acts as wrapper
+    around an otherwise normal location, which makes it very easy to slap on
+    top of an existing Nginx config. The actual logic to send the WOL package
+    is written in Lua, so <a href="https://codeberg.org/xlambein/nixos/src/commit/44dff16e61b711dc4a6ed3262965b3295c744d1f/machines/girlboss/nginx.nix#L11">
+    make sure you use OpenResty</a> instead of vanilla Nginx.</p>
+    <p>The only thing to do on <code>theseus</code> is <a href="https://codeberg.org/xlambein/nixos/src/commit/44dff16e61b711dc4a6ed3262965b3295c744d1f/machines/theseus/default.nix#L54">
+    enable wake-on-LAN</a>. However, you also need to set up autosuspend. For
+    that, I have <a href="https://codeberg.org/xlambein/nixos/src/commit/44dff16e61b711dc4a6ed3262965b3295c744d1f/machines/theseus/autosuspend.nix">
+    a global config</a> where I specify things like wait 2 minutes before
+    sleep, or stay on when there’s an SSH connection. And then, for each
+    service, I have additional checks written alongside the configuration of
+    the service itself. For example, <a href="https://codeberg.org/xlambein/nixos/src/commit/44dff16e61b711dc4a6ed3262965b3295c744d1f/machines/theseus/jellyfin.nix">
+    this file is my whole Jellyfin config</a>, which sets up that service, and
+    adds an autosuspend check on port 8096. This means, if I ever remove a
+    service, it also removes the autosuspend check associated with it.</p>
+    <h1 id="other-notes">Other notes</h1>
+    <p>I use <a href="https://tailscale.com/">Tailscale</a> to access
+    <code>girlboss</code> and <code>theseus</code> whenever I’m outside of my
+    home network. Honestly, it’s a bit magic. I just wish they would <a href="https://github.com/tailscale/tailscale/issues/1543">add support for custom
+    subdomains</a>.</p>
+    <p>Originally I set up <a href="https://avahi.org/">Avahi</a> to let us
+    access services through custom domains names like
+    <code>jellyfin.local</code>. Unfortunately, it only works in the LAN, and
+    it’s not supported on most devices. My partner still uses them on their
+    laptop, but that’s it.</p>
+    <p>Since autosuspend can also schedule wake-ups, I configured it to wake
+    <code>theseus</code> at 2AM every day to run backups. You can sync it with
+    a systemd timer, it works quite well.</p>
+    <p>If one day I have enough motivation, I will replace my router with a
+    custom one managed with NixOS, in which case I’ll be able to put the
+    reverse proxy there and retire <code>girlboss</code>.</p>
+  </article>
+
+
+</body></html>

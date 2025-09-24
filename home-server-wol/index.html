@@ -75,9 +75,9 @@
     mostly there to store various kinds of data.</p>
     <p>The solution I settled with is relies on WOL (wake-on-LAN), autosuspend,
     and a Raspberry Pi acting as reverse proxy.</p>
-    <p>The Raspberry PI, an old model I had gathering dust in a drawer, now
+    <p>The Raspberry Pi, an old model I had gathering dust in a drawer, now
     runs an Nginx reverse proxy that forwards traffic to <code>theseus</code>.
-    The RPI is named <code>girlboss</code>. So, if you browse
+    I named it <code>girlboss</code>. So, if you browse
     <code>http://&lt;GIRLBOSS URL&gt;:8096</code>, <code>girlboss</code> will
     forward you to <code>http://&lt;THESEUS URL&gt;:8096</code>, which hosts
     Jellyfin.</p>

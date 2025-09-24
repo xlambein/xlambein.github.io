@@ -136,12 +136,12 @@
     Linux machine without it. The full code is in <a href="https://codeberg.org/xlambein/nixos">my NixOS repo</a>.</p>
     <p>The core WOL mechanism on <code>girlboss</code> is implemented in a
     <a href="https://codeberg.org/xlambein/nixos/src/commit/44dff16e61b711dc4a6ed3262965b3295c744d1f/machines/girlboss/mkWol.nix">
-    <code>mkWol</code> function</a> which extends a given Nginx location to
+    <code>mkWol</code> function</a> which patches a given Nginx virtualhost to
     send the WOL packet and wait whenever there’s a timeout. <a href="https://codeberg.org/xlambein/nixos/src/commit/44dff16e61b711dc4a6ed3262965b3295c744d1f/machines/girlboss/jellyfin.nix#L23">
     Here’s an example</a> of how I use it with Jellyfin. It acts as wrapper
-    around an otherwise normal location, which makes it very easy to slap on
-    top of an existing Nginx config. The actual logic to send the WOL package
-    is written in Lua, so <a href="https://codeberg.org/xlambein/nixos/src/commit/44dff16e61b711dc4a6ed3262965b3295c744d1f/machines/girlboss/nginx.nix#L11">
+    around an otherwise normal virtualhost, making it very easy to slap on top
+    of an existing Nginx config. The actual logic to send the WOL package is
+    written in Lua, so <a href="https://codeberg.org/xlambein/nixos/src/commit/44dff16e61b711dc4a6ed3262965b3295c744d1f/machines/girlboss/nginx.nix#L11">
     make sure you use OpenResty</a> instead of vanilla Nginx.</p>
     <p>The only thing to do on <code>theseus</code> is <a href="https://codeberg.org/xlambein/nixos/src/commit/44dff16e61b711dc4a6ed3262965b3295c744d1f/machines/theseus/default.nix#L54">
     enable wake-on-LAN</a>. However, you also need to set up autosuspend. For

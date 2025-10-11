@@ -5,6 +5,7 @@
   pandoc,
   runCommandLocal,
   librsvg,
+  imagemagick,
 }: let
   nixtEnv = final: prev: {
     figure = src: caption: let
@@ -48,6 +49,13 @@
     runCommandLocal "logo-${w}x${h}.png" {buildInputs = [librsvg];} ''
       rsvg-convert -w ${w} -h ${h} ${./assets/img/logo.svg} -o $out
     '';
+
+  favicon = nixss.util.wrap (runCommandLocal "favicon.ico" {buildInputs = [imagemagick];} ''
+    magick convert ${pngLogo {
+      w = 32;
+      h = 32;
+    }} $out
+  '');
 
   # Combine the assets directory with the code highlight CSS
   assets = nixss.util.derivation {
@@ -182,6 +190,7 @@ in
     filename = "www";
     src =
       [
+        favicon
         assets
         index
         feed

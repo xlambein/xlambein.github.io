@@ -119,6 +119,26 @@
             ],
             "number_of_pages": 149,
             "publish_date": "2018"
+        },
+        "9781447273318": {
+            "title": "Children of Time",
+            "authors": [
+                {
+                    "key": "/authors/OL7468980A"
+                }
+            ],
+            "number_of_pages": null,
+            "publish_date": "2015"
+        },
+        "9781784752224": {
+            "title": "Jurassic Park",
+            "authors": [
+                {
+                    "key": "/authors/OL28257A"
+                }
+            ],
+            "number_of_pages": 458,
+            "publish_date": "2015"
         }
     },
     "authors": {
@@ -132,6 +152,8 @@
         "/authors/OL7973935A": "Richard Osman",
         "/authors/OL10433546A": "Cab",
         "/authors/OL35895A": "Daniel Keyes",
-        "/authors/OL221294A": "Martha Wells"
+        "/authors/OL221294A": "Martha Wells",
+        "/authors/OL7468980A": "Adrian Tchaikovsky",
+        "/authors/OL28257A": "Michael Crichton"
     }
 }

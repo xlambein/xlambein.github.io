@@ -58,3 +58,13 @@ score = 5
 isbn = "9781250186935"
 readDate = "2025-06-21"
 score = 5
+
+[[book]]
+isbn = "9781447273318"
+readDate = "2025-08-29"
+score = 4
+
+[[book]]
+isbn = "9781784752224"
+readDate = "2025-10-17"
+score = 4

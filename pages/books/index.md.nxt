@@ -1,12 +1,23 @@
 # Books I've read
 
-${foreach books ({isbn, title, authors, readDate, score}: let
-  stars = with builtins;
-    (concatStringsSep "" ((genList (_: "★") score) ++ (genList (_: "☆") (5 - score))));
-  url = "https://openlibrary.org/isbn/${isbn}";
-in ''
-- [_${title}_ by ${builtins.concatStringsSep " & " authors}](${url})
-  <br>
-  ${stars} &mdash; finished on ${readDate}
-
-'')}
+${foreach booksByYear ({
+    year,
+    books,
+  }:
+    ''
+      ## ${year}
+    ''
+    + foreach books ({
+      isbn,
+      title,
+      authors,
+      readDate,
+      score,
+    }: let
+      stars = with builtins; (concatStringsSep "" ((genList (_: "★") score) ++ (genList (_: "☆") (5 - score))));
+      url = "https://openlibrary.org/isbn/${isbn}";
+    in ''
+      - [_${title}_ by ${builtins.concatStringsSep " & " authors}](${url})
+        <br>
+        ${stars} &mdash; finished on ${readDate}
+    ''))}

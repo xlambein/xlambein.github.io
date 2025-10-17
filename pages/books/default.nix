@@ -15,9 +15,10 @@
 
   booksSrc = (builtins.fromTOML (builtins.readFile ./books.toml)).book;
   books = lib.reverseList (map ({isbn, ...} @ b: (book isbn) // b) booksSrc);
+  booksByYear = lib.sort (a: b: builtins.lessThan b.year a.year) (lib.mapAttrsToList (year: books: {inherit year books;}) (lib.groupBy ({readDate, ...}: builtins.head (builtins.split "-" readDate)) books));
 
   index = processFile ((nixss.util.wrap ./index.md.nxt).withMetadata {
-    inherit books;
+    inherit booksByYear;
   });
 in
   nixss.util.directory {

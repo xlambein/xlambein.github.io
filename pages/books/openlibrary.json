@@ -139,6 +139,16 @@
             ],
             "number_of_pages": 458,
             "publish_date": "2015"
+        },
+        "9780525562023": {
+            "title": "On Earth We're Briefly Gorgeous",
+            "authors": [
+                {
+                    "key": "/authors/OL7607606A"
+                }
+            ],
+            "number_of_pages": 256,
+            "publish_date": "Jun 04, 2019"
         }
     },
     "authors": {
@@ -154,6 +164,7 @@
         "/authors/OL35895A": "Daniel Keyes",
         "/authors/OL221294A": "Martha Wells",
         "/authors/OL7468980A": "Adrian Tchaikovsky",
-        "/authors/OL28257A": "Michael Crichton"
+        "/authors/OL28257A": "Michael Crichton",
+        "/authors/OL7607606A": "Ocean Vuong"
     }
 }

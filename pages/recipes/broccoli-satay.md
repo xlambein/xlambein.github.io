@@ -15,6 +15,7 @@ servings: 2
 - 80g peanut butter
 - 60g red miso paste
 - 1/4 cup soy sauce
+- 1/2 lime, juiced
 - 1/4 tsp red pepper flakes, or more to taste
 - sesame seeds, to serve
 - sesame oil, to serve
@@ -27,7 +28,7 @@ servings: 2
 
 3. In the meantime, cook the noodles according to the package instructions, reserving some pasta water at the end.
 
-4. In a bowl, combine the peanut butter, red miso paste, soy sauce, and red pepper flakes into a thick sauce.
+4. In a bowl, combine the peanut butter, red miso paste, soy sauce, lime juice, and red pepper flakes into a thick sauce.
 
 5. Add the cooked noodles and the sauce to the wok, and mix thoroughly, adding some pasta water to dilute the sauce to the desired consistency.
 

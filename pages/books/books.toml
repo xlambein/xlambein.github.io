@@ -73,3 +73,8 @@ score = 4
 isbn = "9780525562023"
 readDate = "2025-11-13"
 score = 4
+
+[[book]]
+isbn = "0688062334"
+readDate = "2025-12-06"
+score = 4

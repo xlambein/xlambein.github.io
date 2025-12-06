@@ -149,6 +149,16 @@
             ],
             "number_of_pages": 256,
             "publish_date": "Jun 04, 2019"
+        },
+        "0688062334": {
+            "title": "Howl's Moving Castle",
+            "authors": [
+                {
+                    "key": "/authors/OL31384A"
+                }
+            ],
+            "number_of_pages": 212,
+            "publish_date": "1986"
         }
     },
     "authors": {
@@ -165,6 +175,7 @@
         "/authors/OL221294A": "Martha Wells",
         "/authors/OL7468980A": "Adrian Tchaikovsky",
         "/authors/OL28257A": "Michael Crichton",
-        "/authors/OL7607606A": "Ocean Vuong"
+        "/authors/OL7607606A": "Ocean Vuong",
+        "/authors/OL31384A": "Diana Wynne Jones"
     }
 }

@@ -13,7 +13,6 @@ servings: 6--8
 - 1/2 cup walnuts, crushed or chunked
 - 1/2 cup cashew nuts, crushed or chunked
 - 1/2 cup coconut flakes
-- 2 tbsp chia seeds
 - 1/4 cup sugar
 - 1/4 cup maple syrup
 - 1/4 cup olive oil
@@ -22,13 +21,13 @@ servings: 6--8
 
 ## Directions
 
-1. Pre-heat the oven to 125C in convection mode.
+1. Pre-heat the oven to 125C in convection (fan) mode.
 
 2. Combine all ingredients in a large bowl and mix well. Give it a taste and adjust the salt and sugar.
 
 3. On a baking tray lined with parchment paper, pour the mixture and lay it flat with a spatula.
 
-4. Bake it in the oven for 25 minutes. Take it out, shuffle the granola around, and then bake it for another 25 minutes.
+4. Bake it in the oven for 20 minutes. Take it out, shuffle the granola around, and then bake it for another 20 minutes. The granola should be golden brown, but not dark.
 
 5. Take the tray out of the oven and let the granola cool down thoroughly before storing it in a sealed container in the fridge.
 

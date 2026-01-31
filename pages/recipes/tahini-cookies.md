@@ -29,7 +29,7 @@ servings: 4
 
 4. Chill the dough in the fridge overnight.
 
-5. Preheat the oven to 180 C.
+5. Preheat the oven to 170 C.
 
 6. Split the dough into rough balls and spread them on a baking sheet.
 

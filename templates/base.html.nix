@@ -21,7 +21,6 @@
     <link rel="icon" type="image/svg+xml" href="/assets/img/logo.svg">
     <link rel="icon" type="image/png" href="/assets/img/favicon.png">
     <link rel="stylesheet" href="/assets/css/style.css">
-    <link rel="stylesheet" href="/assets/css/code.css">
     <link href="/atom.xml" rel="alternate" title="Xavier Lambein’s blog" type="application/atom+xml">
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
       integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous"

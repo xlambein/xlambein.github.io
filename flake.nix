@@ -1,6 +1,7 @@
 {
   inputs.flake-utils.url = "github:numtide/flake-utils";
-  inputs.nixss.url = "git+https://codeberg.org/xlambein/nixss";
+  # inputs.nixss.url = "git+https://codeberg.org/xlambein/nixss";
+  inputs.nixss.url = "path:/home/xlambein/xavier/nixss";
   inputs.nixss.inputs.nixpkgs.follows = "nixpkgs";
   inputs.nixss.inputs.flake-utils.follows = "flake-utils";
 

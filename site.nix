@@ -6,6 +6,7 @@
   runCommandLocal,
   librsvg,
   imagemagick,
+  writeText,
 }: let
   nixtEnv = final: prev: {
     figure = src: caption: let
@@ -18,29 +19,40 @@
 
   assetExts = ["css" "gif" "jpg" "pdf" "png" "svg" "webm" "js"];
 
+  arborium = callPackage ./arborium.nix {};
+
   md2html = nixss.pandoc.process {
     # TODO: +implicit_figures, which makes [caption](image.png) into a figure
     # TODO: +link_attributes, which allows [foo](bar.html){#id .class width=50%}
     # TODO: +emoji for :emojis:
     from = "gfm+smart-autolink_bare_uris";
-    to = "html";
+    # to = "html";
+    to = ./highlight.lua;
     shift-heading-level-by = -1;
     wrap = "preserve";
+
+    # Required by `highlight.lua`
+    runtimeInputs = [arborium];
   } (nixss.util.replaceExt "md" "html");
 
-  # Get the code highlight CSS from pandoc
-  codeCss = let
-    template = builtins.toFile "highlighting-css.template" "$highlighting-css$";
-    sample = builtins.toFile "sample.md" ''
-      ```rust
-      fn main() {}
-      ```
-    '';
-    css = runCommandLocal "code.css" {buildInputs = [pandoc];} ''
-      pandoc --template=${template} ${sample} | grep 'code span' > $out
-    '';
-  in
-    css;
+  # # Get the code highlight CSS from pandoc
+  # codeCss = let
+  #   template = builtins.toFile "highlighting-css.template" "$highlighting-css$";
+  #   sample = builtins.toFile "sample.md" ''
+  #     ```rust
+  #     fn main() {}
+  #     ```
+  #   '';
+  #   css = runCommandLocal "code.css" {buildInputs = [pandoc];} ''
+  #     pandoc --template=${template} ${sample} | grep 'code span' > $out
+  #   '';
+  # in
+  #   css;
+  codeCss = writeText "code.css" ''
+    a-k { color: blueviolet; }
+    a-c { background-color: yellow; }
+    a-s { color: green; }
+  '';
 
   pngLogo = size: let
     w = builtins.toString size.w;
@@ -63,7 +75,6 @@
     drv = runCommandLocal "assets" {} ''
       mkdir -p $out/{css,img,js}
       cp -drs ${./assets}/. $out
-      ln -s ${codeCss} $out/css/code.css
       ln -s ${pngLogo {
         w = 32;
         h = 32;
@@ -94,7 +105,8 @@
     # forkawesome uses empty elements for icons, so we need to keep those
     drop-empty-elements = "no";
     # for mastodon-comments
-    custom-tags = "blocklevel";
+    new-blocklevel-tags = "mastodon-comments";
+    custom-tags = "inline";
   };
 
   processFile =
@@ -186,6 +198,7 @@
   in
     processFile src;
 in
+  # md2html ./pages/nixss/index.md
   nixss.util.directoryWithIndex {
     filename = "www";
     src =

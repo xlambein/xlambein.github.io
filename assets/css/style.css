@@ -192,6 +192,42 @@ pre code {
 code {
   font-weight: 500;
   background-color: #ffe0e0;
+
+  /* Keywords, punctuation */
+  a-k,
+  a-p {
+    opacity: 0.5;
+    /* color: chocolate; */
+    /* color: gray; */
+  }
+
+  /* Types */
+  a-t {
+    /* color: blueviolet; */
+  }
+
+  /* Comments */
+  a-c {
+    color: chocolate;
+    /* color: gray; */
+  }
+
+  /* Strings, number, constants */
+  a-s,
+  a-n,
+  a-co {
+    color: green;
+  }
+
+  /* Style: bold */
+  a-st {
+    font-weight: bold;
+  }
+
+  /* Style: italic */
+  a-em {
+    font-style: italic;
+  }
 }
 
 div.sourceCode {
@@ -202,6 +238,7 @@ pre.sourceCode,
 pre:has(code) {
   background-color: #fff1f1;
   border-radius: 5px;
+  border: 1px solid #ffe0e0;
   max-width: calc(640px + 8em);
   padding: 0.5em;
 }

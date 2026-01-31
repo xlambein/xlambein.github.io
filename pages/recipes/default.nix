@@ -5,11 +5,11 @@
 }: let
   recipePaths =
     builtins.filter
-    (path: nixss.util.getExt path == "md")
+    (path: nixss.getExt path == "md")
     (builtins.map (filename: ./${filename}) (builtins.attrNames (builtins.readDir ./.)));
   pageToDirectory = page:
-    nixss.util.directoryWithIndex {
-      filename = nixss.util.removeExt "html" page.name;
+    nixss.directoryWithIndex {
+      filename = nixss.removeExt "html" page.name;
       src = [(page.rename "index.html")];
     };
   recipes =
@@ -17,7 +17,7 @@
     pageToDirectory
     (builtins.map (
         path:
-          processFile ((nixss.util.wrap path).withMetadata {
+          processFile ((nixss.wrap path).withMetadata {
             template = "recipe";
           })
       )
@@ -39,11 +39,11 @@
     (group "Soups" recipesByFirstTag.soup)
     (group "Main Courses" recipesByFirstTag.main)
   ];
-  index = processFile ((nixss.util.wrap ./index.md.nxt).withMetadata {
+  index = processFile ((nixss.wrap ./index.md.nxt).withMetadata {
     inherit groups;
   });
 in
-  nixss.util.directory {
+  nixss.directory {
     filename = "recipes";
     src = recipes ++ [index];
     metadata.title = "Recipes";

@@ -11,7 +11,7 @@
     sha256 = "sha256-ps1Uvi98JlZ5XXM8Bd31s8wXbWtPm8HGD7eqO/YwNX0=";
   };
 in
-  nixss.util.derivation {
+  nixss.derivation {
     drv = callPackage phrase-generator {};
     filename = "phrase-generator";
     metadata = {

@@ -11,19 +11,19 @@ with builtins; let
     title = builtins.elemAt matches 0;
     text = builtins.elemAt matches 1;
   in
-    nixss.util.text {
-      filename = nixss.util.removeExt "html" (nixss.util.filenameOf path);
+    nixss.text {
+      filename = nixss.removeExt "html" (nixss.filenameOf path);
       inherit text;
       metadata = {inherit title;};
     };
 
   poemPaths =
     filter
-    (path: nixss.util.getExt path == "html")
+    (path: nixss.getExt path == "html")
     (map (filename: ./${filename}) (attrNames (readDir ./.)));
   poems = lib.reverseList (map process poemPaths);
 
-  index = processFile ((nixss.util.wrap ./index.md.nxt).withMetadata {
+  index = processFile ((nixss.wrap ./index.md.nxt).withMetadata {
     poems =
       map (poem: {
         id = elemAt (split "[[:digit:]]+-" poem.filename) 2;
@@ -33,7 +33,7 @@ with builtins; let
       poems;
   });
 in
-  nixss.util.directory {
+  nixss.directory {
     filename = "poems";
     src = [index];
     metadata.title = "Poems";

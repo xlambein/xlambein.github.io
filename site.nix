@@ -18,7 +18,7 @@
 
   assetExts = ["css" "gif" "jpg" "pdf" "png" "svg" "webm" "js"];
 
-  md2html = nixss.pandoc.process {
+  md2html = nixss.pandoc {
     # TODO: +implicit_figures, which makes [caption](image.png) into a figure
     # TODO: +link_attributes, which allows [foo](bar.html){#id .class width=50%}
     # TODO: +emoji for :emojis:
@@ -26,7 +26,7 @@
     to = "html";
     shift-heading-level-by = -1;
     wrap = "preserve";
-  } (nixss.util.replaceExt "md" "html");
+  } (nixss.replaceExt "md" "html");
 
   # Get the code highlight CSS from pandoc
   codeCss = let
@@ -50,7 +50,7 @@
       rsvg-convert -w ${w} -h ${h} ${./assets/img/logo.svg} -o $out
     '';
 
-  favicon = nixss.util.wrap (runCommandLocal "favicon.ico" {buildInputs = [imagemagick];} ''
+  favicon = nixss.wrap (runCommandLocal "favicon.ico" {buildInputs = [imagemagick];} ''
     magick convert ${pngLogo {
       w = 32;
       h = 32;
@@ -58,7 +58,7 @@
   '');
 
   # Combine the assets directory with the code highlight CSS
-  assets = nixss.util.derivation {
+  assets = nixss.derivation {
     filename = "assets";
     drv = runCommandLocal "assets" {} ''
       mkdir -p $out/{css,img,js,pdf}
@@ -88,7 +88,7 @@
 
   renderInTemplate = nixss.template.instantiate ./templates/base.html.nix {};
 
-  tidyHtml = nixss.html-tidy.process {
+  tidyHtml = nixss.htmlTidy {
     indent = "auto";
     wrap = "80";
     # forkawesome uses empty elements for icons, so we need to keep those
@@ -98,24 +98,24 @@
   };
 
   processFile =
-    nixss.util.mapExt
+    nixss.mapExt
     (path:
       # Process sub-directories, copy assets, ignore the rest
         if lib.pathIsDirectory path
         then processDir path
-        else if builtins.elem (nixss.util.getExt path) assetExts
+        else if builtins.elem (nixss.getExt path) assetExts
         then path
         else null)
     {
-      "nxt" = nixss.util.chain [
+      "nxt" = nixss.chain [
         (nixss.nixt.process nixtEnv)
         processFile
       ];
-      "md" = nixss.util.chain [
+      "md" = nixss.chain [
         md2html
         processFile
       ];
-      "html" = nixss.util.chain [
+      "html" = nixss.chain [
         parseFediverse
         renderInTemplate
         tidyHtml
@@ -128,13 +128,13 @@
       if builtins.pathExists /${path}/default.nix
       then callPackage path {inherit nixss processFile;}
       else
-        nixss.util.directoryWithIndex {
+        nixss.directoryWithIndex {
           filename = builtins.baseNameOf path;
-          src = nixss.util.mapDirectory processFile path;
+          src = nixss.mapDirectory processFile path;
         }
     else null;
 
-  pages = nixss.util.mapDirectory processDir ./pages;
+  pages = nixss.mapDirectory processDir ./pages;
 
   remoteProjects = [
     {
@@ -180,13 +180,13 @@
     (localProjects ++ remoteProjects);
 
   index = let
-    src = (nixss.util.wrap ./pages/index.md.nxt).withMetadata {
+    src = (nixss.wrap ./pages/index.md.nxt).withMetadata {
       inherit projects;
     };
   in
     processFile src;
 in
-  nixss.util.directoryWithIndex {
+  nixss.directoryWithIndex {
     filename = "www";
     src =
       [
@@ -194,7 +194,7 @@ in
         assets
         index
         feed
-        (nixss.util.text {
+        (nixss.text {
           filename = ".nojekyll";
           text = "";
         })

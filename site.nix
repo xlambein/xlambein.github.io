@@ -61,7 +61,7 @@
   assets = nixss.util.derivation {
     filename = "assets";
     drv = runCommandLocal "assets" {} ''
-      mkdir -p $out/{css,img,js}
+      mkdir -p $out/{css,img,js,pdf}
       cp -drs ${./assets}/. $out
       ln -s ${codeCss} $out/css/code.css
       ln -s ${pngLogo {

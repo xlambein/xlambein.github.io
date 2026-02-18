@@ -159,6 +159,16 @@
             ],
             "number_of_pages": 212,
             "publish_date": "1986"
+        },
+        "9781668648490": {
+            "title": "A Physical Education",
+            "authors": [
+                {
+                  "key": "/authors/OL13659842A"
+                }
+            ],
+            "number_of_pages": null,
+            "publish_date": "2025-05-06"
         }
     },
     "authors": {
@@ -176,6 +186,7 @@
         "/authors/OL7468980A": "Adrian Tchaikovsky",
         "/authors/OL28257A": "Michael Crichton",
         "/authors/OL7607606A": "Ocean Vuong",
-        "/authors/OL31384A": "Diana Wynne Jones"
+        "/authors/OL31384A": "Diana Wynne Jones",
+        "/authors/OL13659842A": "Casey Johnston"
     }
 }

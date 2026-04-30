@@ -16,6 +16,10 @@ This is an essay I wrote as a submission to the [LIVE 2023 workshop](https://liv
 
 I also gave a follow-up presentation at the [5th AIST Creative HCI Seminar](https://chci.pages.dev/aist-seminar/en/5) hosted by Jun Kato, alongside Tomoya Matsuura and Baku Hashimoto. I highly recommend Tomoya and Baku's presentations.
 
+A couple of years later, I gave a [talk about this project at FOSDEM](https://fosdem.org/2026/schedule/event/MMW9JC-paw/).
+
+Finally, you can find the [source code on Codeberg](https://codeberg.org/xlambein/paw).
+
 ## Introduction
 
 In this essay I'll be presenting my ongoing project, whose working title is "PAW", short for "Programmable dAW". It's an exploratory prototype of making a DAW where the project state is represented by a program, and a GUI is generated from code analysis of this program. PAW is based on my experience with traditional graphical DAWs, my experience as a programmer, and my interest in bidirectional and live programming.
